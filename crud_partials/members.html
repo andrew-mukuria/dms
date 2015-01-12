@@ -1,0 +1,46 @@
+<form class="ui form" id="memberForm" action="" method="post">
+    <h4 class="ui dividing header">User Information</h4>
+    <div class="fields">
+        <div class="field eight wide required"><label>Member No.</label><input name="memberNo" id="memberNo" type="text" ng-model="members.memberNo"></input></div>
+    <div class="field eight wide required"><label>Member Name</label><input name="memberName" id="memberName" type="text" ng-model="members.memberName"></input></div>
+</div>
+<div class="fields">
+    <div class="field four wide required"><label>Date of Birth</label><input name="dob" id="dob" type="text" ng-model="members.dob"></input></div>
+<div class="field four wide required"><label>ID No.</label><input name="idNo" id="idNo" type="text" ng-model="members.idNo"></input></div>
+<div class="field eight wide required"><label>Scheme Name</label><input name="schemeName" id="schemeName" type="text" ng-model="members.schemeName"></input></div>
+</div>
+<div class="fields">
+    <div class="field eight wide required"><label>Employee No.</label><input name="employeeNo" id="employeeNo" type="text" ng-model="members.employeeNo"></input></div>
+<div class="field four wide required"><label>NSSF No.</label><input name="nssfNo" id="nssfNo" type="text" ng-model="members.nssfNo"></input></div>
+<div class="field four wide required"><label>NHIF No.</label><input name="nhifNo" id="nhifNo" type="text" ng-model="members.nhifNo"></input></div>
+</div>
+<div class="fields">
+    <div class="field eight wide required"><label>PIN</label><input name="pin" id="pin" type="text" ng-model="members.pin"></input></div>
+<div class="field four wide required"><label>Inpatient</label><input name="inPatient" id="inPatient" type="text" ng-model="members.inPatient"></input></div>
+<div class="field four wide required"><label>Outpatient</label><input name="outPatient" id="outPatient" type="text" ng-model="members.outPatient"></input></div>
+</div>
+</div>
+<div class="three fields">
+    <div class="field required"><label>Dental</label><input name="dental" id="dental" type="text" ng-model="members.dental"></input></div>
+<div class="field required"><label>Optical</label><input name="optical" id="optical"  type="text" ng-model="members.optical"></input></div>
+<div class="field required"><label>Maternity</label><input name="maternity" id="maternity" type="text" ng-model="members.maternity"></input></div>
+</div>
+<div class="ui error message"></div>
+</form>
+
+<script charset="utf-8" src="assets/javascripts/members.js"></script>
+<script>
+
+    $(document).ready(function(){
+        /**
+    * New Instance of Member Object
+    */
+        var member = new members();
+        member.validate();
+
+        $("#memberForm").submit(function(){
+            var formdata = $(this).serialize();
+            member.create(base_url,formdata);
+        });
+    });
+</script>

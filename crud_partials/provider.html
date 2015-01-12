@@ -1,0 +1,37 @@
+<form class="ui form" id="providerform" method="post">
+  <h4 class="ui dividing header">Provider Information</h4>
+  <div class="fields">
+    <div class="field eight wide required"><label>Provider Code</label><input type="text" name="providerCode" id="providerCode"></input></div>
+    <div class="field eight wide required"><label>Provider Name</label><input type="text" name="providerName" id="providerName"></input></div>
+
+  </div>
+  <div class="fields">
+    <div class="field eight wide required"><label>Telephone No.</label><input type="text" name="telephoneNo" id="telephoneNo"></input></div>
+    <div class="field eight wide required"><label>Email Address</label><input type="text" name="emailAddress" id="emailAddress"></input></div>
+  </div>
+  <div class="fields">
+    <div class="field two wide required"><label>Sub-Location</label><input type="text" name="subLocation" id="subLocation"></input></div>
+    <div class="field three wide required"><label>Location</label><input type="text" name="location" id="location"></input></div>
+    <div class="field three wide required"><label>Constituency</label><input type="text" name="constituency" id="constituency"></input></div>
+    <div class="field four wide required"><label>Town</label><input type="text" name="town" id="town"></input></div>
+    <div class="field four wide required"><label>County</label><input type="text" name="county" id="county"></input></div>
+  </div>
+  <div class="ui error message"></div>
+</form>
+<script charset="utf-8" src="assets/javascripts/providers.js"></script>
+<script>
+
+$(document).ready(function(){
+  /**
+  * New Instance of Member Object
+  */
+  var provider = new providers();
+  provider.validate();
+
+  $("#providerform").submit(function(){
+    var formdata = $(this).serialize();
+    provider.create(base_url,formdata);
+    return false;
+  });
+});
+</script>

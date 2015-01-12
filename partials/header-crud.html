@@ -1,0 +1,37 @@
+<div class="ui tiered menu">
+    <nav class="ui menu" id="main">
+        <a href="#/members" class="item members" data-ctrl="members"><i class="icon"></i>Members</a>
+        <a href="#/claims" class="item claims" data-ctrl="claims"><i class="icon"></i>Claims</a>
+        <a href="#/provider" class="item provider" data-ctrl="provider"><i class="icon"></i>Provider</a>
+        <a href="#/benefits" class="item benefits" data-ctrl="benefits"><i class="icon"></i>Benefits</a>
+        <a href="#/services" class="item services" data-ctrl="services"><i class="icon"></i>Services</a>
+    </nav>
+    <div class="ui sub menu inverted blue">
+        <a class="register item" id="register"><i class="icon"></i>Register</a>
+        <a class="view item" id="view"><i class="icon"></i>View</a>
+        <div class="item">
+            <div class="ui left top pointing floating labeled icon dropdown button" id="filter">
+
+                <i class="filter icon"></i>
+                <span class="text">Filter</span>
+                <div class="menu">
+                    <div class="header">
+                        <i class="tags icon"></i>
+                        Filter by criteria
+                    </div>
+                    <div class="divider"></div>
+                    <div class="item" ng-repeat="criteria in criterias">
+                        <i class="{{criteria.icon}}">{{criteria.text}} </i>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <div class="ui icon mini input">
+                <input  id="search" class="typeahead" type="search" placeholder="Search Here..." ng-model="search"/>
+                <i class="icon search"></i>
+            </div>
+        </div>
+    </div>
+</div>

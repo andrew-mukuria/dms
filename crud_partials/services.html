@@ -1,0 +1,24 @@
+<form class="ui form" id="serviceform" action="" method="post">
+  <h4 class="ui dividing header">Services</h4>
+  <div class="fields">
+    <div class="field eight wide required"><label>Service Code</label><input type="text" name="code" id="code"></input></div>
+    <div class="field eight wide required"><label>Service Name</label><input type="text" name="service" id="service"></input></div>
+  </div>
+  <div class="ui error message"></div>
+</form>
+
+<script charset="utf-8" src="assets/javascripts/services.js"></script>
+<script>
+$(document).ready(function(){
+  /**
+  * New Instance of Member Object
+  */
+  var service = new services();
+  service.validate();
+
+  $("#serviceform").submit(function(){
+    var formdata = $(this).serialize();
+    service.create(base_url,formdata);
+  });
+});
+</script>

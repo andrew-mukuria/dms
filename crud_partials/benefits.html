@@ -1,0 +1,26 @@
+<form class="ui form" id="benefitform" action="" method="post">
+  <h4 class="ui dividing header">Benefits</h4>
+  <div class="fields">
+    <div class="field eight wide required"><label>Benefit Code</label><input type="text" name="code" id="code"></input></div>
+    <div class="field eight wide required"><label>Benefit Name</label><input type="text" name="benefit" id="benefit"></input></div>
+  </div>
+  <div class="ui error message"></div>
+</form>
+<script charset="utf-8" src="assets/javascripts/benefits.js"></script>
+<script>
+$(document).ready(function(){
+
+  /**
+  * New Instance of Benefit Object
+  */
+  var benefit = new benefits();
+  benefit.validate();
+
+  $("#benefitform").submit(function(){
+    var formdata = $(this).serialize();
+    benefit.create(base_url,formdata);
+  });
+
+});
+
+</script>

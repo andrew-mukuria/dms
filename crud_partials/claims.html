@@ -1,0 +1,110 @@
+
+<form class="ui form" id="claimForm" method="post">
+  <h4 class="ui dividing header">Claims Information</h4>
+  <div class="fields">
+        <div class="field six wide required">
+            <label>Member Name</label>
+            <div class="ui selection dropdown">
+                <input type="hidden" name="memberNo">
+                <div class="default text">
+                    Select members
+                </div>
+                <i class="dropdown icon"></i>
+                <div class="menu" id="memberN">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="field six wide required">
+
+            <label>Provider Name</label>
+            <div class="ui selection dropdown select-provider">
+                <input type="hidden" name="providerCode">
+                <div class="default text">
+                    Select Provider
+                </div>
+                <i class="dropdown icon"></i>
+                <div class="menu" id="providerN">
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+  <div class="fields">
+    <div class="field six wide required">
+      <label>Service Code</label>
+      <div class="ui selection dropdown">
+                <input type="hidden" name="serviceCode">
+                <div class="default text">
+                    Select Service
+                </div>
+                <i class="dropdown icon"></i>
+                <div class="menu" id="serviceC">
+
+                </div>
+            </div>
+    </div>
+
+
+    <div class="field six wide required">
+      <label>Benefit Code</label>
+      <div class="ui selection dropdown">
+                <input type="hidden" name="benefitCode">
+                <div class="default text">
+                    Select Benefit
+                </div>
+                <i class="dropdown icon"></i>
+                <div class="menu" id="benefitC">
+
+                </div>
+            </div>
+    </div>
+
+  </div>
+  <div class="fields">
+    <div class="field six wide required">
+      <label>Service Amount</label>
+      <div class="number ui left icon input">
+        <i class="icon"></i>
+        <input type="text" name="serviceAmt" id="serviceAmt"></input>
+      </div>
+    </div>
+    <div class="field six wide required">
+      <label>Service Date</label>
+      <div class="date ui left icon input">
+        <i class="icon"></i>
+        <input type="text" name="serviceDate" id="serviceDate" ></input>
+      </div>
+
+    </div>
+    <div class="field two wide required">
+      <!--<label>Picked</label>-->
+      <input type="hidden" name="picked" id="picked" value="1"></input>
+    </div>
+  </div>
+  </div>
+  <div class="ui error message"></div>
+</form>
+
+
+<script charset="utf-8" src="assets/javascripts/claims.js"></script>
+<script>
+
+    $(document).ready(function(){
+    /**
+     * New Instance of Claim Object
+     */
+    var claim = new claims();
+    claim.fetch();
+    claim.validate();
+
+    $("#claimForm").submit(function(){
+      var formdata = $(this).serialize();
+      claim.create(base_url,formdata);
+    });
+
+
+    });
+</script>
