@@ -1,9 +1,20 @@
 <div class="ui tiered menu">
     <nav class="ui menu" id="main">
-        <a href="#/members" class="item members" data-ctrl="members"><i class="icon"></i>Members</a>
-        <a href="#/claims" class="item claims" data-ctrl="claims"><i class="icon"></i>Claims</a>
-        <a href="#/provider" class="item provider" data-ctrl="provider"><i class="icon"></i>Provider</a>
-        <a href="#/benefits" class="item benefits" data-ctrl="benefits"><i class="icon"></i>Benefits</a>
-        <a href="#/services" class="item services" data-ctrl="services"><i class="icon"></i>Services</a>
+        <a class="item" href="" data-transition="push" id="show_side_menu"><i class="icon ion-navicon-round"></i>More</a>
+<!--
+        <a ui-sref="members" class="item members" data-ctrl="members"><i class="icon"></i>Members</a>
+        <a ui-sref="claims" class="item claims" data-ctrl="claims"><i class="icon"></i>Claims</a>
+        <a ui-sref="provider" class="item provider" data-ctrl="provider"><i class="icon"></i>Provider</a>
+        <a ui-sref="benefits" class="item benefits" data-ctrl="benefits"><i class="icon"></i>Benefits</a>
+        <a ui-sref="services" class="item services" data-ctrl="services"><i class="icon"></i>Services</a>
+-->
     </nav>
 </div>
+<script>
+    $('#show_side_menu').click(function(){
+//        alert('hi');
+        $('#main-side-menu').sidebar('toggle');
+    });
+
+
+</script>

@@ -1,6 +1,9 @@
-var app = angular.module("hais", ['ngRoute']);
+var app = angular.module("hais", ['ui.router','ui.router.stateHelper']);
 
 var base_url = 'http://localhost/hmis/';
+
+
+
 app.controller('benefitsCtrl', ['$scope', '$http',
   function ($scope, $http) {
 
