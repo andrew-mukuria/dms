@@ -4,7 +4,9 @@
 
         <script src="assets/bower_components/jquery/dist/jquery.js"></script>
         <script src="assets/bower_components/angular/angular.js"></script>
-        <script src="assets/bower_components/angular-route/angular-route.js"></script>
+        <script src="assets/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+        <script src="assets/bower_components/angular-ui-router.stateHelper/statehelper.js"></script>
+        <!--        <script src="assets/bower_components/angular-route/angular-route.js"></script>-->
         <script src="assets/javascripts/app.js"></script>
         <script src="assets/javascripts/directives.js"></script>
         <script src="assets/javascripts/routes.js"></script>
@@ -28,10 +30,49 @@
         <script src="assets/bower_components/semantic-ui/dist/semantic.js"></script>
     </head>
     <body>
-        <header>
+        <div id="main-side-menu" class="ui left vertical inverted labeled icon sidebar menu" style="z-index:10000">
+           <div class="item">
+               <img style="background:white" class="ui tiny bordered centered circular image" src="assets/bower_components/ionicons/png/512/ios7-person.png">
+           </div>
+           <div class="item">
+                  <b>John Doe</b>
+           </div>
+            <div class="item">
+                <div class="ui input"><input type="text" placeholder="Search..."></div>
+            </div>
+            <div class="item">
+                <i class="home icon"></i> CRUD
+                <div class="menu">
+                    <a ui-sref="members" class="item members" data-ctrl="members"><i class="icon"></i>Members</a>
+                    <a ui-sref="claims"  class="item claims" data-ctrl="claims"><i class="icon"></i>Claims</a>
+                    <a ui-sref="provider" class="item provider" data-ctrl="provider"><i class="icon"></i>Provider</a>
+                    <a ui-sref="benefits" class="item benefits" data-ctrl="benefits"><i class="icon"></i>Benefits</a>
+                    <a ui-sref="services" class="item services" data-ctrl="services"><i class="icon"></i>Services</a>
+                </div>
+            </div>
+            <a class="item">
+                <i class="grid layout icon"></i> Browse
+            </a>
+            <a class="item">
+                <i class="mail icon"></i> Messages
+            </a>
+            <div class="ui dropdown item">
+                <i class="dropdown icon"></i>
+                More
+                <div class="menu">
+                    <a class="item"><i class="edit icon"></i> Edit Profile</a>
+                    <a class="item"><i class="globe icon"></i> Choose Language</a>
+                    <a class="item"><i class="settings icon"></i> Account Settings</a>
+                </div>
+            </div>
 
-        </header>
-            <div class="content" ng-view>
+
+        </div>
+        <div class="pusher">
+            <header>
+
+            </header>
+            <div class="content" ui-view>
 
             </div>
             <script>
@@ -41,9 +82,9 @@
             </script>
             <script src="assets/javascripts/services/criteria.js"></script>
             <script src="assets/javascripts/controllers/members.js"></script>
-        <footer>
+            <footer>
 
-        </footer>
-
+            </footer>
+        </div>
     </body>
 </html>

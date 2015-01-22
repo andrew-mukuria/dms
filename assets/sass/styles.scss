@@ -9,7 +9,11 @@ body{
     /* font-family:OpenSansRegular !important; */
     font-size:12px !important;
 }
-
+#main-side-menu{
+    a{
+        text-align: left !important;
+    }
+}
 nav,footer{
     border-radius:0 !important;
     @extend .ui !optional;
