@@ -1,12 +1,44 @@
-<form class="ui form" id="memberForm" action="" method="post">
-    <h4 class="ui dividing header">User Information</h4>
+<div class="ui grid">
+    <div class="twelve wide column">
+        <div class="ui menu sub-menu">
+            <a class="item">User Information</a>
+            <a class="register item" id="register"><i class="icon"></i>Register</a>
+            <a class="view item" id="view"><i class="icon"></i>View</a>
+            <a class="item"><i class="icon fa fa-edit"></i>Edit</a>
+            <div class="item">
+                <div class="ui left top pointing floating labeled icon dropdown button" id="filter" ng-model="filterText">
+
+                    <i class="filter icon"></i>
+                    <span class="text">Filter</span>
+                    <div class="menu">
+                        <div class="header">
+                            <i class="tags icon"></i>
+                            Filter by criteria
+                        </div>
+                        <div class="divider"></div>
+                        <div class="item" ng-repeat="filter in filters">
+                            <i class="{{filter.icon}}"></i>{{filter.text}}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui icon mini input">
+                    <input  id="search" class="typeahead" type="search" placeholder="Search Here..." ng-model="search"/>
+                    <i class="icon search"></i>
+                </div>
+            </div>
+        </div>
+
+        <form class="ui form ui segment" id="memberForm" action="" method="post">
+            <div class="fields">
+                <div class="field eight wide required"><label>Member No.</label><input name="memberNo" id="memberNo" type="text" ng-model="members.memberNo"></input></div>
+            <div class="field eight wide required"><label>Member Name</label><input name="memberName" id="memberName" type="text" ng-model="members.memberName"></input></div>
+    </div>
     <div class="fields">
-        <div class="field eight wide required"><label>Member No.</label><input name="memberNo" id="memberNo" type="text" ng-model="members.memberNo"></input></div>
-    <div class="field eight wide required"><label>Member Name</label><input name="memberName" id="memberName" type="text" ng-model="members.memberName"></input></div>
-</div>
-<div class="fields">
-    <div class="field four wide required"><label>Date of Birth</label><input name="dob" id="dob" type="text" ng-model="members.dob"></input></div>
-<div class="field four wide required"><label>ID No.</label><input name="idNo" id="idNo" type="text" ng-model="members.idNo"></input></div>
+        <div class="field four wide required"><label>Date of Birth</label><input name="dob" id="dob" type="text" ng-model="members.dob"></input></div>
+    <div class="field four wide required"><label>ID No.</label><input name="idNo" id="idNo" type="text" ng-model="members.idNo"></input></div>
 <div class="field eight wide required"><label>Scheme Name</label><input name="schemeName" id="schemeName" type="text" ng-model="members.schemeName"></input></div>
 </div>
 <div class="fields">
@@ -19,7 +51,7 @@
 <div class="field four wide required"><label>Inpatient</label><input name="inPatient" id="inPatient" type="text" ng-model="members.inPatient"></input></div>
 <div class="field four wide required"><label>Outpatient</label><input name="outPatient" id="outPatient" type="text" ng-model="members.outPatient"></input></div>
 </div>
-</div>
+
 <div class="three fields">
     <div class="field required"><label>Dental</label><input name="dental" id="dental" type="text" ng-model="members.dental"></input></div>
 <div class="field required"><label>Optical</label><input name="optical" id="optical"  type="text" ng-model="members.optical"></input></div>
@@ -27,11 +59,48 @@
 </div>
 <div class="ui error message"></div>
 </form>
+{{filter.text}}
+</div>
+<div class="four wide column">
+    <div class="ui segment">
+        <div class="ui mini statistic" id="found">
+            <div class="value">
+                0
+            </div>
+            <div class="label">
+                <i class="icon file text"></i>Records Found
+            </div>
+        </div>
+    </div>
+    <div class="ui segment">
+        <div class="ui mini statistic" id="total">
+            <div class="value">
+                0
+            </div>
+            <div class="label">
+                <i class="icon database"></i>Total Records
+            </div>
+        </div>
+    </div>
+    <div class="ui segment">
+        <div class="ui mini buttons">
+            <div id="previous"class="ui labeled icon button">
+                <i class="left chevron icon"></i>
+                Previous
+            </div>
+            <div id="next"class="ui right labeled icon button">
+                <i class="right chevron icon"></i>
+                Next
+            </div>
+        </div>
+    </div>
+</div>
 
 <script charset="utf-8" src="assets/javascripts/members.js"></script>
 <script>
 
     $(document).ready(function(){
+        $('.ui.dropdown').dropdown();
         /**
     * New Instance of Member Object
     */

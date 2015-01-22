@@ -6,6 +6,12 @@ app.directive("ng-head", function () {
 
 app.directive("header", function () {
     return {
+        templateUrl: "partials/header.html"
+    }
+});
+
+app.directive("header_crud", function () {
+    return {
         templateUrl: "partials/header-crud.html"
     }
 });

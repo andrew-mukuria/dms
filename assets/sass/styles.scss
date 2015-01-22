@@ -6,189 +6,187 @@ $ionicons-font-path: "../bower_components/ionicons/fonts" !default;
 /* Element Styles */
 body{
 
-  /* font-family:OpenSansRegular !important; */
-  font-size:12px !important;
+    /* font-family:OpenSansRegular !important; */
+    font-size:12px !important;
 }
 
 nav,footer{
-  border-radius:0 !important;
-  @extend .ui !optional;
-  /* @extend .inverted; */
-  @extend .menu !optional;
-  .right{
-    @extend .menu !optional;
+    border-radius:0 !important;
+    @extend .ui !optional;
     /* @extend .inverted; */
-    a{
-      @extend .item !optional;
+    @extend .menu !optional;
+    .right{
+        @extend .menu !optional;
+        /* @extend .inverted; */
+        a{
+            @extend .item !optional;
+        }
     }
-  }
 
-  a{
-    @extend .item !optional;
-    i{
-      @extend .icon !optional;
+    a{
+        @extend .item !optional;
+        i{
+            @extend .icon !optional;
+        }
     }
-  }
 }
 
 /* Icon */
 i{
-  @extend .icon !optional;
+    @extend .icon !optional;
 }
 
 footer{
-  position:fixed;
-  bottom:0;
-  @extend .inverted !optional;
+    position:fixed;
+    bottom:0;
+    @extend .inverted !optional;
 }
 form{
-  @extend .ui !optional;
-  @extend .form !optional;
-  @extend .zeta !optional;
-  @extend .segment !optional;
+    @extend .ui !optional;
+    @extend .form !optional;
+    @extend .zeta !optional;
+    @extend .segment !optional;
 
 }
 button{
-  @extend .ui !optional;
-  @extend .button !optional;
+    @extend .ui !optional;
+    @extend .button !optional;
 }
 
 /* Core Classes */
 
 .content{
-  @extend .row !optional;
-  width:60%;
-  margin-left:5% !important;
-  margin-top:2% !important;
-  form{
-    font-size:1.2em !important;
-  }
+    padding:0 !important;
+    margin-top:2% !important;
+    form{
+        font-size:1.2em !important;
+    }
 }
 /* Fields */
 .field-input{
-  @extend .ui  !optional;
-  @extend .right  !optional;
-  @extend .labeled  !optional;
-  @extend .left  !optional;
-  @extend .icon  !optional;
-  @extend .input !optional;
+    @extend .ui  !optional;
+    @extend .right  !optional;
+    @extend .labeled  !optional;
+    @extend .left  !optional;
+    @extend .icon  !optional;
+    @extend .input !optional;
 }
 input[type='search']{
-  width:80% !important;
+    width:80% !important;
 }
 .number{
-  i{
-    @extend .ion-pound !optional;
-  }
+    i{
+        @extend .ion-pound !optional;
+    }
 }
 .name{
-  i{
-    @extend .ion-person !optional;
-  }
+    i{
+        @extend .ion-person !optional;
+    }
 }
 .date{
-  i{
-    @extend .ion-calendar !optional;
-  }
+    i{
+        @extend .ion-calendar !optional;
+    }
 }
 .help{
-  i{
-    @extend .ion-help-circled !optional;
-  }
+    i{
+        @extend .ion-help-circled !optional;
+    }
 }
 
 /* Icons */
 .register{
-  i{
-    @extend .ion-person-add !optional;
-  }
+    i{
+        @extend .ion-person-add !optional;
+    }
 
 }
 .view{
-  i{
-    @extend .ion-eye !optional;
-  }
+    i{
+        @extend .ion-eye !optional;
+    }
 
 }
 .provider{
-  i{
-    @extend .ion-clipboard !optional;
-  }
+    i{
+        @extend .ion-clipboard !optional;
+    }
 }
 .home{
-  i{
-    @extend .ion-home !optional;
-  }
+    i{
+        @extend .ion-home !optional;
+    }
 }
 .about{
-  i{
-    @extend .ion-information-circled !optional;
-  }
+    i{
+        @extend .ion-information-circled !optional;
+    }
 }
 .members{
-  i{
-    @extend .ion-ios-people !optional;
-  }
+    i{
+        @extend .ion-ios-people !optional;
+    }
 }
 .claims{
-  i{
-    @extend .ion-cash !optional;
+    i{
+        @extend .ion-cash !optional;
 
-  }
+    }
 }
 .benefits{
-  i{
-    @extend .ion-plus-circled !optional;
+    i{
+        @extend .ion-plus-circled !optional;
 
-  }
+    }
 }
 .services{
-  i{
-    @extend .ion-clipboard !optional;
+    i{
+        @extend .ion-clipboard !optional;
 
-  }
+    }
 }
 //Typeahead
 .tt-query, /* UPDATE: newer versions use tt-input instead of tt-query */
 .tt-hint {
-  font-size: 24px;
-  line-height: 30px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  outline: none;
+    font-size: 24px;
+    line-height: 30px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    outline: none;
 }
 
 .tt-query { /* UPDATE: newer versions use tt-input instead of tt-query */
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 
 .tt-hint {
-  color: #999
+    color: #999
 }
 
 .tt-dropdown-menu {
-  width:100%;
-  padding: 8px 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    width:100%;
+    padding: 8px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
 }
 
 .tt-suggestion {
-  padding: 3px 20px;
-  font-size: 18px;
-  line-height: 24px;
+    padding: 3px 20px;
+    font-size: 18px;
+    line-height: 24px;
 }
 
 .tt-suggestion.tt-cursor { /* UPDATE: newer versions use .tt-suggestion.tt-cursor */
-  color: #fff;
-  background-color: #0097cf;
-  cursor:hand;
+    color: #fff;
+    background-color: #0097cf;
+    cursor:hand;
 
 }
 
 .tt-suggestion p {
-  margin: 0;
+    margin: 0;
 }

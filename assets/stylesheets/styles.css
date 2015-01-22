@@ -3295,8 +3295,7 @@ footer {
 
 /* Core Classes */
 .content {
-  width: 60%;
-  margin-left: 5% !important;
+  padding: 0 !important;
   margin-top: 2% !important; }
   .content form {
     font-size: 1.2em !important; }

@@ -29,26 +29,21 @@
     </head>
     <body>
         <header>
-            <div header>
 
-            </div>
         </header>
-        <section class="content ui segment">
-            <div ng-view>
+            <div class="content" ng-view>
 
             </div>
-            <div rails>
-
-            </div>
-
-        </section>
+            <script>
+                $(document).ready(function(){
+                    runApp('http://localhost/hmis/');
+                })
+            </script>
+            <script src="assets/javascripts/services/criteria.js"></script>
+            <script src="assets/javascripts/controllers/members.js"></script>
         <footer>
 
         </footer>
-        <script>
-            $(document).ready(function(){
-                runApp('http://localhost/hmis/');
-            })
-        </script>
+
     </body>
 </html>
