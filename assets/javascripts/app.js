@@ -1,8 +1,4 @@
-var app = angular.module("hais", ['ui.router','ui.router.stateHelper']);
-
-var base_url = 'http://localhost/hmis/';
-
-
+var app = angular.module("hais", ['ui.router','ui.router.stateHelper','restangular','smart-table']);
 
 app.controller('benefitsCtrl', ['$scope', '$http',
   function ($scope, $http) {
@@ -24,10 +20,19 @@ app.controller('servicesCtrl', ['$scope', '$http',
 
   }]);
 
+app.config(function(RestangularProvider) {
+  RestangularProvider.setBaseUrl('http://localhost/hmis');
+  RestangularProvider.setRequestSuffix('.json');
+});
 
+app.factory('MembersRestangular', function(Restangular) {
+  return Restangular.withConfig(function(RestangularConfigurer) {
+    RestangularConfigurer.setBaseUrl('http://localhost/hmis/members_api');
+  });
+});
 
-
-
-
+app.run(['$http', '$rootScope', function($http, $rootScope) {
+     $rootScope.date = new Date();
+ }]);
 
 
