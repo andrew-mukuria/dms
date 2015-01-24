@@ -1,10 +1,12 @@
+
 /* Overrides */
 $ionicons-font-path: "../bower_components/ionicons/fonts" !default;
 @import "typeplate/typeplate";
-// @import "semantic-ui";
+@import "bootstrap";
+// @import "CSS:../stylesheets/semantic-ui/semantic-ui";
 @import "../bower_components/ionicons/scss/ionicons";
 
-/* Element Styles */
+/* Element St  yles */
 
 body{
 
@@ -245,4 +247,18 @@ input[type='search']{
 ul.pagination{
     @extend .ui !optional;
     @extend .menu !optional;
+}
+.ta-toolbar{
+    .btn-group{
+        margin-bottom:10px !important;
+        .btn{
+            min-height:33px;
+        }
+    }
+}
+p{
+    margin-bottom:1.5em !important;
+}
+p+p{
+    text-indent: 0 !important;
 }
