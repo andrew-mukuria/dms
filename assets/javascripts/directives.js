@@ -6,7 +6,7 @@ app.directive("ng-head", function () {
 
 app.directive("header", function () {
     return {
-        templateUrl: "partials/header.html"
+        templateUrl: "partials/global/header.html"
     }
 });
 
@@ -17,11 +17,11 @@ app.directive("header", function () {
 //});
 app.directive("sidemenu", function () {
     return {
-        templateUrl: "partials/side-menu.html"
+        templateUrl: "partials/global/side-menu.html"
     }
 });
 app.directive("rails", function () {
     return {
-        templateUrl: "partials/rails.html"
+        templateUrl: "partials/global/rails.html"
     }
 });

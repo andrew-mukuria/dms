@@ -1,12 +1,14 @@
 /* Overrides */
 $ionicons-font-path: "../bower_components/ionicons/fonts" !default;
 @import "typeplate/typeplate";
+// @import "semantic-ui";
 @import "../bower_components/ionicons/scss/ionicons";
 
 /* Element Styles */
+
 body{
 
-    /* font-family:OpenSansRegular !important; */
+    font-family:OpenSansRegular !important;
     font-size:12px !important;
 }
 #main-side-menu{
@@ -34,7 +36,9 @@ nav,footer{
         }
     }
 }
+table{
 
+}
 /* Icon */
 i{
     @extend .icon !optional;
@@ -48,7 +52,7 @@ footer{
 form{
     @extend .ui !optional;
     @extend .form !optional;
-    @extend .zeta !optional;
+    font-size: 1rem !important;
     @extend .segment !optional;
 
 }
@@ -58,13 +62,56 @@ button{
 }
 
 /* Core Classes */
-
+// Comments
+.centered{
+    width:50%;
+    margin:auto !important;
+    margin-top:10% !important;
+}
+.centered.within{
+     margin-top:2% !important;
+     width:80% !important;
+}
 .content{
     padding:0 !important;
-    margin-top:2% !important;
-    form{
-        font-size:1.2em !important;
+}
+.segment{
+    .statistic{
+        width:100%;
     }
+}
+.inner{
+    height:23em;
+    position:relative;
+    .statistic{
+        max-width:100% !important;
+    }
+    .graph{
+        height:90%;
+        canvas{
+            // height:90% !important;
+            // width:100% !important;
+        }
+    }
+    h6{
+        color:#999 !important;
+        i{
+            float:left;
+        }
+        position: absolute;
+        bottom:10;
+    }
+}
+.inner.small{
+     height:8em !important;
+     canvas{
+        // height:70% !important;
+     }
+}
+nav.centered{
+    margin-top:0 !important;
+    margin-auto:!important;
+     width:80% !important;
 }
 /* Fields */
 .field-input{
@@ -193,4 +240,9 @@ input[type='search']{
 
 .tt-suggestion p {
     margin: 0;
+}
+// Style Table
+ul.pagination{
+    @extend .ui !optional;
+    @extend .menu !optional;
 }

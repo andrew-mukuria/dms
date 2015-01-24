@@ -1,11 +1,16 @@
 <html ng-app="hais">
     <head>
-        <title>HAIS</title>
+        <title>{{title}}</title>
 
         <script src="assets/bower_components/jquery/dist/jquery.js"></script>
         <script src="assets/bower_components/angular/angular.js"></script>
         <script src="assets/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
         <script src="assets/bower_components/angular-ui-router.stateHelper/statehelper.js"></script>
+        <script src="assets/bower_components/lodash/dist/lodash.js"></script>
+        <script src="assets/bower_components/restangular/dist/restangular.js"></script>
+        <script src="assets/bower_components/angular-smart-table/dist/smart-table.min.js"></script>
+        <script src="assets/bower_components/Chart.js/Chart.min.js"></script>
+        <script src="assets/bower_components/angular-chart.js/dist/angular-chart.js"></script>
         <!--        <script src="assets/bower_components/angular-route/angular-route.js"></script>-->
         <script src="assets/javascripts/app.js"></script>
         <script src="assets/javascripts/directives.js"></script>
@@ -19,6 +24,7 @@
         <link rel="stylesheet" href="assets/bower_components/semantic-ui/dist/semantic.css">
         <link rel="stylesheet" href="assets/bower_components/jquery-ui/jquery-ui.min.css">
         <link rel="stylesheet" href="assets/bower_components/ionicons/css/ionicons.css" media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="assets/bower_components/angular-chart.js/dist/angular-chart.css" media="screen" title="no title" charset="utf-8">
 
         <!-- Scripts-->
 
@@ -28,6 +34,7 @@
         <script src="assets/bower_components/angular-bootstrap/ui-bootstrap.js"></script>
         <script src="assets/bower_components/angular-typeahead/angular-typeahead.js"></script>
         <script src="assets/bower_components/semantic-ui/dist/semantic.js"></script>
+
     </head>
     <body>
         <div id="main-side-menu" class="ui left vertical inverted labeled icon sidebar menu" style="z-index:10000">
@@ -35,13 +42,17 @@
                <img style="background:white" class="ui tiny bordered centered circular image" src="assets/bower_components/ionicons/png/512/ios7-person.png">
            </div>
            <div class="item">
-                  <b>John Doe</b>
+                  <b>John Doe</b><br>
+                  <i>Technician</i>
            </div>
             <div class="item">
                 <div class="ui input"><input type="text" placeholder="Search..."></div>
             </div>
             <div class="item">
-                <i class="home icon"></i> CRUD
+                <a href="" class="item" ui-sref="dashboard">Dashboard<i class="icon ion-arrow-graph-up-right"></i></a>
+            </div>
+            <div class="item">
+                <a><i class="home icon"></i> Member Management</a>
                 <div class="menu">
                     <a ui-sref="members" class="item members" data-ctrl="members"><i class="icon"></i>Members</a>
                     <a ui-sref="claims"  class="item claims" data-ctrl="claims"><i class="icon"></i>Claims</a>
@@ -50,36 +61,12 @@
                     <a ui-sref="services" class="item services" data-ctrl="services"><i class="icon"></i>Services</a>
                 </div>
             </div>
-            <a class="item">
-                <i class="grid layout icon"></i> Browse
-            </a>
-            <a class="item">
-                <i class="mail icon"></i> Messages
-            </a>
-            <div class="ui dropdown item">
-                <i class="dropdown icon"></i>
-                More
-                <div class="menu">
-                    <a class="item"><i class="edit icon"></i> Edit Profile</a>
-                    <a class="item"><i class="globe icon"></i> Choose Language</a>
-                    <a class="item"><i class="settings icon"></i> Account Settings</a>
-                </div>
-            </div>
-
-
         </div>
         <div class="pusher">
-            <header>
-
-            </header>
+            
             <div class="content" ui-view>
 
             </div>
-            <script>
-                $(document).ready(function(){
-                    runApp('http://localhost/hmis/');
-                })
-            </script>
             <script src="assets/javascripts/services/criteria.js"></script>
             <script src="assets/javascripts/controllers/members.js"></script>
             <footer>

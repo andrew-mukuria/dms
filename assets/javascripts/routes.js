@@ -1,45 +1,59 @@
-app.config(function(stateHelperProvider ) {
+app.config(function($stateProvider, $urlRouterProvider ) {
     //
     // For any unmatched url, redirect to /state1
-//    $urlRouterProvider.otherwise("/members");
+   $urlRouterProvider.otherwise("/login");
     //
     // Now set up the states
-    stateHelperProvider
-    .state({
-        name:'members',
+    $stateProvider
+    .state('login',{
+     url:'/login',
+     templateUrl:'partials/users/login.html',
+     controller: function($rootScope){
+        $rootScope.date = new Date();
+     }
+    })
+    .state('dashboard',{
+        url:'/dashboard',
+        controller: '',
+        templateUrl: 'partials/global/dashboard.html'
+    }).
+    state('members',{
         url:'/members',
         controller: 'memberCtrl',
-        templateUrl: 'crud_partials/members.html',
-        children:[{
-            name: 'headercrud',
-            url:'',
-            templateUrl : 'partials/headercrud.html'
-        }]
-    },true)
-    .state({
-        name:'benefits',
-        url:'/benefits',
-        templateUrl: "crud_partials/benefits.html",
-        controller: "benefitsCtrl"
-    },true)
-    .state({
-        name:'claims',
-        url:'/claims',
-        templateUrl: "crud_partials/claims.html",
-        controller: "claimsCtrl"
-    },true)
-    .state({
-        name:'provider',
-        url:'/provider',
-        templateUrl: "crud_partials/provider.html",
-        controller: "providerCtrl"
-    },true)
-    .state({
-        name:'services',
-        url:'/services',
-        templateUrl: "crud_partials/services.html",
-        controller: "servicesCtrl"
-    },true)
+        templateUrl: 'partials/members/index.html'
+    }).
+    state('members.list',{
+        url:'/list',
+        templateUrl: 'partials/members/list.html',
+        parent:'members',
+        controller: function($rootScope){
+            $rootScope.title = 'Members List'
+        }
+    }).
+     state('members.add',{
+        url:'/add',
+        templateUrl: 'partials/members/form.html',
+        parent:'members',
+        controller: function($rootScope){
+            $rootScope.title = 'Register Member'   
+        }
+    }).
+      state('members.view',{
+        url:'/view',
+        templateUrl: 'partials/members/form.html',
+        parent:'members',
+        controller: function($rootScope){
+            $rootScope.title = 'View Member'   
+        }
+    }).
+      state('members.statistics',{
+        url:'/statistics',
+        templateUrl: 'partials/members/statistics.html',
+        parent:'members',
+        controller: function($scope){
+           $scope.totalMembers();
+        }
+    })
 
 });
 
