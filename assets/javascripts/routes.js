@@ -1,57 +1,96 @@
-app.config(function($stateProvider, $urlRouterProvider ) {
+app.config(function($stateProvider, $urlRouterProvider) {
     //
     // For any unmatched url, redirect to /state1
-   $urlRouterProvider.otherwise("/login");
+    $urlRouterProvider.otherwise("/login");
     //
     // Now set up the states
     $stateProvider
-    .state('login',{
-     url:'/login',
-     templateUrl:'partials/users/login.html',
-     controller: function($rootScope){
-        $rootScope.date = new Date();
-     }
-    })
-    .state('dashboard',{
-        url:'/dashboard',
+        .state('login', {
+            url: '/login',
+            templateUrl: 'partials/users/login.html',
+            controller: function($rootScope) {
+                $rootScope.date = new Date();
+            }
+        }).
+    state('dashboard', {
+        url: '/dashboard',
         controller: '',
         templateUrl: 'partials/global/dashboard.html'
     }).
-    state('members',{
-        url:'/members',
-        controller: 'memberCtrl',
-        templateUrl: 'partials/members/index.html'
+    state('knowledge-base', {
+        url: '/knowledge-base',
+        controller: function($rootScope) {
+            $rootScope.title = 'Knowledge Base'
+        },
+        templateUrl: 'partials/knowledge-base/index.html'
     }).
-    state('members.list',{
-        url:'/list',
-        templateUrl: 'partials/members/list.html',
-        parent:'members',
-        controller: function($rootScope){
+    state('knowledge-base.list', {
+        url: '/list',
+        templateUrl: 'partials/knowledge-base/list.html',
+        parent: 'knowledge-base',
+        controller: function($rootScope) {
             $rootScope.title = 'Members List'
         }
     }).
-     state('members.add',{
-        url:'/add',
-        templateUrl: 'partials/members/form.html',
-        parent:'members',
-        controller: function($rootScope){
-            $rootScope.title = 'Register Member'   
+    state('knowledge-base.add', {
+        url: '/add',
+        templateUrl: 'partials/knowledge-base/form.html',
+        parent: 'knowledge-base',
+        controller: function($rootScope) {
+            $rootScope.title = 'Register Member'
         }
     }).
-      state('members.view',{
-        url:'/view',
-        templateUrl: 'partials/members/form.html',
-        parent:'members',
-        controller: function($rootScope){
-            $rootScope.title = 'View Member'   
+    state('knowledge-base.view', {
+        url: '/view',
+        templateUrl: 'partials/knowledge-base/form.html',
+        parent: 'knowledge-base',
+        controller: function($rootScope) {
+            $rootScope.title = 'View Member'
         }
     }).
-      state('members.statistics',{
-        url:'/statistics',
+    state('knowledge-base.statistics', {
+        url: '/statistics',
+        templateUrl: 'partials/knowledge-base/statistics.html',
+        parent: 'knowledge-base',
+        controller: function($scope) {
+            $scope.totalMembers();
+        }
+    }).
+    state('members', {
+        url: '/members',
+        controller: 'memberCtrl',
+        templateUrl: 'partials/members/index.html'
+    }).
+    state('members.list', {
+        url: '/list',
+        templateUrl: 'partials/members/list.html',
+        parent: 'members',
+        controller: function($rootScope) {
+            $rootScope.title = 'Members List'
+        }
+    }).
+    state('members.add', {
+        url: '/add',
+        templateUrl: 'partials/members/form.html',
+        parent: 'members',
+        controller: function($rootScope) {
+            $rootScope.title = 'Register Member'
+        }
+    }).
+    state('members.view', {
+        url: '/view',
+        templateUrl: 'partials/members/form.html',
+        parent: 'members',
+        controller: function($rootScope) {
+            $rootScope.title = 'View Member'
+        }
+    }).
+    state('members.statistics', {
+        url: '/statistics',
         templateUrl: 'partials/members/statistics.html',
-        parent:'members',
-        controller: function($scope){
-           $scope.totalMembers();
+        parent: 'members',
+        controller: function($scope) {
+            $scope.totalMembers();
         }
     })
 
