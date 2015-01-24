@@ -1,8 +1,6 @@
 <div class="ui grid">
     <div class="twelve wide column">
 
-        <div ui-view="headercrud"></div>
-
         <form class="ui form ui segment" id="memberForm" action="" method="post">
             <div class="fields">
                 <div class="field eight wide required"><label>Member No.</label><input name="memberNo" id="memberNo" type="text" ng-model="members.memberNo"></input></div>
@@ -28,41 +26,20 @@
     <div class="field required"><label>Dental</label><input name="dental" id="dental" type="text" ng-model="members.dental"></input></div>
 <div class="field required"><label>Optical</label><input name="optical" id="optical"  type="text" ng-model="members.optical"></input></div>
 <div class="field required"><label>Maternity</label><input name="maternity" id="maternity" type="text" ng-model="members.maternity"></input></div>
+<button class="ui button right green icon"><i class="icon ion-plus-round"></i>Register</button>
 </div>
 <div class="ui error message"></div>
 </form>
-{{filter.text}}
+
 </div>
 <div class="four wide column">
     <div class="ui segment">
-        <div class="ui mini statistic" id="found">
+        <div class="ui statistic" id="total">
             <div class="value">
-                0
-            </div>
-            <div class="label">
-                <i class="icon file text"></i>Records Found
-            </div>
-        </div>
-    </div>
-    <div class="ui segment">
-        <div class="ui mini statistic" id="total">
-            <div class="value">
-                0
+                {{records}}
             </div>
             <div class="label">
                 <i class="icon database"></i>Total Records
-            </div>
-        </div>
-    </div>
-    <div class="ui segment">
-        <div class="ui mini buttons">
-            <div id="previous"class="ui labeled icon button">
-                <i class="left chevron icon"></i>
-                Previous
-            </div>
-            <div id="next"class="ui right labeled icon button">
-                <i class="right chevron icon"></i>
-                Next
             </div>
         </div>
     </div>

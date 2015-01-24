@@ -1,4 +1,4 @@
-var app = angular.module("hais", ['ui.router','ui.router.stateHelper','restangular','smart-table']);
+var app = angular.module("hais", ['ui.router','ui.router.stateHelper','restangular','smart-table','chart.js']);
 
 app.controller('benefitsCtrl', ['$scope', '$http',
   function ($scope, $http) {
@@ -33,6 +33,7 @@ app.factory('MembersRestangular', function(Restangular) {
 
 app.run(['$http', '$rootScope', function($http, $rootScope) {
      $rootScope.date = new Date();
+     $rootScope.title = 'HAIS Web';
  }]);
 
 

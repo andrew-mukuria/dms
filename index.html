@@ -9,6 +9,8 @@
         <script src="assets/bower_components/lodash/dist/lodash.js"></script>
         <script src="assets/bower_components/restangular/dist/restangular.js"></script>
         <script src="assets/bower_components/angular-smart-table/dist/smart-table.min.js"></script>
+        <script src="assets/bower_components/Chart.js/Chart.min.js"></script>
+        <script src="assets/bower_components/angular-chart.js/dist/angular-chart.js"></script>
         <!--        <script src="assets/bower_components/angular-route/angular-route.js"></script>-->
         <script src="assets/javascripts/app.js"></script>
         <script src="assets/javascripts/directives.js"></script>
@@ -22,6 +24,7 @@
         <link rel="stylesheet" href="assets/bower_components/semantic-ui/dist/semantic.css">
         <link rel="stylesheet" href="assets/bower_components/jquery-ui/jquery-ui.min.css">
         <link rel="stylesheet" href="assets/bower_components/ionicons/css/ionicons.css" media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="assets/bower_components/angular-chart.js/dist/angular-chart.css" media="screen" title="no title" charset="utf-8">
 
         <!-- Scripts-->
 
@@ -60,17 +63,10 @@
             </div>
         </div>
         <div class="pusher">
-            <header>
-
-            </header>
+            
             <div class="content" ui-view>
 
             </div>
-            <script>
-                $(document).ready(function(){
-                    runApp('http://localhost/hmis/');
-                })
-            </script>
             <script src="assets/javascripts/services/criteria.js"></script>
             <script src="assets/javascripts/controllers/members.js"></script>
             <footer>

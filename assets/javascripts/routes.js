@@ -1,17 +1,23 @@
 app.config(function($stateProvider, $urlRouterProvider ) {
     //
     // For any unmatched url, redirect to /state1
-   $urlRouterProvider.otherwise("/");
+   $urlRouterProvider.otherwise("/login");
     //
     // Now set up the states
     $stateProvider
-    .state('home',{
-     url:'/',
+    .state('login',{
+     url:'/login',
+     templateUrl:'partials/users/login.html',
      controller: function($rootScope){
         $rootScope.date = new Date();
      }
     })
-    .state('members',{
+    .state('dashboard',{
+        url:'/dashboard',
+        controller: '',
+        templateUrl: 'partials/global/dashboard.html'
+    }).
+    state('members',{
         url:'/members',
         controller: 'memberCtrl',
         templateUrl: 'partials/members/index.html'
@@ -38,6 +44,14 @@ app.config(function($stateProvider, $urlRouterProvider ) {
         parent:'members',
         controller: function($rootScope){
             $rootScope.title = 'View Member'   
+        }
+    }).
+      state('members.statistics',{
+        url:'/statistics',
+        templateUrl: 'partials/members/statistics.html',
+        parent:'members',
+        controller: function($scope){
+           $scope.totalMembers();
         }
     })
 

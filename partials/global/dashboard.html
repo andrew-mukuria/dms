@@ -1,1 +1,55 @@
-Here
+<header></header>
+
+<div ui-view class="centered within">
+	<div class="ui stackable grid">
+    <div class="row">
+        <div class="four wide column">
+            <div class="inner small ui segment">
+                <div class="ui statistic">
+					<div class="value">{{records}}</div>
+                </div>
+                <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Total Members</h6>
+            </div>
+        </div>
+        <div class="four wide column">
+            <div class="inner small ui segment">
+                <div class='graph'>
+                </div>
+                <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Header</h6>
+            </div>
+        </div>
+        <div class="four wide column">
+            <div class="inner small ui segment">
+                <div class='graph'></div>
+                <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Header</h6>
+            </div>
+        </div>
+        <div class="four wide column">
+            <div class="inner small ui segment">
+                <div class='graph'></div>
+                <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Header</h6>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="eight wide column">
+            <div class="inner ui segment">
+                <div class='graph'>
+                    <canvas id="line" class="chart chart-line" data="data" labels="labels"
+                    legend="true" series="series" click="onClick"></canvas>
+                </div>
+                <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Header</h6>
+            </div>
+        </div>
+        <div class="eight wide column">
+            <div class="inner ui segment">
+                <div class='graph'>
+                    <canvas id="line" class="chart chart-bar" data="data" labels="labels"
+                    legend="true" series="series" click="onClick"></canvas>
+                </div>
+                <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Header</h6>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
