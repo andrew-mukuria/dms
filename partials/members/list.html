@@ -1,10 +1,12 @@
 <!-- Members' List -->
-<table class="ui table celled bordered" st-safe-src="rowCollection" st-table="displayedCollection">
+<table class="ui table celled compact bordered" st-safe-src="rowCollection" st-table="displayedCollection">
     <thead>
         <tr>
-            <th>Member No.</th>
-            <th>Member Name</th>
-            <th>DOB</th>
+            <th><i class="icon ion-pound"></i>Member No.</th>
+            <th><i class="icon ion-person"></i>Member Name</th>
+            <th><i class="icon ion-pound"></i>NSSF No</th>
+            <th><i class="icon ion-pound"></i>NHIF No</th>
+            <th><i class="icon ion-pound"></i>ID No</th>
         </tr>
         
     </thead>
@@ -12,22 +14,31 @@
     <tr>
         <td class="ui input" ><input st-search="'memberNo'" placeholder="Search..." type="search"/></td>
         <td class="ui input" ><input st-search="'memberName'" placeholder="Search..." type="search"/></td>
-        <td class="ui input" ><input st-search="'dob'" placeholder="Search..." type="search"/></td>
+        <td class="ui input" ><input st-search="'nssfNo'" placeholder="Search..." type="search"/></td>
+        <td class="ui input" ><input st-search="'nhifNo'" placeholder="Search..." type="search"/></td>
+        <td class="ui input" ><input st-search="'idNo'" placeholder="Search..." type="search"/></td>
+        
         <td></td>
         </tr>
         <tr ng-repeat="row in displayedCollection"  st-select-row="row">
             <td>{{row.memberNo}}</td>
             <td>{{row.memberName}}</td>
-            <td>{{row.dob}}</td>
-            <td>
-<button type="button" ng-click="r" class="ui blue tiny button icon">
+            <td>{{row.nssfNo}}</td>
+            <td>{{row.nhifNo}}</td>
+            <td>{{row.idNo}}</td>
+            <td width="150">
+            <button type="button" ng-click="getMember(row)" class="ui blue tiny button icon">
 				<i class="icon ion-more">
 				</i>
 			</button>
-            <button type="button" ng-click="r" class="ui red tiny button icon">
+            <button type="button" ng-click="" class="ui red tiny button icon">
 				<i class="icon ion-minus-circled">
 				</i>
 			</button>
+            <button type="button" ng-click="" class="ui green tiny button icon">
+                <i class="icon ion-power">
+                </i>
+            </button>
 
 			</td>
         </tr>
@@ -35,7 +46,7 @@
      <tfoot>
         	<tr>
         		<th colspan="1">{{records}} Records</th>
-                <th colspan="2">
+                <th colspan="5">
                     <div st-pagination="" st-items-by-page="recordsPerPage" st-displayed-pages="pages"></div>
                 </th>
         	</tr>

@@ -244,9 +244,8 @@ input[type='search']{
     margin: 0;
 }
 // Style Table
-ul.pagination{
-    @extend .ui !optional;
-    @extend .menu !optional;
+.pagination{
+   margin:0 auto !important; 
 }
 .ta-toolbar{
     .btn-group{
@@ -261,4 +260,7 @@ p{
 }
 p+p{
     text-indent: 0 !important;
+}
+.ui.grid{
+    margin:0 !important;
 }

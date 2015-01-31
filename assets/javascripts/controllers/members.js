@@ -1,19 +1,17 @@
 // I control the main demo.
 app.controller(
-    "memberCtrl", ['$scope', '$filter','$timeout', 'MembersRestangular', function(scope, filter,timeout, MembersRestangular) {
+    "memberCtrl", ['$scope', '$filter','$timeout', 'MembersRestangular','$state', function(scope, filter,timeout, MembersRestangular,state) {
         getMemberCount();
-        getMembers();
+        
 
 
-        function getMember() {
-            var members = MembersRestangular.one('member/id', 1);
-            // This will query /accounts and return a promise.
-            members.get().then(function(members) {
-                scope.members = members.data[0];
-            });
+        scope.getMember = function getMember(newMember) {
+            console.log(newMember);
+            scope.member = newMember;
+            state.go('members.view');
         }
 
-        function getMembers() {
+        scope.getMembers = function getMembers() {
             var AllMembers = MembersRestangular.all('members');
             // This will query /accounts and return a promise.
             AllMembers.customGET('').then(function(members) {
@@ -28,7 +26,7 @@ app.controller(
             // This will query /accounts and return a promise.
             AllMembers.customGET('').then(function(members) {
                 scope.records = members.data.length;
-                scope.recordsPerPage = 10;
+                scope.recordsPerPage = 5;
                 scope.pages = Math.ceil(scope.records/scope.recordsPerPage);
 
             });
