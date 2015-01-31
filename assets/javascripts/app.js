@@ -1,4 +1,4 @@
-var app = angular.module("hais", ['ui.router','ui.router.stateHelper','restangular','smart-table','chart.js','textAngular']);
+var app = angular.module("hais", ['ui.router','ui.router.stateHelper','restangular','smart-table','chart.js','textAngular','angularMoment']);
 
 app.controller('benefitsCtrl', ['$scope', '$http',
   function ($scope, $http) {

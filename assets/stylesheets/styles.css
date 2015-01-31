@@ -8795,6 +8795,9 @@ input[type='search'] {
 .tt-suggestion p {
   margin: 0; }
 
+.pagination {
+  margin: 0 auto !important; }
+
 .ta-toolbar .btn-group {
   margin-bottom: 10px !important; }
   .ta-toolbar .btn-group .btn {
@@ -8805,5 +8808,8 @@ p {
 
 p + p {
   text-indent: 0 !important; }
+
+.ui.grid, nav.grid, footer.grid, form.grid, button.grid, .grid.field-input {
+  margin: 0 !important; }
 
 /*# sourceMappingURL=styles.css.map */

@@ -5,9 +5,16 @@ app.config(function($stateProvider, $urlRouterProvider) {
     //
     // Now set up the states
     $stateProvider
-        .state('login', {
+    .state('login', {
             url: '/login',
             templateUrl: 'partials/users/login.html',
+            controller: function($rootScope) {
+                $rootScope.date = new Date();
+            }
+        }).
+     state('lock-screen', {
+            url: '/lock-screen',
+            templateUrl: 'partials/users/lock-screen.html',
             controller: function($rootScope) {
                 $rootScope.date = new Date();
             }
@@ -28,8 +35,9 @@ app.config(function($stateProvider, $urlRouterProvider) {
         url: '/list',
         templateUrl: 'partials/knowledge-base/list.html',
         parent: 'knowledge-base',
-        controller: function($rootScope) {
-            $rootScope.title = 'Members List'
+        controller: function($rootScope,$scope) {
+            $rootScope.title = 'Members List',
+            $scope.articles=[];
         }
     }).
     state('knowledge-base.add', {
@@ -65,8 +73,9 @@ app.config(function($stateProvider, $urlRouterProvider) {
         url: '/list',
         templateUrl: 'partials/members/list.html',
         parent: 'members',
-        controller: function($rootScope) {
-            $rootScope.title = 'Members List'
+        controller: function($rootScope,$scope) {
+            $rootScope.title = 'Members List';
+            $scope.getMembers();
         }
     }).
     state('members.add', {
