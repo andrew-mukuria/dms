@@ -2,44 +2,16 @@
     <head>
         <title>{{title}}</title>
 
-        <script src="assets/bower_components/jquery/dist/jquery.js"></script>
-        <script src="assets/bower_components/angular/angular.js"></script>
-        <script src="assets/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-        <script src="assets/bower_components/angular-ui-router.stateHelper/statehelper.js"></script>
-        <script src="assets/bower_components/lodash/dist/lodash.js"></script>
-        <script src="assets/bower_components/restangular/dist/restangular.js"></script>
-        <script src="assets/bower_components/angular-smart-table/dist/smart-table.min.js"></script>
-        <script src="assets/bower_components/Chart.js/Chart.min.js"></script>
-        <script src="assets/bower_components/angular-chart.js/dist/angular-chart.js"></script>
-        
-        <script src='assets/bower_components/textAngular/dist/textAngular-rangy.min.js'></script>
-        <script src='assets/bower_components/textAngular/dist/textAngular-sanitize.min.js'></script>
-        <script src='assets/bower_components/textAngular/dist/textAngular.min.js'></script>
-        <script src='assets/bower_components/moment/moment.js'></script>
-        <script src='assets/bower_components/angular-moment/angular-moment.js'></script>
-        <!--        <script src="assets/bower_components/angular-route/angular-route.js"></script>-->
-        <script src="assets/javascripts/app.js"></script>
-        <script src="assets/javascripts/directives.js"></script>
-        <script src="assets/javascripts/routes.js"></script>
-        <script src="assets/javascripts/app-jquery.js"></script>
-
-        <link rel="stylesheet" href="assets/bower_components/font-awesome/css/font-awesome.css">
-        <link rel="stylesheet" href="assets/bower_components/ionicons/css/ionicons.css">
-        <link rel="stylesheet" href="assets/stylesheets/styles.css">
-        <link rel="stylesheet" href="assets/bower_components/webfont-opensans/stylesheet.css" media="screen" title="no title" charset="utf-8">
-        <link rel="stylesheet" href="assets/bower_components/semantic-ui/dist/semantic.css">
-        <link rel="stylesheet" href="assets/bower_components/jquery-ui/jquery-ui.min.css">
-        <link rel="stylesheet" href="assets/bower_components/ionicons/css/ionicons.css" media="screen" title="no title" charset="utf-8">
-        <link rel="stylesheet" href="assets/bower_components/angular-chart.js/dist/angular-chart.css" media="screen" title="no title" charset="utf-8">
-        <link rel='stylesheet' href='assets/bower_components/textAngular/src/textAngular.css'>
-        <!-- Scripts-->
-
-        <script src="assets/javascripts/bootstrap.js"></script>
-        <script src="assets/bower_components/jquery-ui/jquery-ui.min.js"></script>
-        <script src="assets/bower_components/typeahead.js/dist/typeahead.bundle.js"></script>
-        <script src="assets/bower_components/angular-bootstrap/ui-bootstrap.js"></script>
-        <script src="assets/bower_components/angular-typeahead/angular-typeahead.js"></script>
-        <script src="assets/bower_components/semantic-ui/dist/semantic.js"></script>
+        <link rel="stylesheet" href="libs/webfont-opensans/css/stylesheet.css" media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.css">
+        <link rel="stylesheet" href="libs/ionicons/css/ionicons.css">
+        <link rel="stylesheet" href="app/assets/stylesheets/styles.css">
+        <link rel="stylesheet" href="libs/semantic-ui/dist/semantic.css">
+        <link rel="stylesheet" href="libs/jquery-ui/jquery-ui.min.css">
+        <link rel="stylesheet" href="libs/ionicons/css/ionicons.css" media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="libs/angular-chart.js/dist/angular-chart.css" media="screen" title="no title" charset="utf-8">
+        <link rel='stylesheet' href='libs/textAngular/src/textAngular.css'>
+       
 
     </head>
     <body class="menu">
@@ -60,6 +32,9 @@
             <div class="item">
                 <a is-active-nav href="" class="item" ui-sref="knowledge-base">Knowledge Base<i class="icon ion-help"></i></a>
             </div>
+             <div class="item">
+                <a is-active-nav href="" class="item" ui-sref="knowledge-base">User Management<i class="icon ion-person"></i></a>
+            </div>
             <div class="item">
                 <a><i class="home icon"></i> Member Management</a>
                 <div class="menu">
@@ -76,11 +51,32 @@
             <div class="content" ui-view>
 
             </div>
-            <script src="assets/javascripts/services/criteria.js"></script>
-            <script src="assets/javascripts/controllers/members.js"></script>
             <footer>
 
             </footer>
         </div>
+         <script src="libs/jquery/dist/jquery.js"></script>
+        <script src="libs/angular/angular.js"></script>
+        <script src="libs/angular-ui-router/release/angular-ui-router.js"></script>
+        <script src="libs/angular-ui-router.stateHelper/statehelper.js"></script>
+        <script src="libs/lodash/dist/lodash.js"></script>
+        <script src="libs/restangular/dist/restangular.js"></script>
+        <script src="libs/angular-smart-table/dist/smart-table.min.js"></script>
+        <script src="libs/Chart.js/Chart.min.js"></script>
+        <script src="libs/angular-chart.js/dist/angular-chart.js"></script>
+        
+        <script src='libs/textAngular/dist/textAngular-rangy.min.js'></script>
+        <script src='libs/textAngular/dist/textAngular-sanitize.min.js'></script>
+        <script src='libs/textAngular/dist/textAngular.min.js'></script>
+        <script src='libs/moment/moment.js'></script>
+        <script src='libs/angular-moment/angular-moment.js'></script>
+<script src="assets/javascripts/bootstrap.js"></script>
+        <script src="libs/jquery-ui/jquery-ui.min.js"></script>
+        <script src="libs/typeahead.js/dist/typeahead.bundle.js"></script>
+        <script src="libs/angular-bootstrap/ui-bootstrap.js"></script>
+        <script src="libs/angular-typeahead/angular-typeahead.js"></script>
+        <script src="libs/semantic-ui/dist/semantic.js"></script>
+        <script type="text/javascript" src="dist/app.js"></script>
+        <script src="//localhost:35729/livereload.js"></script>
     </body>
 </html>
