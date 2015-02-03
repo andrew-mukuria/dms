@@ -1,0 +1,30 @@
+{
+  "name": "WebFont-OpenSans",
+  "authors": [
+    "sonicparke <github@sonicparke.com>"
+  ],
+  "description": "Google WebFonts OpenSans For Bower Install",
+  "main": "css/stylesheet.css",
+  "keywords": [
+    "opensans",
+    "webfont"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "homepage": "https://github.com/sonicparke/webfont-opensans",
+  "_release": "b6d8f4159a",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "b6d8f4159abeb15be505db285d149320b386b1df"
+  },
+  "_source": "git://github.com/sonicparke/webfont-opensans.git",
+  "_target": "*",
+  "_originalSource": "webfont-opensans"
+}

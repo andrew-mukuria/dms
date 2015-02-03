@@ -241,35 +241,7 @@ return {
         }
     })
 
-});
-
-
-
-//app.config(function ($routeProvider) {
-//    $routeProvider.
-//    when("/members", {
-//        templateUrl: "app/crud_partials/members.html",
-//        controller: "memberCtrl"
-//    }).
-//    when("/benefits", {
-//        templateUrl: "app/crud_partials/benefits.html",
-//        controller: "benefitsCtrl"
-//    }).
-//    when("/claims", {
-//        templateUrl: "app/crud_partials/claims.html",
-//        controller: "claimsCtrl"
-//    }).
-//    when("/provider", {
-//        templateUrl: "app/crud_partials/provider.html",
-//        controller: "providerCtrl"
-//    }).
-//    when("/services", {
-//        templateUrl: "app/crud_partials/services.html",
-//        controller: "servicesCtrl"
-//    }).
-//    otherwise({
-//        redirectTo: '/'
-//    }); });;
+});;
 // I act a repository for the remote header collection.
 app.service("criteriaService",
             function( $http, $q ) {
