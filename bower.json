@@ -26,7 +26,8 @@
     "restangular": "1.4.0",
     "semantic-ui": "1.8.1",
     "textAngular": "1.3.3",
-    "webfont-opensans": "*"
+    "webfont-opensans": "*",
+    "ngtoast": "~1.4.0"
   },
   "resolutions": {
     "angular": "1.3.11"

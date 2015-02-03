@@ -47,7 +47,7 @@ module.exports = function(grunt) {
 				separator: ';'
 			},
 			dist: {
-				src: ['app/assets/javascripts/**/*.js', 'tmp/*.js'],
+				src: ['app/javascripts/**/*.js', 'tmp/*.js'],
 				dest: 'dist/app.js'
 			}
 		},
@@ -107,7 +107,7 @@ module.exports = function(grunt) {
 			dist: {
 				files: [{
 					expand: true,
-					cwd: 'app/assets/sass',
+					cwd: 'assets/sass',
 					src: ['*.scss'],
 					dest: 'dist/',
 					ext: '.css'

@@ -680,7 +680,7 @@ angular.module("../app/partials/members/list.html", []).run(["$templateCache", f
     "				</i>\n" +
     "			</button>\n" +
     "            <button type=\"button\" ng-click=\"\" class=\"ui green tiny button icon\">\n" +
-    "                <i class=\"icon ion-power\">\n" +
+    "                <i class=\"icon ion-flash\">\n" +
     "                </i>\n" +
     "            </button>\n" +
     "\n" +
