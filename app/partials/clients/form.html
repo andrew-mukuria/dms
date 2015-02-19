@@ -1,0 +1,64 @@
+<div class="ui grid">
+    <div class="twelve wide column">
+        <!-- Form -->
+        <form class="ui form ui segment" id="clientForm" action="" method="post">
+            <div class="fields">
+                <div class="field eight wide required">
+                    <label>First Name</label>
+                    <div class="ui icon left input">
+                        <i class="icon ion-person"></i>
+                        <input name="applicantName" id="applicantName" type="text" ng-model="clientProfile.applicantName"/>
+                    </div>
+
+                </div>
+                <div class="field eight wide required">
+                    <label>Last Name</label>
+                    <div class="ui icon left input">
+                        <i class="icon ion-person"></i>
+                        <input name="applicantAdrress" id="applicantAdrress" type="text" ng-model="clientProfile.applicantAdrress"/>
+                    </div>
+
+                </div>
+            </div>
+            <div class="fields">
+                <div class="field left icon four wide required">
+                    <label>Email Address</label>
+                    <div class="ui icon left input">
+                        <i class="icon ion-email"></i>
+                        <input name="email" id="email" type="text" ng-model="clientProfile.email"/>
+                    </div>
+                </div>
+                <div class="field left icon four wide required">
+                    <label>Telephone No.</label>
+                    <div class="ui icon left input">
+                        <i class="icon ion-ios-telephone"></i>
+                        <input name="telephone" id="telephone" type="text" ng-model="clientProfile.telephone"/>
+                    </div>
+                </div>
+                <div class="field left icon eight wide required">
+                    <label>Location</label>
+                    <div class="ui icon left input">
+                        <i class="icon fa fa-list"></i>
+                        <input name="location" id="location" type="text" ng-model="clientProfile.location"/>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="ui error message"></div>
+        </form>
+
+    </div>
+    <div class="four wide column">
+        <div class="ui segment">
+            <div class="ui statistic" id="total">
+                <div class="value">
+                    {{records}}
+                </div>
+                <div class="label">
+                    <i class="icon database"></i>Total Records
+                </div>
+            </div>
+        </div>
+    </div>
+
+

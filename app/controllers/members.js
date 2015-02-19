@@ -1,6 +1,6 @@
 // I control the main demo.
 app.controller(
-    "memberCtrl", ['$scope', '$filter','$timeout', 'MembersRestangular','$state', function(scope, filter,timeout, MembersRestangular,state) {
+    "memberCtrl", ['$scope', '$filter','$timeout', 'MedsRestangular','$state', function(scope, filter,timeout, MedsRestangular,state) {
         getMemberCount();
         
 
@@ -12,7 +12,7 @@ app.controller(
         }
 
         scope.getMembers = function getMembers() {
-            var AllMembers = MembersRestangular.all('members');
+            var AllMembers = MedsRestangular.all('members');
             // This will query /accounts and return a promise.
             AllMembers.customGET('').then(function(members) {
                 scope.rowCollection = members.data;
@@ -22,7 +22,7 @@ app.controller(
         }
 
         function getMemberCount() {
-            var AllMembers = MembersRestangular.all('members');
+            var AllMembers = MedsRestangular.all('members');
             // This will query /accounts and return a promise.
             AllMembers.customGET('').then(function(members) {
                 scope.records = members.data.length;
@@ -31,24 +31,24 @@ app.controller(
 
             });
         }
-        scope.totalMembers = function totalMembers() {
-            scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-            scope.series = ['Series A', 'Series B'];
-            scope.data = [
-                [65, 59, 80, 81, 56, 55, 40],
-                [28, 48, 40, 19, 86, 27, 90]
-            ];
-            scope.onClick = function(points, evt) {
-                console.log(points, evt);
-            };
+        // scope.totalMembers = function totalMembers() {
+        //     scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
+        //     scope.series = ['Series A', 'Series B'];
+        //     scope.data = [
+        //         [65, 59, 80, 81, 56, 55, 40],
+        //         [28, 48, 40, 19, 86, 27, 90]
+        //     ];
+        //     scope.onClick = function(points, evt) {
+        //         console.log(points, evt);
+        //     };
 
-            // Simulate async data update
-            timeout(function() {
-                scope.data = [
-                    [28, 48, 40, 19, 86, 27, 90],
-                    [65, 59, 80, 81, 56, 55, 40]
-                ];
-            }, 3000);
-        }
+        //     // Simulate async data update
+        //     timeout(function() {
+        //         scope.data = [
+        //             [28, 48, 40, 19, 86, 27, 90],
+        //             [65, 59, 80, 81, 56, 55, 40]
+        //         ];
+        //     }, 3000);
+        // }
     }]
 );

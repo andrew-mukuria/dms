@@ -8694,6 +8694,7 @@ button.close {
 
 /* Element St  yles */
 body {
+  overflow-x: hidden !important;
   font-family: OpenSansRegular !important;
   font-size: 12px !important; }
 
@@ -8706,6 +8707,12 @@ nav, footer {
   nav .right, nav .field-input, footer .right, footer .field-input {
     /* @extend .inverted; */ }
 
+.item h3, nav .right a h3, nav .field-input a h3, footer .right a h3, footer .field-input a h3, nav a h3, footer a h3 {
+  margin: 0 !important; }
+
+td .ui.label, td nav.label, td footer.label, td input.label, td form.label, td button.label, td .label.field-input, td .ui.button, td nav.button, td footer.button, td input.button, td form.button, td button, td .button.field-input, td button.field-input {
+  font-size: 0.6rem; }
+
 /* Icon */
 footer {
   position: fixed;
@@ -8715,10 +8722,21 @@ form {
   font-size: 1rem !important; }
 
 /* Core Classes */
+slick.full-screen {
+  top: 0;
+  position: absolute;
+  padding: 2%;
+  width: 100%;
+  height: 100%;
+  z-index: -100; }
+  slick.full-screen img {
+    width: 100%;
+    height: 100%; }
+
 .centered {
-  width: 50%;
+  width: 30%;
   margin: auto !important;
-  margin-top: 10% !important; }
+  margin-top: 20% !important; }
 
 .centered.within {
   margin-top: 2% !important;
@@ -8809,7 +8827,7 @@ p {
 p + p {
   text-indent: 0 !important; }
 
-.ui.grid, nav.grid, footer.grid, form.grid, button.grid, .grid.field-input {
+.ui.grid, nav.grid, footer.grid, td input.grid, form.grid, button.grid, .grid.field-input {
   margin: 0 !important; }
 
 /*# sourceMappingURL=styles.css.map */

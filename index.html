@@ -1,50 +1,21 @@
-<html ng-app="hais">
+<html ng-app="meds">
     <head>
-        <title>{{title}}</title>
+        
+       <title>{{title}}</title>
 
-        <link rel="stylesheet" href="libs/webfont-opensans/css/stylesheet.css" media="screen" title="no title" charset="utf-8">
-        <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.css">
-        <link rel="stylesheet" href="libs/ionicons/css/ionicons.css">
-        <link rel="stylesheet" href="dist/styles.css">
-        <link rel="stylesheet" href="libs/semantic-ui/dist/semantic.css">
-        <link rel="stylesheet" href="libs/jquery-ui/jquery-ui.min.css">
-        <link rel="stylesheet" href="libs/ionicons/css/ionicons.css" media="screen" title="no title" charset="utf-8">
-        <link rel="stylesheet" href="libs/angular-chart.js/dist/angular-chart.css" media="screen" title="no title" charset="utf-8">
-        <link rel='stylesheet' href='libs/textAngular/src/textAngular.css'>
-       
+<link rel="stylesheet" href="libs/webfont-opensans/css/stylesheet.css" media="screen" title="no title" charset="utf-8">
+<link rel="stylesheet" href="libs/font-awesome/css/font-awesome.css">
+<link rel="stylesheet" href="libs/ionicons/css/ionicons.css">
+<link rel="stylesheet" href="dist/styles.css">
+<link rel="stylesheet" href="libs/semantic-ui/dist/semantic.css">
+<link rel="stylesheet" href="libs/ionicons/css/ionicons.css" media="screen" title="no title" charset="utf-8">
+<link rel='stylesheet' href='libs/textAngular/src/textAngular.css'>
+<link rel='stylesheet' href='libs/slick-carousel/slick/slick.css'>
 
     </head>
     <body class="menu">
-        <div id="main-side-menu" class="ui left vertical inverted labeled icon sidebar menu wide">
-           <div class="item">
-               <img style="background:white" class="ui bordered centered circular image" src="libs/ionicons/png/512/ios7-person.png">
-           </div>
-           <div class="item">
-                <a class="item" href=""> John Doe<br>
-                  <i>Technician</i><i class="icon ion-gear-a"></i></a>
-            </div>
-            <div class="item">
-                <div class="ui input"><input type="text" placeholder="Search..."></div>
-            </div>
-             <div class="item">
-                <a is-active-nav href="" class="item" ui-sref="dashboard">Dashboard<i class="icon ion-arrow-graph-up-right"></i></a>
-            </div>
-            <div class="item">
-                <a is-active-nav href="" class="item" ui-sref="knowledge-base">Knowledge Base<i class="icon ion-help"></i></a>
-            </div>
-             <div class="item">
-                <a is-active-nav href="" class="item" ui-sref="user-management">User Management<i class="icon ion-person"></i></a>
-            </div>
-            <div class="item">
-                <a><i class="home icon"></i> Member Management</a>
-                <div class="menu">
-                    <a is-active-nav ui-sref="members" class="item members" data-ctrl="members"><i class="icon"></i>Members</a>
-                    <a is-active-nav ui-sref="claims"  class="item claims" data-ctrl="claims"><i class="icon"></i>Claims</a>
-                    <a is-active-nav ui-sref="provider" class="item provider" data-ctrl="provider"><i class="icon"></i>Provider</a>
-                    <a is-active-nav ui-sref="benefits" class="item benefits" data-ctrl="benefits"><i class="icon"></i>Benefits</a>
-                    <a is-active-nav ui-sref="services" class="item services" data-ctrl="services"><i class="icon"></i>Services</a>
-                </div>
-            </div>
+        <div sidemenu id="main-side-menu" class="ui green left vertical inverted labeled icon sidebar menu wide">
+           
         </div>
         <div class="pusher">
             
@@ -55,26 +26,21 @@
 
             </footer>
         </div>
-         <script src="libs/jquery/dist/jquery.js"></script>
+        <script src="libs/jquery/dist/jquery.js"></script>
         <script src="libs/angular/angular.js"></script>
+        <script src="libs/slick-carousel/slick/slick.js"></script>
         <script src="libs/angular-ui-router/release/angular-ui-router.js"></script>
-        <script src="libs/angular-ui-router.stateHelper/statehelper.js"></script>
         <script src="libs/lodash/dist/lodash.js"></script>
         <script src="libs/restangular/dist/restangular.js"></script>
         <script src="libs/angular-smart-table/dist/smart-table.min.js"></script>
-        <script src="libs/Chart.js/Chart.min.js"></script>
-        <script src="libs/angular-chart.js/dist/angular-chart.js"></script>
-        
+        <script src="libs/angular-local-storage/dist/angular-local-storage.js"></script>
         <script src='libs/textAngular/dist/textAngular-rangy.min.js'></script>
         <script src='libs/textAngular/dist/textAngular-sanitize.min.js'></script>
         <script src='libs/textAngular/dist/textAngular.min.js'></script>
         <script src='libs/moment/moment.js'></script>
         <script src='libs/angular-moment/angular-moment.js'></script>
-        <script src="assets/javascripts/bootstrap.js"></script>
-        <script src="libs/jquery-ui/jquery-ui.min.js"></script>
-        <script src="libs/typeahead.js/dist/typeahead.bundle.js"></script>
         <script src="libs/angular-bootstrap/ui-bootstrap.js"></script>
-        <script src="libs/angular-typeahead/angular-typeahead.js"></script>
+        <script src="libs/angular-slick/dist/slick.js"></script>
         <script src="libs/semantic-ui/dist/semantic.js"></script>
         <script type="text/javascript" src="dist/app.js"></script>
         <script src="//localhost:35729/livereload.js"></script>

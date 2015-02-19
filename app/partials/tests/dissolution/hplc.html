@@ -1,0 +1,599 @@
+<!-- HPLC Partial -->
+<div class="ui grid">
+    <div formSideMenu class="four wide column">
+    </div>
+    <form class="twelve wide column">
+        <table class="ui table">
+            <input type="hidden" name ="assignment" id="assignment" value =""><input type="hidden" id="test_request" name ="test_request" value ="<?php echo $test_request;?>">
+            <input type="hidden" name ="analyst" value ="">
+            <input type ="hidden" id = "label_claim" value="" />
+            <tr>
+                <td>Document</td>
+                <td>Title</td>
+                <td>REF</td>
+            </tr>
+            <tr>
+                <td>Effective Date</td>
+                <td>ISSUE/REV</td>
+                <td>Supersedes</td>
+            </tr>
+            <tr>
+                <td>Serial No.</td>
+                <td colspan="2">Batch/Lot No.</td>
+            </tr>
+        </table>
+        <div id="sectionOne">
+            <table class='ui table'>
+                <tr>
+                    <td>Registration Number: <?php echo $results['laboratory_number'];?></td>
+                    <td>Request Date: <?php echo $results['date_time'];?></td>
+                </tr>
+                <tr>
+                    <td colspan="2">Label Claim: <?php echo $results['active_ingredients'];?></td>
+                </tr>
+                <tr>
+                    <td>Brand Name: <?php echo $results['brand_name'];?></td>
+                    <td>Method/Specifications: <?php echo $results['test_specification'];?></td>
+                </tr>
+                <tr>
+                    <td>Manufacturer Details:<br><br> <?php echo $results['manufacturer_name'];?><br><?php echo $results['manufacturer_address'];?></td>
+                    <td>Clients Details:<br><br> <?php echo $results['applicant_name'];?><br><?php echo $results['applicant_address'];?> </td>
+                </tr>
+                <tr>
+                    <td>Manufacturer Date: <?php echo $results['date_manufactured'];?></td>
+                    <td>Expiry Date: <?php echo $results['expiry_date'];?></td>
+                </tr>
+                <tr>
+                    <td>Analysis Start Date: <?php echo date("d/m/Y")?></td>
+                    <td>Analysis End Date:</td>
+                </tr>
+            </table>
+            <table class='ui table'>
+                <tr>
+                    <td  class="ui header"> MEDS Dissolution Test Form: By Normal HPLC Method</td>
+                </tr>
+                <tr>
+                    <td>Component:
+                        <select class="ui dropdown" class='ui dropdown'>
+                            <option> Empty Set</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Equipment ID:</td>
+                    <td>
+                        <select class="ui dropdown" id ="equipment_make" name="equipment_number">
+                            <option> Empty Set</option>
+                        </select>
+                    </td>
+                    <td>Equipment Make:</td>
+                    <td class="ui input"><input type ="text" name ="equipment_number" id="equipmentid"></td>
+                </tr>
+                <tr>
+                    <td   ><b>Preparation of Dissolution Medium</b></td>
+                </tr>
+                <tr>
+                    <td  colspan="6"><div text-angular ng-model="htmlVariable"></div></td>
+                </tr>
+                <tr>
+                    <td   ><b>Dissolution System Setup</b></td>
+                </tr>
+                <tr>
+                    <td align = ""  ><b>Requirements</b></td><td align = "center" ><b>Actual</b></td><td align = "left" ><b>Comment</b></td>
+                </tr>
+                <tr>
+                    <td>Apparatus</td>
+                    <td class="ui input" > <input type ="text" name="apparatus"> </td>
+                    <td class="ui input" > <input type ="text" name="actual_apparatus"> </td>
+                    <td class="ui input" > <input type ="text" name="apparatus_comment"> </td>
+                </tr>
+                <tr>
+                    <td>Rotation</td>
+                    <td class="ui input"><input type ="text" name="rotation"> </td>
+                    <td class="ui input"><input type ="text" name="actual_rotation"> </td>
+                    <td class="ui input"> <input type ="text" name="rotation_comment"> </td>
+                </tr>
+                <tr>
+                    <td>Time</td>
+                    <td class="ui input">  <input type ="text" name="time"> </td>
+                    <td class="ui input">  <input type ="text" name="actual_time"> </td>
+                    <td class="ui input"> <input type ="text" name="time_comment"> </td>
+                </tr>
+                <tr>
+                    <td>Temperarture</td>
+                    <td class="ui input" >  <input type ="text" name="temperature"> </td>
+                    <td class="ui input" >  <input type ="text" name="actual_temperature"> </td>
+                    <td class="ui input" > <input type ="text" name="temperature_comment"> </td>
+                </tr>
+                <tr>
+                    <td ><b>Weight of Standard</b></td>
+                </tr>
+                <tr>
+                    <td align ="center" colspan="6"><div text-angular ng-model="htmlVariable"></div></td>
+                </tr>
+                <tr>
+                    <td>Balance Make:</td>
+                    <td >
+                        <select class="ui dropdown" id ="equipment_balance" name="balance_make">
+                            <option> Empty Set</option>
+
+                        </select>
+                    </td>
+                    <td colspan="" >ID Number:</td>
+                    <td class="ui input" ><input type ="text" name ="balance_number" id="idnumber"></td>
+                </tr>
+                <tr>
+                    <!-- start of adding standards-->
+                <tr>
+                    <td  > <b>Standard Description:</b></td>
+                    <td >
+                        <select class="ui dropdown" id="standard_description_one" name="standard_description" >
+                            <option> Empty Set</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td> Potency:</td>
+                    <td class="ui input"> <input type ="text" class="all_input" name="potency" id = "potency"> </td>
+                    <td>Lot No.:</td>
+                    <td class="ui input"><input type ="text"class="all_input" name="lot_no" id ="stdlotnumber"> </td>
+                    <td> ID No.:</td>
+                    <td class="ui input"><input type ="text"class="all_input" name="id_no" id ="stdrefnumber"> </td>
+                </tr>
+                <tr>
+                    <td colspan="2"> Weight of standard + container (g)</td>
+                    <td class="ui input"> <input type ="text"class="all_input" name="standard_container" id ="standard_container"> </td>
+                </tr>
+                <tr>
+                    <td colspan="2"> Weight of container (g) </td>
+                    <td class="ui input"> <input type ="text"class="all_input" name="container" id ="container" > </td>
+                </tr>
+                <tr>
+                    <td colspan="2"> Weight of standard (g)</td>
+                    <td class="ui input"> <input type ="text"class="all_input" name="standard_weight_1" id ="standard_weight_1" > </td>
+                </tr>
+                <tr>
+                    <td > Dilution</td>
+                </tr>
+                <tr>
+                    <td colspan="6">   <div text-angular ng-model="htmlVariable"></div> </td>
+                </tr>
+                <tr>
+                    <td > <b>Sample Preparation</b></td>
+                </tr>
+                <tr>
+                    <td colspan="6" colspan="6"><div text-angular ng-model="htmlVariable"></div></td>
+                </tr>
+                <tr>
+                    <td class="ui input"><b>Sample Dilution Factor:</b> [<input type ="text" name = "df_1" id = "df_1"> X <input type ="text" name = "df_2" id = "df_2">] / <input type ="text" name = "df_3" id = "df_3"></td>
+                    <td class="ui input" ><input type ="text" name = "dilution_factor" id = "dilution_factor"> </td>
+                </tr>
+                <tr>
+                    <td   ><b>Determination of content- HPLC</b></td>
+                </tr>
+                <tr>
+                    <td   >System suitability </td>
+                </tr>
+                <tr>
+                    <td   ><b>Mobile Phase Preparation</b></td>
+                </tr>
+                <tr>
+                    <td  colspan="6"><div text-angular ng-model="htmlVariable"></div></td>
+                </tr>
+            </table>
+            <table class="ui table">
+                <tr>
+                    <td   ><b>The chromatographic conditions:</b></td>
+                </tr>
+                <tr>
+                    <td   ><b>Chromatographic System</b></td>
+                </tr>
+                <tr>
+                    <td rowspan = "2" align="right"> <b>A stainless steel column:</b></td>
+                    <td>  Name:</td>
+                    <td>
+                        <select class="ui dropdown" id="name" name="name" >
+                            <option>Blank Selection</option>
+                        </select>
+                    </td>
+                    <td>  Length:</td>
+                    <td class="ui input">  <input type ="text" name="length" id ="length"> </td>
+                </tr>
+                <tr>
+                    <td>  Lot/Serial No.:</td>
+                    <td class="ui input">  <input type ="text" name="serial_no" id ="serial_no"> </td>
+                    <td>  Manufacturer:</td>
+                    <td class="ui input">  <input type ="text" name="manufacturer" id="manufacturer"> </td>
+                </tr>
+                <tr>
+                    <td  align="right"> Column Pressure:</td>
+                    <td class="ui input" >  <input type ="text" name="column_pressure"> <select class="ui dropdown" name="column_pressure_select"><option value="Bar">Bar</option><option value="MPA">MPA</option><option value="PSI">PSI</option></select> </td>
+                </tr>
+                <tr>
+                    <td align="right"> Column Oven Pressure:</td>
+                    <td class="ui input" > <input type ="text" name="column_oven_temp"> <select class="ui dropdown" name="column_oven_temp_select"><option value="C">Celcius</option><option value="F">Fahrenheit</option></select> </td>
+                </tr>
+                <tr>
+                    <td align="right"> Mobile Phase Flow rate:</td>
+                    <td class="ui input"  ><input type ="text" name="flow_rate"> ml/min</td>
+                </tr>
+                <tr>
+                    <td align="right"> Detection of Wavelength:</td>
+                    <td class="ui input"  ><input type ="text" name="wavelength"> nm</td>
+                </tr>
+                <tr>
+                    <td><b>Suitability summary</b><br/>From chromatograms on -  </td>
+                </tr>
+                <tr>
+                    <td >
+                    </td>
+                </tr>
+            </table>
+            <table class="ui table">
+                <tr>
+                    <td><b></b></td>
+                    <td><b>Retention Time (minutes)</b></td>
+                    <td><b>Peak Area</b></td>
+                    <td><b>Asymmetry</b></td>
+                    <td><b>Resolution</b></td>
+                    <td><b>Others</b></td>
+                </tr>
+                <tr>
+                    <td>1.</td>
+                    <td class="ui three wide input"><input type = "text" class="rt" name ="rt_1" id ="rt_1"></td>
+                    <td class="ui three wide input"><input type = "text" class="peak_area" name ="peak_area_1" id ="peak_area_1"></td >
+                    <td class="ui three wide input"><input type = "text" class="asymmetry" name ="asymmetry_1" id="asymmetry_1"></td>
+                    <td class="ui three wide input"><input type = "text" class="resolution" name ="resolution_1" id ="resolution_1"></td>
+                    <td class="ui three wide input"><input type = "text" class="other" name ="other_1" id ="other_1"></td>
+                </tr>
+                <tr>
+                    <td>2.</td>
+                    <td class="ui input"><input type = "text" class="rt" name ="rt_2" id ="rt_2"></td>
+                    <td class="ui input"><input type = "text" class="peak_area" name ="peak_area_2" id ="peak_area_2"></td>
+                    <td class="ui input"><input type = "text" class="asymmetry" name ="asymmetry_2" id="asymmetry_2"></td>
+                    <td class="ui input"><input type = "text" class="resolution" name ="resolution_2" id ="resolution_2"></td>
+                    <td class="ui input"><input type = "text" class="other" name ="other_2" id ="other_2"></td>
+                </tr>
+                <tr>
+                    <td>3.</td>
+                    <td class="ui input"><input type = "text" class="rt" name ="rt_3" id ="rt_3"></td>
+                    <td class="ui input"><input type = "text" class="peak_area" name ="peak_area_3" id ="peak_area_3"></td>
+                    <td class="ui input"><input type = "text" class="asymmetry" name ="asymmetry_3" id="asymmetry_3"></td>
+                    <td class="ui input"><input type = "text" class="resolution" name ="resolution_3" id ="resolution_3"></td>
+                    <td class="ui input"><input type = "text" class="other" name ="other_3" id ="other_3"></td>
+                </tr>
+                <tr>
+                    <td>4.</td>
+                    <td class="ui input"><input type = "text" class="rt" name ="rt_4" id ="rt_4"></td>
+                    <td class="ui input"><input type = "text" class="peak_area" name ="peak_area_4" id ="peak_area_4"></td>
+                    <td class="ui input"><input type = "text" class="asymmetry" name ="asymmetry_4" id="asymmetry_4"></td>
+                    <td class="ui input"><input type = "text" class="resolution" name ="resolution_4" id ="resolution_4"></td>
+                    <td class="ui input"><input type = "text" class="other" name ="other_4" id ="other_4"></td>
+                </tr>
+                <tr>
+                    <td>5.</td>
+                    <td class="ui input"><input type = "text" class="rt" name ="rt_5" id="rt_5"></td>
+                    <td class="ui input"><input type = "text" class="peak_area" name ="peak_area_5" id ="peak_area_5"></td>
+                    <td class="ui input"><input type = "text" class="asymmetry" name ="asymmetry_5" id="asymmetry_5"></td>
+                    <td class="ui input"><input type = "text" class="resolution" name ="resolution_5" id ="resolution_5"></td>
+                    <td class="ui input"><input type = "text" class="other" name ="other_5" id ="other_5"></td>
+                </tr>
+                <tr>
+                    <td>6.</td>
+                    <td class="ui input"><input type = "text" class="rt" name ="rt_6" id="rt_6"></td>
+                    <td class="ui input"><input type = "text" class="peak_area" name ="peak_area_6" id ="peak_area_6"></td>
+                    <td class="ui input"><input type = "text" class="asymmetry" name ="asymmetry_6" id ="asymmetry_6"></td>
+                    <td class="ui input"><input type = "text" class="resolution" name ="resolution_6"id ="resolution_6"></td>
+                    <td class="ui input"><input type = "text" class="other" name ="other_6"id ="other_6"></td>
+                </tr>
+                <tr>
+                    <td>Average</td>
+                    <td class="ui input"><input type = "text" class="rt_avg" name ="rt_avg" id ="rt_avg"></td>
+                    <td class="ui input"><input type = "text" class="peak_area_avg" name ="peak_area_avg" id ="peak_area_avg" ></td>
+                    <td class="ui input"><input type = "text" class="asymmetry_avg" name ="asymmetry_avg" id="asymmetry_avg"></td>
+                    <td class="ui input"><input type = "text" class="resolution_avg" name ="resolution_avg" id ="resolution_avg"></td>
+                    <td class="ui input"><input type = "text" class="other_avg" name ="other_avg" id ="other_avg"></td>
+                </tr>
+                <tr>
+                    <td>SD</td>
+                    <td class="ui input"><input type = "text" class="rt_sd" name ="rt_sd" id ="rt_sd"></td>
+                    <td class="ui input"><input type = "text" class="peak_area_sd" name ="peak_area_sd" id ="peak_area_sd"></td>
+                    <td class="ui input"><input type = "text" class="asymmetry_sd" name ="asymmetry_sd" id ="asymmetry_sd"></td>
+                    <td class="ui input"><input type = "text" class="resolution_sd" name ="resolution_sd" id ="resolution_sd"></td>
+                    <td class="ui input"><input type = "text" class="other_sd" name ="other_sd" id ="other_sd"></td>
+                </tr>
+                <tr>
+                    <td>RSD</td>
+                    <td class="ui input" ><input class="rt_rsd" id = "rt_rsd" type = "text" name ="rt_rsd"></td>
+                    <td class="ui input" ><input class="peak_area_rsd" id = "peak_area_rsd" type = "text" name ="peak_area_rsd"></td>
+                    <td class="ui input" ><input class="asymmetry_rsd" id = "asymmetry_rsd" type = "text" name ="asymmetry_rsd"></td>
+                    <td class="ui input" ><input class="resolution_rsd" id = "resolution_rsd" type = "text" name ="resolution_rsd"></td>
+                    <td class="ui input" ><input class="other_rsd" id = "other_rsd" type = "text" name ="other_rsd" id ="other_rsd"></td>
+                </tr>
+                <tr>
+                    <td>Acceptance Criteria</td>
+                    <td class="ui input"><input type="text" class="rt_ac" id="rt_ac" name="rt_ac" placeholder ="NMT 2.0% RSD"></td>
+                    <td class="ui input"><input type="text" class="peak_area_ac" id="peak_area_ac" name="peak_area_ac" placeholder ="NMT 2.0% RSD"></td>
+                    <td class="ui input"><input type="text" class="asymmetry_ac" id="asymmetry_ac" name="asymmetry_ac" placeholder ="NMT 2.0% Avg"></td>
+                    <td class="ui input"><input type="text" class="resolution_ac" id="resolution_ac" name="resolution_ac" placeholder ="NLT 5.0% Avg"></td>
+                    <td class="ui input"><input type="text" class="other_ac" id="other_ac" name="other_ac" placeholder ="NLT"></td>
+                </tr>
+                <tr>
+                    <td>Comment</td>
+                    <td class="ui input"><input type = "text" class="rt_comment alerts" name ="rt_comment" id ="rt_comment"></td>
+                    <td class="ui input"><input type = "text" class="peak_area_comment alerts" name ="peak_area_comment" id ="peak_area_comment"></td>
+                    <td class="ui input"><input type = "text" class="asymmetry_comment alerts" name ="asymmetry_comment" id ="asymmetry_comment"></td>
+                    <td class="ui input"><input type = "text" class="resolution_comment alerts" name ="resolution_comment" id ="resolution_comment"></td>
+                    <td class="ui input"><input type = "text" class="other_comment alerts" name ="other_comment" id ="other_comment"></td>
+                </tr>
+            </table>
+
+            <table class="ui table">
+                <tr>
+                    <td class="ui input" ><b>After</b> <input type ="text" name ="minutes"/> minutes</td>
+                    <td><b>Peak Area from chromatograms - </b></td>
+                </tr>
+                <tr>
+                    <td><b></b></td>
+                    <td><b>Std 1</b></td>
+                    <td><b>Sample 1</b></td>
+                    <td><b>Sample 2</b></td>
+                    <td><b>Sample 3</b></td>
+                    <td><b>Sample 4</b></td>
+                    <td><b>Sample 5</b></td>
+                    <td><b>Sample 6</b></td>
+                </tr>
+                <tr>
+                    <td>1.</td>
+                    <td class="ui input"><input type = "text" class = "standard all_input" name ="sample_1" id ="sample_1"></td>
+                    <td class="ui input"><input type = "text" class ="sample_1 all_input" name ="sample_1_s1" id ="sample_1_s1"></td>
+                    <td class="ui input"><input type = "text" class ="sample_2 all_input" name ="sample_1_s2" id ="sample_1_s2"></td>
+                    <td class="ui input"><input type = "text" class ="sample_3 all_input" name ="sample_1_s3" id ="sample_1_s3"></td>
+                    <td class="ui input"><input type = "text" class ="sample_4 all_input" name ="sample_1_s4" id ="sample_1_s4"></td>
+                    <td class="ui input"><input type = "text" class ="sample_5 all_input" name ="sample_1_s5" id ="sample_1_s5"></td>
+                    <td class="ui input"><input type = "text" class ="sample_6 all_input" name ="sample_1_s6" id ="sample_1_s6"></td>
+                </tr>
+                <tr>
+                    <td>2.</td>
+                    <td class="ui input"><input type = "text" class = "standard all_input" name ="sample_2" id ="sample_2"></td>
+                    <td class="ui input"><input type = "text" class ="sample_1 all_input" name ="sample_2_s1" id ="sample_2_s1"></td>
+                    <td class="ui input"><input type = "text" class ="sample_2 all_input" name ="sample_2_s2" id ="sample_2_s2"></td>
+                    <td class="ui input"><input type = "text" class ="sample_3 all_input" name ="sample_2_s3" id ="sample_2_s3"></td>
+                    <td class="ui input"><input type = "text" class ="sample_4 all_input" name ="sample_2_s4" id ="sample_2_s4"></td>
+                    <td class="ui input"><input type = "text" class ="sample_5 all_input" name ="sample_2_s5" id ="sample_2_s5"></td>
+                    <td class="ui input"><input type = "text" class ="sample_6 all_input" name ="sample_2_s6" id ="sample_2_s6"></td>
+                </tr>
+                <tr>
+                    <td>3.</td>
+                    <td class="ui input"><input type = "text" class = "standard all_input" name ="sample_3" id ="sample_3"></td>
+                    <td class="ui input"><input type = "text" class ="sample_1 all_input" name ="sample_3_s1" id ="sample_3_s1"></td>
+                    <td class="ui input"><input type = "text" class ="sample_2 all_input" name ="sample_3_s2" id ="sample_3_s2"></td>
+                    <td class="ui input"><input type = "text" class ="sample_3 all_input" name ="sample_3_s3" id ="sample_3_s3"></td>
+                    <td class="ui input"><input type = "text" class ="sample_4 all_input" name ="sample_3_s4" id ="sample_3_s4"></td>
+                    <td class="ui input"><input type = "text" class ="sample_5 all_input" name ="sample_3_s5" id ="sample_3_s5"></td>
+                    <td class="ui input"><input type = "text" class ="sample_6 all_input" name ="sample_3_s6" id ="sample_3_s6"></td>
+                </tr>
+                <tr>
+                    <td>4.</td>
+                    <td class="ui input"><input type = "text" class = "standard all_input" name ="sample_4" id ="sample_4"></td>
+                    <td class="ui input"><input type = "text" class ="sample_1 all_input" name ="sample_4_s1" id ="sample_4_s1"></td>
+                    <td class="ui input"><input type = "text" class ="sample_2 all_input" name ="sample_4_s2" id ="sample_4_s2"></td>
+                    <td class="ui input"><input type = "text" class ="sample_3 all_input" name ="sample_4_s3" id ="sample_4_s3"></td>
+                    <td class="ui input"><input type = "text" class ="sample_4 all_input" name ="sample_4_s4" id ="sample_4_s4"></td>
+                    <td class="ui input"><input type = "text" class ="sample_5 all_input" name ="sample_4_s5" id ="sample_4_s5"></td>
+                    <td class="ui input"><input type = "text" class ="sample_6 all_input" name ="sample_4_s6" id ="sample_4_s6"></td>
+                </tr>
+                <tr>
+                    <td>5.</td>
+                    <td class="ui input"><input type = "text" class = "standard all_input" name ="sample_5" id ="sample_5"></td>
+                    <td class="ui input"><input type = "text" class ="sample_1 all_input" name ="sample_5_s1" id ="sample_5_s1" onchange ="avg_sample1()"></td>
+                    <td class="ui input"><input type = "text" class ="sample_2 all_input" name ="sample_5_s2" id ="sample_5_s2" onchange ="avg_sample2()"></td>
+                    <td class="ui input"><input type = "text" class ="sample_3 all_input" name ="sample_5_s3" id ="sample_5_s3" onchange ="avg_sample3()"></td>
+                    <td class="ui input"><input type = "text" class ="sample_4 all_input" name ="sample_5_s4" id ="sample_5_s4" onchange ="avg_sample4()"></td>
+                    <td class="ui input"><input type = "text" class ="sample_5 all_input" name ="sample_5_s5" id ="sample_5_s5" onchange ="avg_sample5()"></td>
+                    <td class="ui input"><input type = "text" class ="sample_6 all_input" name ="sample_5_s6" id ="sample_5_s6" onchange ="avg_sample6()"></td>
+                </tr>
+                <tr>
+                    <td>Average</td>
+                    <td class="ui input"><input type = "text" class = "standard_avg all_input" name ="avg" id ="avg"></td>
+                    <td class="ui input"><input type = "text" class ="sample_1_avg all_input" name ="avg_s1" id ="avg_s1"></td>
+                    <td class="ui input"><input type = "text" class ="sample_2_avg all_input" name ="avg_s2" id ="avg_s2"></td>
+                    <td class="ui input"><input type = "text" class ="sample_3_avg all_input" name ="avg_s3" id ="avg_s3"></td>
+                    <td class="ui input"><input type = "text" class ="sample_4_avg all_input" name ="avg_s4" id ="avg_s4"></td>
+                    <td class="ui input"><input type = "text" class ="sample_5_avg all_input" name ="avg_s5" id ="avg_s5"></td>
+                    <td class="ui input"><input type = "text" class ="sample_6_avg all_input" name ="avg_s6" id ="avg_s6"></td>
+                </tr>
+            </table>
+            <table class="ui table" >
+                <tr>
+                    <td  align = "center">RETENTION TIME: <input type = "text" name ="sample_rrt_avg" id ="sample_value" placeholder="RT of SAMPLE"> / <input type = "text" name ="sample_rrt_avg" id ="std_value" placeholder ="RT of STD"></td>
+                    <td ><input type = "text" name ="sample_rrt_avg" id ="sample_rrt_avg"></td>
+                </tr>
+            </table>
+            <table class="ui table" >
+                <tr>
+                    <td colspan="8" style="padding:8px;border-bottom:solid 1px #c4c4ff;">
+
+                    </td>
+                </tr>
+                <tr>
+                    <td  align = "center"style="padding: 12px;background-color:#ffffff;border-bottom: solid 1px #bfbfbf;border-top: solid 1px #bfbfbf;color:#0000fb;"> <u>PEAK OF SAMPLE (PKT) * WT OF STANDARD IN FINAL DILUTION * DILUTION FACTOR(DF) * 100 * POTENCY (P) </u> <br/> PEAK AREA OF STANDARD(PKSTD) * LABEL CLAIM (LC)</td>
+                </tr>
+                <tr>
+                    <td  style="padding: 12px;background-color:#ffffff;border-bottom: dotted 1px #bfbfbf;border-top: dotted 1px #bfbfbf;"> <b><u>Determination 1</u></b></td>
+                    <td  style="padding: 12px;background-color:#ffffff;border-bottom: dotted 1px #bfbfbf;border-top: dotted 1px #bfbfbf;"></td>
+                </tr>
+                <tr>
+                    <td  align ="center" style="padding: 12px;">
+                        <input type ="text" name="det_1_pkt" id ="det_1_pkt" size ="10" placeholder="PKT" onchange="calculation_determinations()">
+                        <input type ="text" name="det_1_wstd" id ="det_1_wstd" size ="10" placeholder="WSTD">
+                        <input type ="text" name="det_1_df" id ="det_1_df" size ="10" placeholder="DF">
+                        <input type ="text" name="det_1_potency" id ="det_1_potency" size ="10" placeholder="Potency">*100 <br/><br/>
+                        <input type ="text" name="det_1_pkstd" id ="det_1_pkstd" size ="10" placeholder="PKSTD" onchange="calculation_determinations()">
+                        <input type ="text" name="det_1_lc" id ="det_1_lc" class="det_1_lc" size ="10" placeholder="LC" onchange="calculation_determinations()"></td>
+                    <td> = <input type ="text" name="determination_1" id ="determination_1" class="determination_1" size ="10"> % LC</td>
+                </tr>
+                <tr>
+                    <td  style="padding: 12px;background-color:#ffffff;border-bottom: dotted 1px #bfbfbf;border-top: dotted 1px #bfbfbf;"> <b><u>Determination 2</u></b></td>
+                    <td  style="padding: 12px;background-color:#ffffff;border-bottom: dotted 1px #bfbfbf;border-top: dotted 1px #bfbfbf;"></td>
+                </tr>
+                <tr>
+                    <td  align ="center" style="padding: 12px;">
+                        <input type ="text" name="det_2_pkt" id="det_2_pkt" size ="10" placeholder="PKT" onchange="calculation_determinations()">
+                        <input type ="text" name="det_2_wstd" id ="det_2_wstd" size ="10" placeholder="WSTD">
+                        <input type ="text" name="det_2_df"id="det_2_df" size ="10" placeholder="DF">
+                        <input type ="text" name="det_2_potency" id ="det_2_potency" size ="10" placeholder="Potency">*100 <br/><br/>
+                        <input type ="text" name="det_2_pkstd" id ="det_2_pkstd" size ="10" placeholder="PKSTD" onchange="calculation_determinations()">
+                        <input type ="text" name="det_2_lc" id ="det_2_lc" class="det_2_lc" size ="10" placeholder="LC"onchange="calculation_determinations()"></td>
+                    <td><input type ="text" name="determination_2"id ="determination_2" class="determination_2" size ="10">% LC </td>
+                </tr>
+                <tr>
+                    <td  style="padding: 12px;background-color:#ffffff;border-bottom: dotted 1px #bfbfbf;border-top: dotted 1px #bfbfbf;"> <b><u>Determination 3</u></b></td>
+                    <td  style="padding: 12px;background-color:#ffffff;border-bottom: dotted 1px #bfbfbf;border-top: dotted 1px #bfbfbf;"></td>
+                </tr>
+                <tr>
+                    <td  align ="center" style="padding: 12px;">
+                        <input type ="text" name="det_3_pkt" id ="det_3_pkt"size ="10" placeholder="PKT" onchange="calculation_determinations()">
+                        <input type ="text" name="det_3_wstd" id ="det_3_wstd"size ="10" placeholder="WSTD">
+                        <input type ="text" name="det_3_df" id ="det_3_df" size ="10" placeholder="DF">
+                        <input type ="text" name="det_3_potency" id ="det_3_potency" size ="10" placeholder="Potency">*100 <br/><br/>
+                        <input type ="text" name="det_3_pkstd" id ="det_3_pkstd" size ="10" placeholder="PKSTD" onchange="calculation_determinations()">
+                        <input type ="text" name="det_3_lc" id ="det_3_lc" class="det_3_lc" size ="10" placeholder="LC" onchange="calculation_determinations()"></td>
+                    <td><input type ="text" name="determination_3" id ="determination_3" class="determination_3" size ="10">% LC </td>
+                </tr>
+                <tr>
+                    <td   style="padding: 12px;background-color:#ffffff;border-bottom: dotted 1px #bfbfbf;border-top: dotted 1px #bfbfbf;"> <b><u>Determination 4</u></b></td>
+                    <td   style="padding: 12px;background-color:#ffffff;border-bottom: dotted 1px #bfbfbf;border-top: dotted 1px #bfbfbf;"></td>
+                </tr>
+                <tr>
+                    <td  align ="center" style="padding: 12px;">
+                        <input type ="text" name="det_4_pkt" id ="det_4_pkt" size ="10" placeholder="PKT" onchange="calculation_determinations()">
+                        <input type ="text" name="det_4_wstd" id ="det_4_wstd" size ="10" placeholder="WSTD">
+                        <input type ="text" name="det_4_df" id ="det_4_df" size ="10" placeholder="DF">
+                        <input type ="text" name="det_4_potency" id ="det_4_potency" size ="10" placeholder="Potency">*100 <br/><br/>
+                        <input type ="text" name="det_4_pkstd" id ="det_4_pkstd" size ="10" placeholder="PKSTD" onchange="calculation_determinations()">
+                        <input type ="text" name="det_4_lc" id ="det_4_lc"  class="det_4_lc" size ="10" placeholder="LC" onchange="calculation_determinations()"></td>
+                    <td>=  <input type ="text" name="determination_4" id ="determination_4" class="determination_4" size ="10">% LC </td>
+                </tr>
+                <tr>
+                    <td  style="padding: 12px;background-color:#ffffff;border-bottom: dotted 1px #bfbfbf;border-top: dotted 1px #bfbfbf;"> <b><u>Determination 5</u></b></td>
+                    <td  style="padding: 12px;background-color:#ffffff;border-bottom: dotted 1px #bfbfbf;border-top: dotted 1px #bfbfbf;"></td>
+                </tr>
+                <tr>
+                    <td  align ="center" style="padding: 12px;">
+                        <input type ="text" name="det_5_pkt" id ="det_5_pkt" size ="10" placeholder="PKT" onchange="calculation_determinations()">
+                        <input type ="text" name="det_5_wstd" id ="det_5_wstd" size ="10" placeholder="WSTD">
+                        <input type ="text" name="det_5_df" id ="det_5_df" size ="10" placeholder="DF">
+                        <input type ="text" name="det_5_potency" id ="det_5_potency" size ="10" placeholder="Potency">*100 <br/><br/>
+                        <input type ="text" name="det_5_pkstd" id ="det_5_pkstd" size ="10" placeholder="PKSTD" onchange="calculation_determinations()">
+                        <input type ="text" name="det_5_lc" id ="det_5_lc"  class="det_5_lc" size ="10" placeholder="LC" onchange="calculation_determinations()"></td>
+                    <td>=  <input type ="text" name="determination_5" class="determination_5" id ="determination_5" size ="10">% LC </td>
+                </tr>
+                <tr>
+                    <td  style="padding: 12px;background-color:#ffffff;border-bottom: solid 1px #bfbfbf;border-top: dotted 1px #bfbfbf;"> <b><u>Determination 6</u></b></td>
+                    <td  style="padding: 12px;background-color:#ffffff;border-bottom: solid 1px #bfbfbf;border-top: dotted 1px #bfbfbf;"></td>
+                </tr>
+                <tr>
+                    <td  align ="center" style="padding: 12px;">
+                        <input type ="text" name="det_6_pkt" id ="det_6_pkt" size ="10" placeholder="PKT" onchange="calculation_determinations()">
+                        <input type ="text" name="det_6_wstd" id ="det_6_wstd" size ="10" placeholder="WSTD">
+                        <input type ="text" name="det_6_df" id ="det_6_df" size ="10" placeholder="DF">
+                        <input type ="text" name="det_6_potency" id ="det_6_potency" size ="10" placeholder="Potency">*100 <br/><br/>
+                        <input type ="text" name="det_6_pkstd" id ="det_6_pkstd" size ="10" placeholder="PKSTD" onchange="calculation_determinations()">
+                        <input type ="text" name="det_6_lc" id ="det_6_lc"  class="det_6_lc" size ="10" placeholder="LC" onchange="calculation_determinations()"></td>
+                    <td>=  <input type ="text" name="determination_6" class="determination_6" id ="determination_6" size ="10">% LC </td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px;padding: 8px;background-color: #e8e8ff;border-bottom: dotted 1px #bfbfbf;border-top: dotted 1px #bfbfbf;"> </td>
+                </tr>
+                <tr>
+                    <td>   Average % </td>
+                    <td > <input type ="text" id = "determination_avg" name="average"></td>
+                    <td>   Equivalent to</td>
+                    <td > <input type ="text" name="equivalent" id = "equivalent"></td>
+                </tr>
+                <tr>
+                    <td>   Range </td>
+                    <td > <input type ="text" size = "5" id = "range_min" name="range_min" > to <input type ="text" size = "5" id = "range_max" name="range_max"></td>
+                    <td>   RSD</td>
+                    <td > <input type ="text" id = "determination_rsd" name="rsd"></td>
+                </tr>
+                <tr>
+                    <td colspan="8" style="padding:8px;">
+                        <table border="0" width="80%" cellpadding="8px" >
+                            <tr>
+                                <td colspan ="3"  style="color:#0000ff;padding:8px;border-top:dotted 1px #c4c4ff;border-bottom:dotted 1px #c4c4ff;">
+                                </td>
+                                <td colspan ="" align = "center">Method  <input type ="text" name="method" placeholder="e.g BP 2014"> </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="color:#0000ff;padding:8px;border-bottom:solid 1px #c4c4ff;"><b>Acceptance Criteria</b></td>
+                                <td style="color:#0000ff;padding:8px;border-bottom:solid 1px #c4c4ff;"><b>Results</b></td>
+                                <td style="color:#0000ff;padding:8px;border-bottom:solid 1px #c4c4ff;"><b>Comment</b></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" id="min" />Not Less than Tolerance</td>
+                                <td style="color:#0000ff;padding:8px;"><input type="text" min="min_tolerance" id="min_tolerance" name="min_tolerance" placeholder="min%" size="5"  onChange="calc_determination()" /></td>
+                                <td style="color:#0000ff;padding:8px;"><input type="text" min="min_tolerance" id="nlt_min_tolerance_det" name="det_min" size="4" placeholder="min%" onChange="calc_determination()" disabled/> - <input type="text" min="min_tolerance" id="nlt_max_tolerance_det" name="det_max" size="4" placeholder="max%" onChange="calc_determination()" disabled/></td>
+                                <td style="color:#0000ff;padding:8px;"><input type="text" min="min_tolerance" id="min_tolerance_comment" name="min_tolerance_comment" disable/></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" id="max" />Not Greater than Tolerance</td>
+                                <td style="color:#0000ff;padding:8px;"><input type="text" max='max_tolerance' id="max_tolerance" name="max_tolerance" placeholder="max%" size="5"  onChange="calc_determination()"/></td>
+                                <td style="color:#0000ff;padding:8px;"><input type="text" max='max_tolerance' id="ngt_min_tolerance_det" name="det_min" size="4" placeholder="min%" onChange="calc_determination()" disabled/> - <input type="text" max="max_tolerance" id="ngt_max_tolerance_det" name="det_max" size="4" placeholder="max%" onChange="calc_determination()" disabled/></td>
+                                <td style="color:#0000ff;padding:8px;"><input type="text" max='max_tolerance' name="content_comment" disable/></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" id="range" />Tolerance Range</td>
+                                <td style="color:#0000ff;padding:8px;"><input type="text" range="tolerance_range" name="content_from" placeholder="min%" size="5"> - <input type="text" range="tolerance_range" name="content_to" placeholder="max%" size="5"></td>
+                                <td style="color:#0000ff;padding:8px;"><input type="text" range="tolerance_range" id="range_min_tolerance_det" name="det_min" size="4" placeholder="min%" onChange="calc_determination()" disabled/> - <input type="text" id="range_max_tolerance_det" range="tolerance_range" name="det_max" size="4" placeholder="max%" onChange="calc_determination()" disabled/></td>
+                                <td style="color:#0000ff;padding:8px;"><input type="text" range="tolerance_range" name="content_comment" disable/></td>
+                            </tr>
+                            <tr>
+                                <td>RSD %</td>
+                                <td style="color:#0000ff;padding:8px;"></td>
+                                <td style="color:#0000ff;padding:8px;"><input type="text" id="determination_rsd_2" name="determination_sd" onChange="calculator()" disabled/></td>
+                                <td style="color:#0000ff;padding:8px;"><input type="text" name="rsd_comment" disable/></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td>Requirement</td>
+                    <td>Tick</td>
+                    <td>Comment</td>
+                </tr>
+                <tr>
+                    <td>System Suitability Sequence</td>
+                    <td><input type="checkbox" name="sysytem_suitability_sequence" value="Sysytem Suitability Sequence"/></td>
+                    <td><input type="text" name="sysytem_suitability_sequence_comment" size="50"/></td>
+                </tr>
+                <tr>
+                    <td>Sample Injection sequence</td>
+                    <td><input type="checkbox" name="sample_injection_sequence" value="Sample Injection Sequence"></td>
+                    <td><input type="text" name="Sample_injection_sequence_comment" size="50"></td>
+
+                <tr>
+                    <td><b>Chromatography Check List</b></td>
+                </tr>
+            </table>
+
+            <table class="ui table">
+                <tr>
+                    <td><b>Conclusion</b></td>
+                    <td>
+                        <input type="text" name="conclusion" id = "choice" >
+                    </td>
+                    <td  align ="center"> <a  class="btn" id="save_normal_hplc" name ="save_normal_hplc"> Submit</a>
+                        <input type ="button" class="btn" id="clear_form" name ="" value ="Clear Form"></td>
+                </tr>
+            </table>
+
+            </form>
+
+        <script>
+            $('.ui.dropdown').dropdown();
+        </script>
+        {{hplc}}

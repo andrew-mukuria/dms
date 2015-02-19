@@ -5,102 +5,110 @@ app.config(function($stateProvider, $urlRouterProvider) {
     //
     // Now set up the states
     $stateProvider
-    .state('login', {
+        .state('login', {
             url: '/login',
             templateUrl: 'app/partials/users/login.html',
-            controller: function($rootScope) {
-                $rootScope.date = new Date();
-            }
+            controller: 'usersCtrl'
         }).
-     state('lock-screen', {
-            url: '/lock-screen',
-            templateUrl: 'app/partials/users/lock-screen.html',
-            controller: function($rootScope) {
-                $rootScope.date = new Date();
-            }
-        }).
+    state('lock-screen', {
+        url: '/lock-screen',
+        templateUrl: 'app/partials/users/lock-screen.html',
+        controller: function($rootScope) {
+            $rootScope.date = new Date();
+        }
+    }).
     state('dashboard', {
         url: '/dashboard',
         controller: '',
         templateUrl: 'app/partials/global/dashboard.html'
     }).
-    state('knowledge-base', {
-        url: '/knowledge-base',
-        controller: function($rootScope) {
-            $rootScope.title = 'Knowledge Base'
+    state('users', {
+        url: '/users',
+        controller: 'usersCtrl',
+        templateUrl: 'app/partials/users/index.html'
+    }).
+    state('users.view', {
+        url: '/view',
+        controller: function($rootScope,$scope) {
+            $rootScope.title = 'View Profile';
+            $scope.getUsers();
         },
-        templateUrl: 'app/partials/knowledge-base/index.html'
+        templateUrl: 'app/partials/users/form.html'
     }).
-    state('knowledge-base.list', {
+    state('users.list', {
         url: '/list',
-        templateUrl: 'app/partials/knowledge-base/list.html',
-        parent: 'knowledge-base',
         controller: function($rootScope,$scope) {
-            $rootScope.title = 'Members List',
-            $scope.articles=[];
-        }
+            $rootScope.title = 'Users List';
+            $scope.getUsers();
+        },
+        templateUrl: 'app/partials/users/list.html'
     }).
-    state('knowledge-base.add', {
-        url: '/add',
-        templateUrl: 'app/partials/knowledge-base/form.html',
-        parent: 'knowledge-base',
-        controller: function($rootScope) {
-            $rootScope.title = 'Register Member'
-        }
+    state('test-requests', {
+        url: '/test-requests',
+        controller: 'testsCtrl',
+        templateUrl: 'app/partials/test-requests/index.html'
     }).
-    state('knowledge-base.view', {
-        url: '/view',
-        templateUrl: 'app/partials/knowledge-base/form.html',
-        parent: 'knowledge-base',
-        controller: function($rootScope) {
-            $rootScope.title = 'View Member'
-        }
-    }).
-    state('knowledge-base.statistics', {
-        url: '/statistics',
-        templateUrl: 'app/partials/knowledge-base/statistics.html',
-        parent: 'knowledge-base',
-        controller: function($scope) {
-            $scope.totalMembers();
-        }
-    }).
-    state('members', {
-        url: '/members',
-        controller: 'memberCtrl',
-        templateUrl: 'app/partials/members/index.html'
-    }).
-    state('members.list', {
+    state('test-requests.list', {
         url: '/list',
-        templateUrl: 'app/partials/members/list.html',
-        parent: 'members',
-        controller: function($rootScope,$scope) {
-            $rootScope.title = 'Members List';
-            $scope.getMembers();
-        }
+        controller: 'testsCtrl',
+        templateUrl: 'app/partials/test-requests/list.html'
     }).
-    state('members.add', {
-        url: '/add',
-        templateUrl: 'app/partials/members/form.html',
-        parent: 'members',
-        controller: function($rootScope) {
-            $rootScope.title = 'Register Member'
-        }
+    state('tests', {
+        url: '/tests',
+        controller: 'testsCtrl',
+        templateUrl: 'app/partials/tests/index.html'
     }).
-    state('members.view', {
+    state('tests.view', {
         url: '/view',
-        templateUrl: 'app/partials/members/form.html',
-        parent: 'members',
-        controller: function($rootScope) {
-            $rootScope.title = 'View Member'
-        }
+        controller: function($rootScope,$scope) {
+            $rootScope.title = 'View Tests';
+            $scope.getUsers();
+        },
+        templateUrl: 'app/partials/tests/form.html'
     }).
-    state('members.statistics', {
-        url: '/statistics',
-        templateUrl: 'app/partials/members/statistics.html',
-        parent: 'members',
-        controller: function($scope) {
-            $scope.totalMembers();
-        }
+    state('tests.list', {
+        url: '/list',
+        controller: function($rootScope,$scope) {
+            $rootScope.title = 'Tests List';
+            $scope.getTests();
+        },
+        templateUrl: 'app/partials/tests/list.html'
+    }).
+    state('tests.dissolution', {
+        url: '/dissolution',
+        templateUrl: 'app/partials/tests/dissolution/index.html'
+    }).
+    state('tests.dissolution.hplc', {
+        url: '/hplc',
+        templateUrl: 'app/partials/tests/dissolution/hplc.html'
+    }).
+    state('clients', {
+        url: '/clients',
+        controller: 'clientsCtrl',
+        templateUrl: 'app/partials/clients/index.html'
+    }).
+    state('clients.add', {
+        url: '/add',
+        controller: function($rootScope,$scope) {
+            $rootScope.title = 'Register Client';
+            $scope.clientProfile=[];
+        },
+        templateUrl: 'app/partials/clients/form.html'
+    }).
+    state('clients.view', {
+        url: '/view',
+        controller: function($rootScope,$scope) {
+            $rootScope.title = 'View Clients';
+        },
+        templateUrl: 'app/partials/clients/form.html'
+    }).
+    state('clients.list', {
+        url: '/list',
+        controller: function($rootScope,$scope) {
+            $rootScope.title = 'Clients List';
+            $scope.getClients();
+        },
+        templateUrl: 'app/partials/clients/list.html'
     })
 
 });

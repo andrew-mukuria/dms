@@ -1,26 +1,19 @@
 <div class="ui tiered menu">
     <nav class="ui menu" id="main">
         <a class="item" href="" data-transition="push" id="show_side_menu"><i class="icon ion-navicon-round"></i>More</a>
-<a href="" ui-sref="messages" class="item"><i class="icon mail"></i>Messages<div class="ui red round label">{{messages.length}}</div></a>
-<div class="right menu">
-    <div class='item'><i class="icon calendar"></i>{{date | date:'d-MM-yyyy'}}</div>
-<a href="" class="item"><i class="icon ion-log-out"></i>Logout</a>
-</div>
-
-       <!--
-        <a ui-sref="members" class="item members" data-ctrl="members"><i class="icon"></i>Members</a>
-        <a ui-sref="claims" class="item claims" data-ctrl="claims"><i class="icon"></i>Claims</a>
-        <a ui-sref="provider" class="item provider" data-ctrl="provider"><i class="icon"></i>Provider</a>
-        <a ui-sref="benefits" class="item benefits" data-ctrl="benefits"><i class="icon"></i>Benefits</a>
-        <a ui-sref="services" class="item services" data-ctrl="services"><i class="icon"></i>Services</a>
--->
+        <a href="" ui-sref="messages" class="item"><i class="icon mail"></i>Messages<div class="ui red round label">{{messages.length}}</div></a>
+        <div class="right menu">
+            <div class="item">
+                <i class="icon ion-person"></i>{{user[0].fname + ' '+ user[0].lname}}
+            </div>
+            <div class='item'><i class="icon calendar"></i>{{date | date:'d-MM-yyyy'}}</div>
+            <a ui-sref="login" class="item"><i class="icon ion-log-out"></i>Logout</a>
+        </div>
     </nav>
 </div>
 <script>
     $('#show_side_menu').click(function(){
-//        alert('hi');
+        //        alert('hi');
         $('#main-side-menu').sidebar('toggle');
     });
-
-
 </script>

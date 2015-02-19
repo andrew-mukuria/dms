@@ -1,6 +1,6 @@
 {
-  "name": "hais-web-app",
-  "version": "0.2.1",
+  "name": "dms-web-app",
+  "version": "0.0.1",
   "devDependencies": {
     "bower": "1.3.6",
     "grunt": "~0.4.5",
