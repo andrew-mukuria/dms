@@ -5,11 +5,11 @@ app.config(function($stateProvider, $urlRouterProvider) {
     //
     // Now set up the states
     $stateProvider
-        .state('login', {
-            url: '/login',
-            templateUrl: 'app/partials/users/login.html',
-            controller: 'usersCtrl'
-        }).
+    .state('login', {
+        url: '/login',
+        templateUrl: 'app/partials/users/login.html',
+        controller: 'usersCtrl'
+    }).
     state('lock-screen', {
         url: '/lock-screen',
         templateUrl: 'app/partials/users/lock-screen.html',
@@ -29,7 +29,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
     }).
     state('users.view', {
         url: '/view',
-        controller: function($rootScope,$scope) {
+        controller: function($rootScope, $scope) {
             $rootScope.title = 'View Profile';
             $scope.getUsers();
         },
@@ -37,78 +37,67 @@ app.config(function($stateProvider, $urlRouterProvider) {
     }).
     state('users.list', {
         url: '/list',
-        controller: function($rootScope,$scope) {
+        controller: function($rootScope, $scope) {
             $rootScope.title = 'Users List';
             $scope.getUsers();
         },
         templateUrl: 'app/partials/users/list.html'
     }).
-    state('test-requests', {
-        url: '/test-requests',
-        controller: 'testsCtrl',
-        templateUrl: 'app/partials/test-requests/index.html'
+    state('location', {
+        url: '/location',
+        controller: '',
+        templateUrl: 'app/partials/location/index.html'
     }).
-    state('test-requests.list', {
+    state('location.archdiocese', {
+        url: '/archdiocese',
+        controller: '',
+        templateUrl: 'app/partials/location/archdiocese.index.html'
+    }).
+    state('location.diocese', {
+        url: '/diocese',
+        controller: '',
+        templateUrl: 'app/partials/location/diocese.index.html'
+    }).
+    state('location.deanery', {
+        url: '/deanery',
+        controller: '',
+        templateUrl: 'app/partials/location/deanery.index.html'
+    }).
+    state('location.parishes', {
+        url: '/parishes',
+        controller: 'parishesCtrl',
+        templateUrl: 'app/partials/location/parishes.index.html'
+    }).
+    state('location.parishes.list', {
         url: '/list',
-        controller: 'testsCtrl',
-        templateUrl: 'app/partials/test-requests/list.html'
+        controller: function($rootScope, $scope) {
+            $rootScope.title = 'Parish List';
+            $scope.getParishes();
+        },
+        templateUrl: 'app/partials/location/parishes.list.html'
     }).
-    state('tests', {
-        url: '/tests',
-        controller: 'testsCtrl',
-        templateUrl: 'app/partials/tests/index.html'
-    }).
-    state('tests.view', {
+    state('location.parishes.view', {
         url: '/view',
-        controller: function($rootScope,$scope) {
-            $rootScope.title = 'View Tests';
-            $scope.getUsers();
+        controller: function($rootScope, $scope) {
+            $rootScope.title = 'Parish View';
+            $scope.getParishes();
         },
-        templateUrl: 'app/partials/tests/form.html'
+        templateUrl: 'app/partials/location/parishes.view.html'
     }).
-    state('tests.list', {
-        url: '/list',
-        controller: function($rootScope,$scope) {
-            $rootScope.title = 'Tests List';
-            $scope.getTests();
-        },
-        templateUrl: 'app/partials/tests/list.html'
+    state('location.members', {
+        url: '/members',
+        controller: '',
+        templateUrl: 'app/partials/location/members.index.html'
     }).
-    state('tests.dissolution', {
-        url: '/dissolution',
-        templateUrl: 'app/partials/tests/dissolution/index.html'
+    state('location.services', {
+        url: '/services',
+        controller: '',
+        templateUrl: 'app/partials/location/services.index.html'
     }).
-    state('tests.dissolution.hplc', {
-        url: '/hplc',
-        templateUrl: 'app/partials/tests/dissolution/hplc.html'
-    }).
-    state('clients', {
-        url: '/clients',
-        controller: 'clientsCtrl',
-        templateUrl: 'app/partials/clients/index.html'
-    }).
-    state('clients.add', {
+    state('location.services.add', {
         url: '/add',
-        controller: function($rootScope,$scope) {
-            $rootScope.title = 'Register Client';
-            $scope.clientProfile=[];
-        },
-        templateUrl: 'app/partials/clients/form.html'
-    }).
-    state('clients.view', {
-        url: '/view',
-        controller: function($rootScope,$scope) {
-            $rootScope.title = 'View Clients';
-        },
-        templateUrl: 'app/partials/clients/form.html'
-    }).
-    state('clients.list', {
-        url: '/list',
-        controller: function($rootScope,$scope) {
-            $rootScope.title = 'Clients List';
-            $scope.getClients();
-        },
-        templateUrl: 'app/partials/clients/list.html'
+        controller: '',
+        templateUrl: 'app/partials/location/services.add.html'
     })
 
 });
