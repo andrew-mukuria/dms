@@ -48,10 +48,10 @@ app.config(function($stateProvider, $urlRouterProvider) {
     controller: '',
     templateUrl: 'app/partials/location/index.html'
   }).
-  state('location.archdiocese', {
-    url: '/archdiocese',
+  state('location.archdioceses', {
+    url: '/archdioceses',
     controller: '',
-    templateUrl: 'app/partials/location/archdiocese.index.html'
+    templateUrl: 'app/partials/location/archdioceses.index.html'
   }).
   state('location.dioceses', {
     url: '/dioceses',
@@ -74,10 +74,10 @@ app.config(function($stateProvider, $urlRouterProvider) {
     },
     templateUrl: 'app/partials/location/dioceses.view.html'
   }).
-  state('location.deanery', {
+  state('location.deaneries', {
     url: '/deanery',
     controller: '',
-    templateUrl: 'app/partials/location/deanery.index.html'
+    templateUrl: 'app/partials/location/deaneries.index.html'
   }).
   state('location.parishes', {
     url: '/parishes',
@@ -107,8 +107,32 @@ app.config(function($stateProvider, $urlRouterProvider) {
   }).
   state('location.services', {
     url: '/services',
-    controller: '',
+    controller: 'servicesCtrl',
     templateUrl: 'app/partials/location/services.index.html'
+  }).
+  state('location.services.list', {
+    url: '/list',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Services List';
+      $scope.getDioceses();
+    },
+    templateUrl: 'app/partials/location/services.list.html'
+  }).
+  state('location.services.view', {
+    url: '/view',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Services View';
+      $scope.getServices();
+    },
+    templateUrl: 'app/partials/location/services.view.html'
+  }).
+  state('location.services.today', {
+    url: '/today',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Services Today';
+      $scope.getServices();
+    },
+    templateUrl: 'app/partials/location/services.today.html'
   }).
   state('location.services.add', {
     url: '/add',

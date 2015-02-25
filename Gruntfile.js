@@ -31,7 +31,7 @@ module.exports = function(grunt) {
 
     html2js: {
       dist: {
-        src: ['app/partials/**/*.html'],
+        src: ['app/partials/*.html'],
         dest: 'tmp/partials.js'
       }
     },
@@ -76,7 +76,9 @@ module.exports = function(grunt) {
       },
       min: {
         files: ['Gruntfile.js', 'app/*.js', '*.html'],
-        tasks: ['jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'clean:temp', 'uglify:dist'],
+        tasks: ['jshint', 'karma:unit', 'html2js:dist', 'concat:dist',
+          'clean:temp', 'uglify:dist'
+        ],
         options: {
           atBegin: true
         }
@@ -150,7 +152,8 @@ module.exports = function(grunt) {
   grunt.registerTask('dev', ['connect:server', 'watch:dev']);
   grunt.registerTask('test', ['bower', 'jshint', 'karma:continuous']);
   grunt.registerTask('minified', ['bower', 'connect:server', 'watch:min']);
-  grunt.registerTask('package', ['bower', 'html2js:dist', 'concat:dist', 'uglify:dist',
-  'clean:temp', 'compress:dist'
+  grunt.registerTask('package', ['bower', 'html2js:dist', 'concat:dist',
+    'uglify:dist',
+    'clean:temp', 'compress:dist'
   ]);
 };
