@@ -3,7 +3,7 @@
   <thead>
     <tr>
       <th><i class="icon ion-person"></i>In Charge</th>
-      <th><i class="icon ion-person"></i>Location</th>
+      <th><i class="icon fa fa-building"></i>Name</th>
     </tr>
 
   </thead>
@@ -16,9 +16,9 @@
     </tr>
     <tr ng-repeat="row in displayedCollection"  st-select-row="row">
       <td>{{row.in_charge}}</td>
-      <td>{{row.location}}</td>
+      <td>{{row.name}}</td>
       <td width="150">
-        <button type="button" ng-click="getParish(row)" class="ui blue tiny button icon">
+        <button type="button" ng-click="getDiocese(row)" class="ui blue tiny button icon">
           <i class="icon ion-more">
           </i>
         </button>

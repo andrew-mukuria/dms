@@ -56,6 +56,58 @@ app.controller(
 	}]
 );;// I control the main demo.
 app.controller(
+  "diocesesCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
+    'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
+    function(scope, rootScope, filter, timeout, DMSRestangular, state,
+      localStorageService, MySessionService) {
+
+      getDioceseCount();
+      rootScope.user = MySessionService.getLoggedUser();
+
+      scope.getDiocese = function getDiocese(newDiocese) {
+        console.log(newDiocese);
+        scope.dioceseProfile = newDiocese;
+        state.go('location.dioceses.view');
+      }
+
+      scope.getDioceses = function getDioceses() {
+        var Dioceses = DMSRestangular.all('dioceses');
+        // This will query /accounts and return a promise.
+        Dioceses.customGET('').then(function(dioceses) {
+          //console.log(users);
+          scope.rowCollection = dioceses;
+          scope.displayedCollection = [].concat(scope.rowCollection);
+        });
+      }
+
+      scope.login = function login() {
+        rootScope.user = [];
+        var user = DMSRestangular.one('user').one('username', scope.formData
+          .username).one('password', scope.formData.password).one(
+          'format', 'json');
+        // This will query /accounts and return a promise.
+        user.customGET('').then(function(userObj) {
+          localStorageService.set('meds_user', userObj);
+          state.go('users');
+
+        });
+      }
+
+      function getDioceseCount() {
+        var Dioceses = DMSRestangular.all('dioceses');
+        // This will query /accounts and return a promise.
+        Dioceses.customGET('').then(function(dioceses) {
+          // console.log(users);
+          scope.records = dioceses.length;
+          scope.recordsPerPage = 5;
+          scope.pages = Math.ceil(scope.records / scope.recordsPerPage);
+        });
+      }
+    }
+  ]
+);
+;// I control the main demo.
+app.controller(
     "memberCtrl", ['$scope', '$filter','$timeout', 'MedsRestangular','$state', function(scope, filter,timeout, MedsRestangular,state) {
         getMemberCount();
         
@@ -273,106 +325,122 @@ return {
  };
 }]);
 ;app.config(function($stateProvider, $urlRouterProvider) {
-    //
-    // For any unmatched url, redirect to /state1
-    $urlRouterProvider.otherwise("/login");
-    //
-    // Now set up the states
-    $stateProvider
+  //
+  // For any unmatched url, redirect to /state1
+  $urlRouterProvider.otherwise("/login");
+  //
+  // Now set up the states
+  $stateProvider
     .state('login', {
-        url: '/login',
-        templateUrl: 'app/partials/users/login.html',
-        controller: 'usersCtrl'
+      url: '/login',
+      templateUrl: 'app/partials/users/login.html',
+      controller: 'usersCtrl'
     }).
-    state('lock-screen', {
-        url: '/lock-screen',
-        templateUrl: 'app/partials/users/lock-screen.html',
-        controller: function($rootScope) {
-            $rootScope.date = new Date();
-        }
-    }).
-    state('dashboard', {
-        url: '/dashboard',
-        controller: '',
-        templateUrl: 'app/partials/global/dashboard.html'
-    }).
-    state('users', {
-        url: '/users',
-        controller: 'usersCtrl',
-        templateUrl: 'app/partials/users/index.html'
-    }).
-    state('users.view', {
-        url: '/view',
-        controller: function($rootScope, $scope) {
-            $rootScope.title = 'View Profile';
-            $scope.getUsers();
-        },
-        templateUrl: 'app/partials/users/form.html'
-    }).
-    state('users.list', {
-        url: '/list',
-        controller: function($rootScope, $scope) {
-            $rootScope.title = 'Users List';
-            $scope.getUsers();
-        },
-        templateUrl: 'app/partials/users/list.html'
-    }).
-    state('location', {
-        url: '/location',
-        controller: '',
-        templateUrl: 'app/partials/location/index.html'
-    }).
-    state('location.archdiocese', {
-        url: '/archdiocese',
-        controller: '',
-        templateUrl: 'app/partials/location/archdiocese.index.html'
-    }).
-    state('location.diocese', {
-        url: '/diocese',
-        controller: '',
-        templateUrl: 'app/partials/location/diocese.index.html'
-    }).
-    state('location.deanery', {
-        url: '/deanery',
-        controller: '',
-        templateUrl: 'app/partials/location/deanery.index.html'
-    }).
-    state('location.parishes', {
-        url: '/parishes',
-        controller: 'parishesCtrl',
-        templateUrl: 'app/partials/location/parishes.index.html'
-    }).
-    state('location.parishes.list', {
-        url: '/list',
-        controller: function($rootScope, $scope) {
-            $rootScope.title = 'Parish List';
-            $scope.getParishes();
-        },
-        templateUrl: 'app/partials/location/parishes.list.html'
-    }).
-    state('location.parishes.view', {
-        url: '/view',
-        controller: function($rootScope, $scope) {
-            $rootScope.title = 'Parish View';
-            $scope.getParishes();
-        },
-        templateUrl: 'app/partials/location/parishes.view.html'
-    }).
-    state('location.members', {
-        url: '/members',
-        controller: '',
-        templateUrl: 'app/partials/location/members.index.html'
-    }).
-    state('location.services', {
-        url: '/services',
-        controller: '',
-        templateUrl: 'app/partials/location/services.index.html'
-    }).
-    state('location.services.add', {
-        url: '/add',
-        controller: '',
-        templateUrl: 'app/partials/location/services.add.html'
-    })
+  state('lock-screen', {
+    url: '/lock-screen',
+    templateUrl: 'app/partials/users/lock-screen.html',
+    controller: function($rootScope) {
+      $rootScope.date = new Date();
+    }
+  }).
+  state('dashboard', {
+    url: '/dashboard',
+    controller: '',
+    templateUrl: 'app/partials/global/dashboard.html'
+  }).
+  state('users', {
+    url: '/users',
+    controller: 'usersCtrl',
+    templateUrl: 'app/partials/users/index.html'
+  }).
+  state('users.view', {
+    url: '/view',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'View Profile';
+      $scope.getUsers();
+    },
+    templateUrl: 'app/partials/users/form.html'
+  }).
+  state('users.list', {
+    url: '/list',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Users List';
+      $scope.getUsers();
+    },
+    templateUrl: 'app/partials/users/list.html'
+  }).
+  state('location', {
+    url: '/location',
+    controller: '',
+    templateUrl: 'app/partials/location/index.html'
+  }).
+  state('location.archdiocese', {
+    url: '/archdiocese',
+    controller: '',
+    templateUrl: 'app/partials/location/archdiocese.index.html'
+  }).
+  state('location.dioceses', {
+    url: '/dioceses',
+    controller: 'diocesesCtrl',
+    templateUrl: 'app/partials/location/dioceses.index.html'
+  }).
+  state('location.dioceses.list', {
+    url: '/list',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Diocese List';
+      $scope.getDioceses();
+    },
+    templateUrl: 'app/partials/location/dioceses.list.html'
+  }).
+  state('location.dioceses.view', {
+    url: '/view',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Diocese View';
+      $scope.getDioceses();
+    },
+    templateUrl: 'app/partials/location/dioceses.view.html'
+  }).
+  state('location.deanery', {
+    url: '/deanery',
+    controller: '',
+    templateUrl: 'app/partials/location/deanery.index.html'
+  }).
+  state('location.parishes', {
+    url: '/parishes',
+    controller: 'parishesCtrl',
+    templateUrl: 'app/partials/location/parishes.index.html'
+  }).
+  state('location.parishes.list', {
+    url: '/list',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Parish List';
+      $scope.getParishes();
+    },
+    templateUrl: 'app/partials/location/parishes.list.html'
+  }).
+  state('location.parishes.view', {
+    url: '/view',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Parish View';
+      $scope.getParishes();
+    },
+    templateUrl: 'app/partials/location/parishes.view.html'
+  }).
+  state('location.members', {
+    url: '/members',
+    controller: '',
+    templateUrl: 'app/partials/location/members.index.html'
+  }).
+  state('location.services', {
+    url: '/services',
+    controller: '',
+    templateUrl: 'app/partials/location/services.index.html'
+  }).
+  state('location.services.add', {
+    url: '/add',
+    controller: '',
+    templateUrl: 'app/partials/location/services.add.html'
+  })
 
 });
 ;
@@ -446,7 +514,7 @@ app.service("MySessionService",
 
 }
            );
-;angular.module('templates-dist', ['../app/partials/clients/form.html', '../app/partials/clients/index.html', '../app/partials/clients/list.html', '../app/partials/dashboard.html', '../app/partials/global/dashboard.html', '../app/partials/global/forms/side-menu.html', '../app/partials/global/head.html', '../app/partials/global/header.html', '../app/partials/global/headerCrud.html', '../app/partials/global/rails.html', '../app/partials/global/side-menu.html', '../app/partials/knowledge-base/form.html', '../app/partials/knowledge-base/index.html', '../app/partials/knowledge-base/list.html', '../app/partials/location/archdiocese.index.html', '../app/partials/location/deanery.index.html', '../app/partials/location/diocese.index.html', '../app/partials/location/index.html', '../app/partials/location/members.index.html', '../app/partials/location/parishes.index.html', '../app/partials/location/parishes.list.html', '../app/partials/location/parishes.view.html', '../app/partials/location/services.add.html', '../app/partials/location/services.index.html', '../app/partials/test-requests/index.html', '../app/partials/test-requests/list.html', '../app/partials/tests/dissolution/form.html', '../app/partials/tests/dissolution/hplc.html', '../app/partials/tests/dissolution/index.html', '../app/partials/tests/index.html', '../app/partials/tests/list.html', '../app/partials/users/form.html', '../app/partials/users/index.html', '../app/partials/users/list.html', '../app/partials/users/lock-screen.html', '../app/partials/users/login.html', '../app/partials/users/statistics.html']);
+;angular.module('templates-dist', ['../app/partials/clients/form.html', '../app/partials/clients/index.html', '../app/partials/clients/list.html', '../app/partials/dashboard.html', '../app/partials/global/dashboard.html', '../app/partials/global/forms/side-menu.html', '../app/partials/global/head.html', '../app/partials/global/header.html', '../app/partials/global/headerCrud.html', '../app/partials/global/rails.html', '../app/partials/global/side-menu.html', '../app/partials/knowledge-base/form.html', '../app/partials/knowledge-base/index.html', '../app/partials/knowledge-base/list.html', '../app/partials/location/archdiocese.index.html', '../app/partials/location/deanery.index.html', '../app/partials/location/dioceses.index.html', '../app/partials/location/dioceses.list.html', '../app/partials/location/dioceses.view.html', '../app/partials/location/index.html', '../app/partials/location/members.index.html', '../app/partials/location/parishes.index.html', '../app/partials/location/parishes.list.html', '../app/partials/location/parishes.view.html', '../app/partials/location/services.add.html', '../app/partials/location/services.index.html', '../app/partials/test-requests/index.html', '../app/partials/test-requests/list.html', '../app/partials/tests/dissolution/form.html', '../app/partials/tests/dissolution/hplc.html', '../app/partials/tests/dissolution/index.html', '../app/partials/tests/index.html', '../app/partials/tests/list.html', '../app/partials/users/form.html', '../app/partials/users/index.html', '../app/partials/users/list.html', '../app/partials/users/lock-screen.html', '../app/partials/users/login.html', '../app/partials/users/statistics.html']);
 
 angular.module("../app/partials/clients/form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../app/partials/clients/form.html",
@@ -859,51 +927,147 @@ angular.module("../app/partials/location/archdiocese.index.html", []).run(["$tem
   $templateCache.put("../app/partials/location/archdiocese.index.html",
     "<!-- Archidiocese Index -->\n" +
     "<nav class=\"ui inverted blue menu\">\n" +
-    "    <div href=\"\" ui-sref=\"location.archdiocese\" class=\"item\">\n" +
-    "    	<b>\n" +
-    "    	<i class=\"icon building\"></i>\n" +
-    "    	Archidiocese\n" +
-    "    	</b>\n" +
-    "    	</div>\n" +
-    "     <a is-active-nav class=\"item\" ui-sref=\"location.archdiocese.statistics\"><i class=\"icon ion-arrow-graph-up-right\"></i>Statistics</a>\n" +
-    "    <a is-active-nav class=\"item\" ui-sref=\"location.archdiocese.list\"><i class=\"icon fa fa-list\"></i>List Archidiocese</a>\n" +
-    "    <a is-active-nav class=\"item\" ui-sref=\"location.archdiocese.add\"><i class=\"icon fa fa-plus\"></i>Register Archidiocese</a>\n" +
+    "  <div href=\"\" ui-sref=\"location.archdiocese\" class=\"item\">\n" +
+    "    <b>\n" +
+    "      <i class=\"icon building\"></i>\n" +
+    "      Archidiocese\n" +
+    "    </b>\n" +
+    "  </div>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.archdiocese.statistics\"><i class=\"icon ion-arrow-graph-up-right\"></i>Statistics</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.archdiocese.list\"><i class=\"icon fa fa-list\"></i>List Archidiocese</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.archdiocese.add\"><i class=\"icon fa fa-plus\"></i>Register Archidiocese</a>\n" +
     "</nav>\n" +
-    "<div ui-view></div>");
+    "<div ui-view></div>\n" +
+    "");
 }]);
 
 angular.module("../app/partials/location/deanery.index.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../app/partials/location/deanery.index.html",
     "<!-- Deanery Index -->\n" +
     "<nav class=\"ui inverted blue menu\">\n" +
-    "    <div href=\"\" ui-sref=\"location.deanery\" class=\"item\">\n" +
-    "    	<b>\n" +
-    "    	<i class=\"icon building\"></i>\n" +
-    "    	Deanery\n" +
-    "    	</b>\n" +
-    "    	</div>\n" +
-    "     <a is-active-nav class=\"item\" ui-sref=\"location.deanery.statistics\"><i class=\"icon ion-arrow-graph-up-right\"></i>Statistics</a>\n" +
-    "    <a is-active-nav class=\"item\" ui-sref=\"location.deanery.list\"><i class=\"icon fa fa-list\"></i>List Deanery</a>\n" +
-    "    <a is-active-nav class=\"item\" ui-sref=\"location.deanery.add\"><i class=\"icon fa fa-plus\"></i>Register Deanery</a>\n" +
+    "  <div href=\"\" ui-sref=\"location.deanery\" class=\"item\">\n" +
+    "    <b>\n" +
+    "      <i class=\"icon building\"></i>\n" +
+    "      Deanery\n" +
+    "    </b>\n" +
+    "  </div>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.deanery.statistics\"><i class=\"icon ion-arrow-graph-up-right\"></i>Statistics</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.deanery.list\"><i class=\"icon fa fa-list\"></i>List Deanery</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.deanery.add\"><i class=\"icon fa fa-plus\"></i>Register Deanery</a>\n" +
     "</nav>\n" +
-    "<div ui-view></div>");
+    "<div ui-view></div>\n" +
+    "");
 }]);
 
-angular.module("../app/partials/location/diocese.index.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("../app/partials/location/diocese.index.html",
+angular.module("../app/partials/location/dioceses.index.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../app/partials/location/dioceses.index.html",
     "<!-- Diocese Index -->\n" +
     "<nav class=\"ui inverted blue menu\">\n" +
-    "    <div href=\"\" ui-sref=\"location.diocese\" class=\"item\">\n" +
-    "    	<b>\n" +
-    "    	<i class=\"icon building\"></i>\n" +
-    "    	Diocese\n" +
-    "    	</b>\n" +
-    "    	</div>\n" +
-    "     <a is-active-nav class=\"item\" ui-sref=\"location.diocese.statistics\"><i class=\"icon ion-arrow-graph-up-right\"></i>Statistics</a>\n" +
-    "    <a is-active-nav class=\"item\" ui-sref=\"location.diocese.list\"><i class=\"icon fa fa-list\"></i>List Diocese</a>\n" +
-    "    <a is-active-nav class=\"item\" ui-sref=\"location.diocese.add\"><i class=\"icon fa fa-plus\"></i>Register Diocese</a>\n" +
+    "  <div href=\"\" ui-sref=\"location.dioceses\" class=\"item\">\n" +
+    "    <b>\n" +
+    "      <i class=\"icon building\"></i>\n" +
+    "      Dioceses\n" +
+    "    </b>\n" +
+    "  </div>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.dioceses.statistics\"><i class=\"icon ion-arrow-graph-up-right\"></i>Statistics</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.dioceses.list\"><i class=\"icon fa fa-list\"></i>List Diocese</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.dioceses.add\"><i class=\"icon fa fa-plus\"></i>Register Diocese</a>\n" +
     "</nav>\n" +
-    "<div ui-view></div>");
+    "<div ui-view></div>\n" +
+    "");
+}]);
+
+angular.module("../app/partials/location/dioceses.list.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../app/partials/location/dioceses.list.html",
+    "<!-- Parishes' List -->\n" +
+    "<table class=\"ui table celled compact bordered\" st-safe-src=\"rowCollection\" st-table=\"displayedCollection\">\n" +
+    "  <thead>\n" +
+    "    <tr>\n" +
+    "      <th><i class=\"icon ion-person\"></i>In Charge</th>\n" +
+    "      <th><i class=\"icon fa fa-building\"></i>Name</th>\n" +
+    "    </tr>\n" +
+    "\n" +
+    "  </thead>\n" +
+    "  <tbody>\n" +
+    "    <tr>\n" +
+    "      <td class=\"ui input\" ><input st-search=\"'in_charge'\" placeholder=\"Search...\" type=\"search\"/></td>\n" +
+    "      <td class=\"ui input\" ><input st-search=\"'location'\" placeholder=\"Search...\" type=\"search\"/></td>\n" +
+    "\n" +
+    "      <td></td>\n" +
+    "    </tr>\n" +
+    "    <tr ng-repeat=\"row in displayedCollection\"  st-select-row=\"row\">\n" +
+    "      <td>{{row.in_charge}}</td>\n" +
+    "      <td>{{row.name}}</td>\n" +
+    "      <td width=\"150\">\n" +
+    "        <button type=\"button\" ng-click=\"getDiocese(row)\" class=\"ui blue tiny button icon\">\n" +
+    "          <i class=\"icon ion-more\">\n" +
+    "          </i>\n" +
+    "        </button>\n" +
+    "        <button type=\"button\" ng-click=\"\" class=\"ui red tiny button icon\">\n" +
+    "          <i class=\"icon ion-minus-circled\">\n" +
+    "          </i>\n" +
+    "        </button>\n" +
+    "\n" +
+    "      </td>\n" +
+    "    </tr>\n" +
+    "  </tbody>\n" +
+    "  <tfoot>\n" +
+    "    <tr>\n" +
+    "      <th colspan=\"1\">{{records}} Records</th>\n" +
+    "      <th colspan=\"5\">\n" +
+    "        <div st-pagination=\"\" st-items-by-page=\"recordsPerPage\" st-displayed-pages=\"pages\"></div>\n" +
+    "      </th>\n" +
+    "    </tr>\n" +
+    "  </tfoot>\n" +
+    "</table>\n" +
+    "");
+}]);
+
+angular.module("../app/partials/location/dioceses.view.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../app/partials/location/dioceses.view.html",
+    "<div class=\"ui grid\">\n" +
+    "  <div class=\"twelve wide column\">\n" +
+    "    <!-- Form -->\n" +
+    "    <form class=\"ui form ui segment\" id=\"memberForm\" action=\"\" method=\"post\">\n" +
+    "      <div class=\"fields\">\n" +
+    "        <div class=\"field eight wide required\">\n" +
+    "          <label>Name</label>\n" +
+    "          <div class=\"ui icon left input\">\n" +
+    "            <i class=\"icon building\"></i>\n" +
+    "            <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"dioceseProfile.name\"/>\n" +
+    "          </div>\n" +
+    "\n" +
+    "        </div>\n" +
+    "        <div class=\"field left icon eight wide required\">\n" +
+    "          <label>In Charge</label>\n" +
+    "          <div class=\"ui icon left input\">\n" +
+    "            <i class=\"icon ion-person\"></i>\n" +
+    "            <input name=\"email\" id=\"email\" type=\"text\" ng-model=\"dioceseProfile.in_charge\"/>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <!--\n" +
+    "      <div class=\"fields\">\n" +
+    "\n" +
+    "    </div>\n" +
+    "  -->\n" +
+    "  <div class=\"ui error message\"></div>\n" +
+    "</form>\n" +
+    "\n" +
+    "</div>\n" +
+    "<div class=\"four wide column\">\n" +
+    "  <div class=\"ui segment\">\n" +
+    "    <div class=\"ui statistic\" id=\"total\">\n" +
+    "      <div class=\"value\">\n" +
+    "        {{records}}\n" +
+    "      </div>\n" +
+    "      <div class=\"label\">\n" +
+    "        <i class=\"icon database\"></i>Total Records\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "");
 }]);
 
 angular.module("../app/partials/location/index.html", []).run(["$templateCache", function($templateCache) {
@@ -913,21 +1077,21 @@ angular.module("../app/partials/location/index.html", []).run(["$templateCache",
     "</header>\n" +
     "\n" +
     "<div class=\"centered within\">\n" +
-    "<div class=\"ui grid\">\n" +
+    "  <div class=\"ui grid\">\n" +
     "    <div class=\"column four wide\">\n" +
-    "        <div class=\"ui inverted blue vertical menu\">\n" +
-    "            <a ui-sref=\"location.archdiocese\" class=\"item\">Archdiocese<i class='icon chevron right'></i></a>\n" +
-    "            <a ui-sref=\"location.diocese\" class=\"item\">Diocese<i class='icon chevron right'></i></a>\n" +
-    "            <a ui-sref=\"location.deanery\" class=\"item\">Deanery<i class='icon chevron right'></i></a>\n" +
-    "            <a ui-sref=\"location.parishes\" class=\"item\">Parishes<i class='icon chevron right'></i></a>\n" +
-    "            <a ui-sref=\"location.members\" class=\"item\">Members<i class='icon chevron right'></i></a>\n" +
-    "            <a ui-sref=\"location.services\" class=\"item\">Services<i class='icon chevron right'></i></a>\n" +
-    "        </div>\n" +
+    "      <div class=\"ui inverted blue vertical menu\">\n" +
+    "        <a ui-sref=\"location.archdioceses\" class=\"item\">Archdiocese<i class='icon chevron right'></i></a>\n" +
+    "        <a ui-sref=\"location.dioceses\" class=\"item\">Dioceses<i class='icon chevron right'></i></a>\n" +
+    "        <a ui-sref=\"location.deaneries\" class=\"item\">Deaneries<i class='icon chevron right'></i></a>\n" +
+    "        <a ui-sref=\"location.parishes\" class=\"item\">Parishes<i class='icon chevron right'></i></a>\n" +
+    "        <a ui-sref=\"location.members\" class=\"item\">Members<i class='icon chevron right'></i></a>\n" +
+    "        <a ui-sref=\"location.services\" class=\"item\">Services<i class='icon chevron right'></i></a>\n" +
+    "      </div>\n" +
     "    </div>\n" +
     "    <div class=\"column twelve wide\">\n" +
-    "        <div ui-view></div>\n" +
+    "      <div ui-view></div>\n" +
     "    </div>\n" +
-    "    </div>\n" +
+    "  </div>\n" +
     "</div>\n" +
     "");
 }]);
@@ -936,32 +1100,33 @@ angular.module("../app/partials/location/members.index.html", []).run(["$templat
   $templateCache.put("../app/partials/location/members.index.html",
     "<!-- Members Index -->\n" +
     "<nav class=\"ui inverted blue menu\">\n" +
-    "    <div href=\"\" ui-sref=\"location.members\" class=\"item\">\n" +
-    "    	<b>\n" +
-    "    	<i class=\"icon ion-ios-people\"></i>\n" +
-    "    	Members\n" +
-    "    	</b>\n" +
-    "    	</div>\n" +
-    "     <a is-active-nav class=\"item\" ui-sref=\"location.members.statistics\"><i class=\"icon ion-arrow-graph-up-right\"></i>Statistics</a>\n" +
-    "    <a is-active-nav class=\"item\" ui-sref=\"location.members.list\"><i class=\"icon fa fa-list\"></i>List Members</a>\n" +
-    "    <a is-active-nav class=\"item\" ui-sref=\"location.members.add\"><i class=\"icon fa fa-plus\"></i>Register Members</a>\n" +
+    "  <div href=\"\" ui-sref=\"location.members\" class=\"item\">\n" +
+    "    <b>\n" +
+    "      <i class=\"icon ion-ios-people\"></i>\n" +
+    "      Members\n" +
+    "    </b>\n" +
+    "  </div>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.members.statistics\"><i class=\"icon ion-arrow-graph-up-right\"></i>Statistics</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.members.list\"><i class=\"icon fa fa-list\"></i>List Members</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.members.add\"><i class=\"icon fa fa-plus\"></i>Register Members</a>\n" +
     "</nav>\n" +
-    "<div ui-view></div>");
+    "<div ui-view></div>\n" +
+    "");
 }]);
 
 angular.module("../app/partials/location/parishes.index.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../app/partials/location/parishes.index.html",
     "<!-- Parish Index -->\n" +
     "<nav class=\"ui inverted blue menu\">\n" +
-    "    <div href=\"\" ui-sref=\"location.parish\" class=\"item\">\n" +
-    "        <b>\n" +
-    "            <i class=\"icon building\"></i>\n" +
-    "            Parishes\n" +
-    "        </b>\n" +
-    "    </div>\n" +
-    "    <a is-active-nav class=\"item\" ui-sref=\"location.parishes.statistics\"><i class=\"icon ion-arrow-graph-up-right\"></i>Statistics</a>\n" +
-    "    <a is-active-nav class=\"item\" ui-sref=\"location.parishes.list\"><i class=\"icon fa fa-list\"></i>List Parishes</a>\n" +
-    "    <a is-active-nav class=\"item\" ui-sref=\"location.parishes.add\"><i class=\"icon fa fa-plus\"></i>Register Parish</a>\n" +
+    "  <div href=\"\" ui-sref=\"location.parish\" class=\"item\">\n" +
+    "    <b>\n" +
+    "      <i class=\"icon building\"></i>\n" +
+    "      Parishes\n" +
+    "    </b>\n" +
+    "  </div>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.parishes.statistics\"><i class=\"icon ion-arrow-graph-up-right\"></i>Statistics</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.parishes.list\"><i class=\"icon fa fa-list\"></i>List Parishes</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.parishes.add\"><i class=\"icon fa fa-plus\"></i>Register Parish</a>\n" +
     "</nav>\n" +
     "<div ui-view></div>\n" +
     "");
@@ -971,44 +1136,44 @@ angular.module("../app/partials/location/parishes.list.html", []).run(["$templat
   $templateCache.put("../app/partials/location/parishes.list.html",
     "<!-- Parishes' List -->\n" +
     "<table class=\"ui table celled compact bordered\" st-safe-src=\"rowCollection\" st-table=\"displayedCollection\">\n" +
-    "    <thead>\n" +
-    "        <tr>\n" +
-    "            <th><i class=\"icon ion-person\"></i>In Charge</th>\n" +
-    "            <th><i class=\"icon ion-person\"></i>Location</th>\n" +
-    "        </tr>\n" +
-    "\n" +
-    "    </thead>\n" +
-    "    <tbody>\n" +
+    "  <thead>\n" +
     "    <tr>\n" +
-    "        <td class=\"ui input\" ><input st-search=\"'in_charge'\" placeholder=\"Search...\" type=\"search\"/></td>\n" +
-    "        <td class=\"ui input\" ><input st-search=\"'location'\" placeholder=\"Search...\" type=\"search\"/></td>\n" +
+    "      <th><i class=\"icon ion-person\"></i>In Charge</th>\n" +
+    "      <th><i class=\"icon ion-person\"></i>Location</th>\n" +
+    "    </tr>\n" +
     "\n" +
-    "        <td></td>\n" +
-    "        </tr>\n" +
-    "        <tr ng-repeat=\"row in displayedCollection\"  st-select-row=\"row\">\n" +
-    "            <td>{{row.in_charge}}</td>\n" +
-    "            <td>{{row.location}}</td>\n" +
-    "            <td width=\"150\">\n" +
-    "            <button type=\"button\" ng-click=\"getParish(row)\" class=\"ui blue tiny button icon\">\n" +
-    "                <i class=\"icon ion-more\">\n" +
-    "                </i>\n" +
-    "            </button>\n" +
-    "            <button type=\"button\" ng-click=\"\" class=\"ui red tiny button icon\">\n" +
-    "                <i class=\"icon ion-minus-circled\">\n" +
-    "                </i>\n" +
-    "            </button>\n" +
+    "  </thead>\n" +
+    "  <tbody>\n" +
+    "    <tr>\n" +
+    "      <td class=\"ui input\" ><input st-search=\"'in_charge'\" placeholder=\"Search...\" type=\"search\"/></td>\n" +
+    "      <td class=\"ui input\" ><input st-search=\"'location'\" placeholder=\"Search...\" type=\"search\"/></td>\n" +
     "\n" +
-    "            </td>\n" +
-    "        </tr>\n" +
-    "    </tbody>\n" +
-    "     <tfoot>\n" +
-    "        	<tr>\n" +
-    "        		<th colspan=\"1\">{{records}} Records</th>\n" +
-    "                <th colspan=\"5\">\n" +
-    "                    <div st-pagination=\"\" st-items-by-page=\"recordsPerPage\" st-displayed-pages=\"pages\"></div>\n" +
-    "                </th>\n" +
-    "        	</tr>\n" +
-    "        </tfoot>\n" +
+    "      <td></td>\n" +
+    "    </tr>\n" +
+    "    <tr ng-repeat=\"row in displayedCollection\"  st-select-row=\"row\">\n" +
+    "      <td>{{row.in_charge}}</td>\n" +
+    "      <td>{{row.location}}</td>\n" +
+    "      <td width=\"150\">\n" +
+    "        <button type=\"button\" ng-click=\"getParish(row)\" class=\"ui blue tiny button icon\">\n" +
+    "          <i class=\"icon ion-more\">\n" +
+    "          </i>\n" +
+    "        </button>\n" +
+    "        <button type=\"button\" ng-click=\"\" class=\"ui red tiny button icon\">\n" +
+    "          <i class=\"icon ion-minus-circled\">\n" +
+    "          </i>\n" +
+    "        </button>\n" +
+    "\n" +
+    "      </td>\n" +
+    "    </tr>\n" +
+    "  </tbody>\n" +
+    "  <tfoot>\n" +
+    "    <tr>\n" +
+    "      <th colspan=\"1\">{{records}} Records</th>\n" +
+    "      <th colspan=\"5\">\n" +
+    "        <div st-pagination=\"\" st-items-by-page=\"recordsPerPage\" st-displayed-pages=\"pages\"></div>\n" +
+    "      </th>\n" +
+    "    </tr>\n" +
+    "  </tfoot>\n" +
     "</table>\n" +
     "");
 }]);
@@ -1016,54 +1181,52 @@ angular.module("../app/partials/location/parishes.list.html", []).run(["$templat
 angular.module("../app/partials/location/parishes.view.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../app/partials/location/parishes.view.html",
     "<div class=\"ui grid\">\n" +
-    "    <div class=\"twelve wide column\">\n" +
-    "        <!-- Form -->\n" +
-    "        <form class=\"ui form ui segment\" id=\"memberForm\" action=\"\" method=\"post\">\n" +
-    "            <div class=\"fields\">\n" +
-    "                <div class=\"field eight wide required\">\n" +
-    "                    <label>Name</label>\n" +
-    "                    <div class=\"ui icon left input\">\n" +
-    "                        <i class=\"icon building\"></i>\n" +
-    "                        <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"parishProfile.name\"/>\n" +
-    "                    </div>\n" +
+    "  <div class=\"twelve wide column\">\n" +
+    "    <!-- Form -->\n" +
+    "    <form class=\"ui form ui segment\" id=\"memberForm\" action=\"\" method=\"post\">\n" +
+    "      <div class=\"fields\">\n" +
+    "        <div class=\"field eight wide required\">\n" +
+    "          <label>Name</label>\n" +
+    "          <div class=\"ui icon left input\">\n" +
+    "            <i class=\"icon building\"></i>\n" +
+    "            <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"parishProfile.name\"/>\n" +
+    "          </div>\n" +
     "\n" +
-    "                </div>\n" +
-    "                <div class=\"field eight wide required\">\n" +
-    "                    <label>Location</label>\n" +
-    "                    <div class=\"ui icon left input\">\n" +
-    "                        <i class=\"icon map\"></i>\n" +
-    "                        <input name=\"lname\" id=\"lname\" type=\"text\" ng-model=\"parishProfile.location\"/>\n" +
-    "                    </div>\n" +
-    "\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "            <div class=\"fields\">\n" +
-    "                <div class=\"field left icon eight wide required\">\n" +
-    "                    <label>In Charge</label>\n" +
-    "                    <div class=\"ui icon left input\">\n" +
-    "                        <i class=\"icon ion-person\"></i>\n" +
-    "                        <input name=\"email\" id=\"email\" type=\"text\" ng-model=\"parishProfile.in_charge\"/>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "            <div class=\"ui error message\"></div>\n" +
-    "        </form>\n" +
-    "\n" +
-    "    </div>\n" +
-    "    <div class=\"four wide column\">\n" +
-    "        <div class=\"ui segment\">\n" +
-    "            <div class=\"ui statistic\" id=\"total\">\n" +
-    "                <div class=\"value\">\n" +
-    "                    {{records}}\n" +
-    "                </div>\n" +
-    "                <div class=\"label\">\n" +
-    "                    <i class=\"icon database\"></i>Total Records\n" +
-    "                </div>\n" +
-    "            </div>\n" +
     "        </div>\n" +
+    "        <div class=\"field eight wide required\">\n" +
+    "          <label>Location</label>\n" +
+    "          <div class=\"ui icon left input\">\n" +
+    "            <i class=\"icon map\"></i>\n" +
+    "            <input name=\"lname\" id=\"lname\" type=\"text\" ng-model=\"parishProfile.location\"/>\n" +
+    "          </div>\n" +
+    "\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"fields\">\n" +
+    "        <div class=\"field left icon eight wide required\">\n" +
+    "          <label>In Charge</label>\n" +
+    "          <div class=\"ui icon left input\">\n" +
+    "            <i class=\"icon ion-person\"></i>\n" +
+    "            <input name=\"email\" id=\"email\" type=\"text\" ng-model=\"parishProfile.in_charge\"/>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"ui error message\"></div>\n" +
+    "    </form>\n" +
+    "\n" +
+    "  </div>\n" +
+    "  <div class=\"four wide column\">\n" +
+    "    <div class=\"ui segment\">\n" +
+    "      <div class=\"ui statistic\" id=\"total\">\n" +
+    "        <div class=\"value\">\n" +
+    "          {{records}}\n" +
+    "        </div>\n" +
+    "        <div class=\"label\">\n" +
+    "          <i class=\"icon database\"></i>Total Records\n" +
+    "        </div>\n" +
+    "      </div>\n" +
     "    </div>\n" +
-    "\n" +
-    "\n" +
+    "  </div>\n" +
     "");
 }]);
 
@@ -1071,37 +1234,74 @@ angular.module("../app/partials/location/services.add.html", []).run(["$template
   $templateCache.put("../app/partials/location/services.add.html",
     "<form class='ui form segment'>\n" +
     "	<div class=\"fields\">\n" +
-    "	<div class=\"field eight wide\"><label><div class=\"ui right icon field\"><i class=\"icon\"></i><input placeholder=\"Service Name\" type=\"text\"/> </div></div>\n" +
-    "	<div class=\"field four wide\"><label><div class=\"ui right icon field\"><i class=\"icon\"></i><input placeholder=\"Service Type\" type=\"text\"/> </div></div>\n" +
-    "	<div class=\"field four wide\"><label><div class=\"ui right icon field\"><i class=\"icon\"></i><input placeholder=\"Service Type\" type=\"text\"/> </div></div>\n" +
+    "		<div class=\"field eight wide\">\n" +
+    "			<div class=\"ui right icon field\">\n" +
+    "				<i class=\"icon\"></i>\n" +
+    "				<input placeholder=\"Service Name\" type=\"text\"/>\n" +
+    "			</div>\n" +
+    "		</div>\n" +
+    "		<div class=\"field four wide\">\n" +
+    "			<div class=\"ui right icon field\">\n" +
+    "				<i class=\"icon\"></i>\n" +
+    "				<input placeholder=\"Service Type\" type=\"text\"/>\n" +
+    "			</div>\n" +
+    "		</div>\n" +
+    "		<div class=\"field four wide\">\n" +
+    "			<div class=\"ui right icon field\">\n" +
+    "				<i class=\"icon\"></i>\n" +
+    "				<input placeholder=\"Service Type\" type=\"text\"/>\n" +
+    "			</div>\n" +
+    "		</div>\n" +
     "	</div>\n" +
     "	<div class=\"fields\">\n" +
-    "	<div class=\"field eight wide\"><label><div class=\"ui right icon field\"><i class=\"icon\"></i><input placeholder=\"Text...\" type=\"text\"/> </div></div>\n" +
-    "	<div class=\"field eight wide\"><label><div class=\"ui right icon field\"><i class=\"icon\"></i><input placeholder=\"Text...\" type=\"text\"/> </div></div>\n" +
+    "		<div class=\"field eight wide\">\n" +
+    "			<div class=\"ui right icon field\">\n" +
+    "				<i class=\"icon\"></i>\n" +
+    "				<input placeholder=\"Text...\" type=\"text\"/>\n" +
+    "			</div>\n" +
+    "		</div>\n" +
+    "		<div class=\"field eight wide\">\n" +
+    "			<div class=\"ui right icon field\">\n" +
+    "				<i class=\"icon\"></i>\n" +
+    "				<input placeholder=\"Text...\" type=\"text\"/>\n" +
+    "			</div>\n" +
+    "		</div>\n" +
     "	</div>\n" +
     "	<div class=\"fields\">\n" +
-    "	<div class=\"field eight wide\"><label><div class=\"ui right icon field\"><i class=\"icon\"></i><input placeholder=\"Text...\" type=\"text\"/> </div></div>\n" +
-    "	<div class=\"field eight wide\"><label><div class=\"ui right icon field\"><i class=\"icon\"></i><input placeholder=\"Text...\" type=\"text\"/> </div></div>\n" +
+    "		<div class=\"field eight wide\">\n" +
+    "			<div class=\"ui right icon field\">\n" +
+    "				<i class=\"icon\"></i>\n" +
+    "				<input placeholder=\"Text...\" type=\"text\"/>\n" +
+    "			</div>\n" +
+    "		</div>\n" +
+    "		<div class=\"field eight wide\">\n" +
+    "			<div class=\"ui right icon field\">\n" +
+    "				<i class=\"icon\"></i>\n" +
+    "				<input placeholder=\"Text...\" type=\"text\"/>\n" +
+    "			</div>\n" +
+    "		</div>\n" +
     "	</div>\n" +
     "	<button class=\"ui green right icon button\">Register<i class=\"icon icon fa fa-plus\"></i></button>\n" +
-    "</form>");
+    "</form>\n" +
+    "");
 }]);
 
 angular.module("../app/partials/location/services.index.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../app/partials/location/services.index.html",
     "<!-- Services Index -->\n" +
     "<nav class=\"ui inverted blue menu\">\n" +
-    "    <div href=\"\" ui-sref=\"location.services\" class=\"item\">\n" +
-    "    	<b>\n" +
-    "    	<i class=\"icon book\"></i>\n" +
-    "    	Services\n" +
-    "    	</b>\n" +
-    "    	</div>\n" +
-    "     <a is-active-nav class=\"item\" ui-sref=\"location.services.statistics\"><i class=\"icon ion-arrow-graph-up-right\"></i>Statistics</a>\n" +
-    "    <a is-active-nav class=\"item\" ui-sref=\"location.services.list\"><i class=\"icon fa fa-list\"></i>List Services</a>\n" +
-    "    <a is-active-nav class=\"item\" ui-sref=\"location.services.add\"><i class=\"icon fa fa-plus\"></i>Register Services</a>\n" +
+    "  <div href=\"\" ui-sref=\"location.services\" class=\"item\">\n" +
+    "    <b>\n" +
+    "      <i class=\"icon book\"></i>\n" +
+    "      Services\n" +
+    "    </b>\n" +
+    "  </div>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.services.statistics\"><i class=\"icon ion-arrow-graph-up-right\"></i>Statistics</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.services.list\"><i class=\"icon fa fa-list\"></i>List Services</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.services.add\"><i class=\"icon fa fa-plus\"></i>Register Services</a>\n" +
     "</nav>\n" +
-    "<div ui-view></div>");
+    "<div ui-view></div>\n" +
+    "");
 }]);
 
 angular.module("../app/partials/test-requests/index.html", []).run(["$templateCache", function($templateCache) {
