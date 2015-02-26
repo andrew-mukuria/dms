@@ -7,7 +7,7 @@
   </div>
 </div>
 <div class="ui three cards">
-  <div ng-repeat="row in displayedCollection | filter: searchText" class="card">
+  <div ng-repeat="row in displayedCollection | filter: searchText" class="red card">
     <div class="content">
       <div class="header">{{row.parish_name}}
         <span class="right floated">
@@ -19,81 +19,83 @@
       <div class="meta">{{row.in_charge}}</div>
       <div class="description">
         <h6 class="ui header">{{row.name}}</h6>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-        cillum dolore eu fugiat nulla pariatur.</div>
-      </div>
-      <div class="extra content">
-        <span class="left floated">
-
-          <i class="icon fa fa-tags"></i>
-          <a>#One</a><a>#Two</a>
-        </span>
-        <span class="right floated">
-          <a href="">
-            <i class='icon ion-more'></i>
-          </a>
-        </span>
+        {{row.content}}
       </div>
     </div>
-    <!-- <div class="card">
-      <div class="content">
-        <div class="header">St. Mark's
-          <span class="right floated">
-            <a href="">
-              <i class="icon share alternate"></i>
-            </a>
-          </span>
-        </div>
-        <div class="meta">Father Nani</div>
-        <div class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-          quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-          consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-          cillum dolore eu fugiat nulla pariatur.
-        </div>
-      </div>
-      <div class="extra content">
-        <span class="left floated">
+    <div class="extra content row">
+      <div class="ui grid">
+        <!-- <div class="two wide column">
           <i class="icon fa fa-tags"></i>
+        </div> -->
+        <div class="twelve wide column">
+          {{row.tags}}
+          <a href="" ng-repeat="tag in row.tags"> #{{tag}}</a>
           <a>#One</a><a>#Two</a>
-        </span>
-        <span class="right floated">
-          <a href="">
+        </div>
+        <div class="two wide column">
+          <a href="" ng-click="getService(row)">
             <i class='icon ion-more'></i>
           </a>
-        </span>
+        </div>
       </div>
     </div>
-    <div class="card">
-      <div class="content">
-        <div class="header">Consolata Shrine
-          <span class="right floated">
-            <a href="">
-              <i class="icon share alternate"></i>
-            </a>
-          </span>
-        </div>
-        <div class="meta">Father Nani</div>
-        <div class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-          quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-          consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-          cillum dolore eu fugiat nulla pariatur.
-        </div>
-      </div>
-      <div class="extra content">
-        <span class="left floated">
-          <i class="icon fa fa-tags"></i>
-          <a>#One</a><a>#Two</a>
-        </span>
-        <span class="right floated">
-          <a href="">
-            <i class="icon ion-more"></i>
-          </a>
-        </span>
-      </div>
-    </div> -->
   </div>
+  <!-- <div class="card">
+  <div class="content">
+  <div class="header">St. Mark's
+  <span class="right floated">
+  <a href="">
+  <i class="icon share alternate"></i>
+</a>
+</span>
+</div>
+<div class="meta">Father Nani</div>
+<div class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur.
+</div>
+</div>
+<div class="extra content">
+<span class="left floated">
+<i class="icon fa fa-tags"></i>
+<a>#One</a><a>#Two</a>
+</span>
+<span class="right floated">
+<a href="">
+<i class='icon ion-more'></i>
+</a>
+</span>
+</div>
+</div>
+<div class="card">
+<div class="content">
+<div class="header">Consolata Shrine
+<span class="right floated">
+<a href="">
+<i class="icon share alternate"></i>
+</a>
+</span>
+</div>
+<div class="meta">Father Nani</div>
+<div class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur.
+</div>
+</div>
+<div class="extra content">
+<span class="left floated">
+<i class="icon fa fa-tags"></i>
+<a>#One</a><a>#Two</a>
+</span>
+<span class="right floated">
+<a href="">
+<i class="icon ion-more"></i>
+</a>
+</span>
+</div>
+</div> -->
+</div>

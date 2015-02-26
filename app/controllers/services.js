@@ -10,7 +10,7 @@ app.controller(
 
       scope.getService = function getService(newService) {
         console.log(newService);
-        scope.parishProfile = newService;
+        scope.service = newService;
         state.go('location.services.view');
       }
 

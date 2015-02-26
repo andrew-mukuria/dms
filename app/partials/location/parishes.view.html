@@ -1,7 +1,7 @@
 <div class="ui grid">
   <div class="twelve wide column">
     <!-- Form -->
-    <form class="ui form ui segment" id="memberForm" action="" method="post">
+    <form class="ui form ui segment" id="memberForm">
       <div class="fields">
         <div class="field eight wide required">
           <label>Name</label>
@@ -21,13 +21,17 @@
         </div>
       </div>
       <div class="fields">
-        <div class="field left icon eight wide required">
+        <div class="field eight wide required">
           <label>In Charge</label>
           <div class="ui icon left input">
             <i class="icon ion-person"></i>
             <input name="email" id="email" type="text" ng-model="parishProfile.in_charge"/>
           </div>
         </div>
+      </div>
+      <div class="buttons">
+        <button class="ui button blue" ng-click="updateParish()" ng-show="status=='update'">Update Parish</button>
+        <button class="ui button teal" ng-click="newParish()" ng-show="status=='add'">Add Parish</button>
       </div>
       <div class="ui error message"></div>
     </form>

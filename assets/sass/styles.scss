@@ -43,6 +43,9 @@ nav,footer{
     margin:0 !important;
   }
 }
+.ui.dropdown.selection{
+  min-width:100% !important;
+}
 td{
   .ui.label,.ui.button{
     font-size:0.6rem;

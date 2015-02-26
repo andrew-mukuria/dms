@@ -8697,6 +8697,9 @@ nav, footer {
 .item h3, nav .right a h3, nav .field-input a h3, footer .right a h3, footer .field-input a h3, nav a h3, footer a h3 {
   margin: 0 !important; }
 
+.ui.dropdown.selection, nav.dropdown.selection, footer.dropdown.selection, td input.dropdown.selection, form.dropdown.selection, button.dropdown.selection, .dropdown.selection.field-input {
+  min-width: 100% !important; }
+
 td .ui.label, td nav.label, td footer.label, td input.label, td form.label, td button.label, td .label.field-input, td .ui.button, td nav.button, td footer.button, td input.button, td form.button, td button, td .button.field-input, td button.field-input {
   font-size: 0.6rem; }
 

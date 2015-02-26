@@ -31,7 +31,7 @@ module.exports = function(grunt) {
 
     html2js: {
       dist: {
-        src: ['app/partials/*.html'],
+        src: ['app/partials/**/*.html', 'app/partials/*.html'],
         dest: 'tmp/partials.js'
       }
     },
@@ -75,7 +75,7 @@ module.exports = function(grunt) {
         }
       },
       min: {
-        files: ['Gruntfile.js', 'app/*.js', '*.html'],
+        files: ['Gruntfile.js', 'app/*.js', '**/*.html'],
         tasks: ['jshint', 'karma:unit', 'html2js:dist', 'concat:dist',
           'clean:temp', 'uglify:dist'
         ],

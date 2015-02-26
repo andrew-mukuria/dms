@@ -9,16 +9,12 @@ app.controller(
       rootScope.user = MySessionService.getLoggedUser();
 
       scope.getParish = function getParish(newParish) {
-        console.log(newParish);
         scope.parishProfile = newParish;
         state.go('location.parishes.view');
       }
 
       scope.getParishes = function getParishes() {
-
-        // This will query /accounts and return a promise.
         Parishes.customGET('').then(function(parishes) {
-          //console.log(users);
           scope.rowCollection = parishes;
           scope.displayedCollection = [].concat(scope.rowCollection);
         });
@@ -38,25 +34,37 @@ app.controller(
       }
 
       function getParishCount() {
-        // This will query /accounts and return a promise.
         Parishes.customGET('').then(function(parishes) {
-          // console.log(users);
           scope.records = parishes.length;
           scope.recordsPerPage = 5;
           scope.pages = Math.ceil(scope.records / scope.recordsPerPage);
         });
       }
 
-      scope.newParish = function newParish() {
-        parish = {
-          "name": "St. Lukes",
-          "in_charge": "Pastor Oscar",
-          "location": "Outer Ring Road",
-          "updated_at": "2015-01-01 00:00:00 UTC",
-          "created_at": "2015-01-01 00:00:00 UTC"
+      scope.setStatus = function setStatus(status) {
+        scope.status = status;
+        if (status == 'add') {
+          scope.parishProfile = [];
         }
+      }
+      scope.newParish = function newParish() {
+        parish = scope.parishProfile;
+        today = new Date();
+        year = today.getFullYear();
+        month = today.getMonth() + 1;
+        day = today.getDay();
+        parish.created_at = year + '-' + month + '-' + day;
+        parish.updated_at = year + '-' + month + '-' + day;
         Parishes.post(parish);
       }
+
+      scope.updateParish = function updateParish() {
+        parish = scope.parishProfile;
+        updatedParish = DMSRestangular.one('parishes', parish.id);
+        updatedParish[0] = parish;
+        updatedParish.put(parish);
+      }
+
     }
   ]
 );

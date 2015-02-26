@@ -97,6 +97,16 @@ app.config(function($stateProvider, $urlRouterProvider) {
     controller: function($rootScope, $scope) {
       $rootScope.title = 'Parish View';
       $scope.getParishes();
+      $scope.setStatus('update');
+    },
+    templateUrl: 'app/partials/location/parishes.view.html'
+  }).
+  state('location.parishes.add', {
+    url: '/add',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Parish Add';
+      $scope.getParishes();
+      $scope.setStatus('add');
     },
     templateUrl: 'app/partials/location/parishes.view.html'
   }).
