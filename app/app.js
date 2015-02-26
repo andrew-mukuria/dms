@@ -1,41 +1,24 @@
-var app = angular.module("hais", ['ui.router','restangular','smart-table','chart.js','textAngular','angularMoment']);
+var app = angular.module("meds", ['ui.router','restangular','smart-table','textAngular','angularMoment','LocalStorageModule','slick']);
 
-app.controller('benefitsCtrl', ['$scope', '$http',
-  function ($scope, $http) {
-
-  }]);
-
-app.controller('claimsCtrl', ['$scope', '$http',
-  function ($scope, $http) {
-
-  }]);
-
-app.controller('providerCtrl', ['$scope', '$http',
-  function ($scope, $http) {
-
-  }]);
-
-app.controller('servicesCtrl', ['$scope', '$http',
-  function ($scope, $http) {
-
-  }]);
-
-app.config(function(RestangularProvider) {
-  RestangularProvider.setBaseUrl('http://localhost/hmis');
-  RestangularProvider.setRequestSuffix('.json');
-});
-
-app.factory('MembersRestangular', function(Restangular) {
-  return Restangular.withConfig(function(RestangularConfigurer) {
-    RestangularConfigurer.setBaseUrl('http://localhost/hmis/members_api');
-  });
+app.factory('DMSRestangular', function(Restangular) {
+    return Restangular.withConfig(function(RestangularConfigurer) {
+        RestangularConfigurer.setBaseUrl('http://localhost:3000/api/v1');
+    });
 });
 
 app.run(['$http', '$rootScope', function($http, $rootScope) {
-     $rootScope.date = new Date();
-     $rootScope.title = 'HAIS Web';
-     $rootScope.messages=[];
-     $rootScope.menu=[];
- }]);
+    $rootScope.date = new Date();
+    $rootScope.title = 'DMS';
+    $rootScope.messages=[];
+    $rootScope.menu=[];
+
+}]);
+
+app.config(function (localStorageServiceProvider) {
+    localStorageServiceProvider
+    .setPrefix('app')
+    .setStorageType('localStorage')
+    .setNotify(true, true)
+});
 
 

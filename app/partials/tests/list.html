@@ -1,0 +1,39 @@
+<!-- Tests' List -->
+<table class="ui table celled compact bordered" st-safe-src="rowCollection" st-table="displayedCollection">
+    <thead>
+        <tr>
+            <th><i class="icon"></i>Name</th>
+            <th><i class="icon"></i>Category</th>
+            <th><i class="icon"></i>Action</th>
+            <th><i class="icon"></i>Status</th>
+        </tr>
+        
+    </thead>
+    <tbody>
+    <tr>
+        <td class="ui input" ><input st-search="'name'" placeholder="Search..." type="search"/></td>
+        <td class="ui input" ><input st-search="'mainTest[testName]'" placeholder="Search..." type="search"/></td>
+        <td></td>
+        </tr>
+        <tr ng-repeat="row in displayedCollection"  st-select-row="row">
+            <td>{{row.name}}</td>
+            <td>{{row.mainTest.testName}}</td>
+            <td>
+                <a class="ui green button" ui-sref="{{row.mainTest.testName+'.'+row.name}}">Perform Test</a>
+                <a class="ui button" ui-sref="{{row.mainTest.testName+'.'+row.name}}" ng-click="">Review Test</a>
+            </td>
+            <td>
+                <div class="ui red label">Not Done</div>
+                <div class="ui green label">Done</div>
+            </td>
+        </tr>
+    </tbody>
+     <tfoot>
+        	<tr>
+        		<th colspan="1">{{records}} Records</th>
+                <th colspan="3">
+                    <div st-pagination="" st-items-by-page="recordsPerPage" st-displayed-pages="pages"></div>
+                </th>
+        	</tr>
+        </tfoot>
+</table>

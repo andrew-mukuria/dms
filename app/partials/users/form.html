@@ -1,0 +1,72 @@
+<div class="ui grid">
+    <div class="twelve wide column">
+        <!-- Form -->
+        <form class="ui form ui segment" id="memberForm" action="" method="post">
+            <div class="fields">
+                <div class="field eight wide required">
+                    <label>First Name</label>
+                    <div class="ui icon left input">
+                        <i class="icon ion-person"></i>
+                        <input name="fname" id="fname" type="text" ng-model="userProfile.fname"/>
+                    </div>
+
+                </div>
+                <div class="field eight wide required">
+                    <label>Last Name</label>
+                    <div class="ui icon left input">
+                        <i class="icon ion-person"></i>
+                        <input name="lname" id="lname" type="text" ng-model="userProfile.lname"/>
+                    </div>
+
+                </div>
+            </div>
+            <div class="fields">
+                <div class="field left icon eight wide required">
+                    <label>Email Address</label>
+                    <div class="ui icon left input">
+                        <i class="icon ion-email"></i>
+                        <input name="email" id="email" type="text" ng-model="userProfile.email"/>
+                    </div>
+                </div>
+                <div class="field left icon eight wide required">
+                    <label>Telephone No.</label>
+                    <div class="ui icon left input">
+                        <i class="icon ion-ios-telephone"></i>
+                        <input name="idNo" id="idtelephoneNo" type="text" ng-model="userProfile.telephone"/>
+                    </div>
+                </div>
+            </div>
+            <div class="fields">
+                <div class="field left icon eight wide required">
+                    <label>Role</label>
+                    <div class="ui icon left input">
+                        <i class="icon fa fa-list"></i>
+                        <input name="role" id="role" type="text" ng-model="userProfile.role"/>
+                    </div>
+                </div>
+                <div class="field left icon eight wide required">
+                    <label>Department.</label>
+                    <div class="ui icon left input">
+                        <i class="icon"></i>
+                        <input name="department" id="department" type="text" ng-model="userProfile.departmentId"/>
+                    </div>
+                </div>
+            </div>
+            <div class="ui error message"></div>
+        </form>
+
+    </div>
+    <div class="four wide column">
+        <div class="ui segment">
+            <div class="ui statistic" id="total">
+                <div class="value">
+                    {{records}}
+                </div>
+                <div class="label">
+                    <i class="icon database"></i>Total Records
+                </div>
+            </div>
+        </div>
+    </div>
+
+

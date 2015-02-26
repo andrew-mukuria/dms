@@ -5910,11 +5910,9 @@ button.close {
 .ion-bug:before,
 .ion-calculator:before,
 .ion-calendar:before,
-.date i:before,
 .ion-camera:before,
 .ion-card:before,
 .ion-cash:before,
-.claims i:before,
 .ion-chatbox:before,
 .ion-chatbox-working:before,
 .ion-chatboxes:before,
@@ -5929,8 +5927,6 @@ button.close {
 .ion-chevron-right:before,
 .ion-chevron-up:before,
 .ion-clipboard:before,
-.provider i:before,
-.services i:before,
 .ion-clock:before,
 .ion-close:before,
 .ion-close-circled:before,
@@ -5961,7 +5957,6 @@ button.close {
 .ion-erlenmeyer-flask:before,
 .ion-erlenmeyer-flask-bubbles:before,
 .ion-eye:before,
-.view i:before,
 .ion-eye-disabled:before,
 .ion-female:before,
 .ion-filing:before,
@@ -5988,15 +5983,12 @@ button.close {
 .ion-help:before,
 .ion-help-buoy:before,
 .ion-help-circled:before,
-.help i:before,
 .ion-home:before,
-.home i:before,
 .ion-icecream:before,
 .ion-image:before,
 .ion-images:before,
 .ion-information:before,
 .ion-information-circled:before,
-.about i:before,
 .ion-ionic:before,
 .ion-ios-alarm:before,
 .ion-ios-alarm-outline:before,
@@ -6179,7 +6171,6 @@ button.close {
 .ion-ios-paw:before,
 .ion-ios-paw-outline:before,
 .ion-ios-people:before,
-.members i:before,
 .ion-ios-people-outline:before,
 .ion-ios-person:before,
 .ion-ios-person-outline:before,
@@ -6319,9 +6310,7 @@ button.close {
 .ion-paperclip:before,
 .ion-pause:before,
 .ion-person:before,
-.name i:before,
 .ion-person-add:before,
-.register i:before,
 .ion-person-stalker:before,
 .ion-pie-graph:before,
 .ion-pin:before,
@@ -6333,11 +6322,9 @@ button.close {
 .ion-playstation:before,
 .ion-plus:before,
 .ion-plus-circled:before,
-.benefits i:before,
 .ion-plus-round:before,
 .ion-podium:before,
 .ion-pound:before,
-.number i:before,
 .ion-power:before,
 .ion-pricetag:before,
 .ion-pricetags:before,
@@ -7015,7 +7002,7 @@ button.close {
 .ion-calculator:before {
   content: ""; }
 
-.ion-calendar:before, .date i:before {
+.ion-calendar:before {
   content: ""; }
 
 .ion-camera:before {
@@ -7024,7 +7011,7 @@ button.close {
 .ion-card:before {
   content: ""; }
 
-.ion-cash:before, .claims i:before {
+.ion-cash:before {
   content: ""; }
 
 .ion-chatbox:before {
@@ -7066,7 +7053,7 @@ button.close {
 .ion-chevron-up:before {
   content: ""; }
 
-.ion-clipboard:before, .provider i:before, .services i:before {
+.ion-clipboard:before {
   content: ""; }
 
 .ion-clock:before {
@@ -7156,7 +7143,7 @@ button.close {
 .ion-erlenmeyer-flask-bubbles:before {
   content: ""; }
 
-.ion-eye:before, .view i:before {
+.ion-eye:before {
   content: ""; }
 
 .ion-eye-disabled:before {
@@ -7234,10 +7221,10 @@ button.close {
 .ion-help-buoy:before {
   content: ""; }
 
-.ion-help-circled:before, .help i:before {
+.ion-help-circled:before {
   content: ""; }
 
-.ion-home:before, .home i:before {
+.ion-home:before {
   content: ""; }
 
 .ion-icecream:before {
@@ -7252,7 +7239,7 @@ button.close {
 .ion-information:before {
   content: ""; }
 
-.ion-information-circled:before, .about i:before {
+.ion-information-circled:before {
   content: ""; }
 
 .ion-ionic:before {
@@ -7798,7 +7785,7 @@ button.close {
 .ion-ios-paw-outline:before {
   content: ""; }
 
-.ion-ios-people:before, .members i:before {
+.ion-ios-people:before {
   content: ""; }
 
 .ion-ios-people-outline:before {
@@ -8215,10 +8202,10 @@ button.close {
 .ion-pause:before {
   content: ""; }
 
-.ion-person:before, .name i:before {
+.ion-person:before {
   content: ""; }
 
-.ion-person-add:before, .register i:before {
+.ion-person-add:before {
   content: ""; }
 
 .ion-person-stalker:before {
@@ -8251,7 +8238,7 @@ button.close {
 .ion-plus:before {
   content: ""; }
 
-.ion-plus-circled:before, .benefits i:before {
+.ion-plus-circled:before {
   content: ""; }
 
 .ion-plus-round:before {
@@ -8260,7 +8247,7 @@ button.close {
 .ion-podium:before {
   content: ""; }
 
-.ion-pound:before, .number i:before {
+.ion-pound:before {
   content: ""; }
 
 .ion-power:before {
@@ -8692,8 +8679,9 @@ button.close {
 .ion-xbox:before {
   content: ""; }
 
-/* Element St  yles */
+/* Element Styles */
 body {
+  overflow-x: hidden !important;
   font-family: OpenSansRegular !important;
   font-size: 12px !important; }
 
@@ -8706,6 +8694,15 @@ nav, footer {
   nav .right, nav .field-input, footer .right, footer .field-input {
     /* @extend .inverted; */ }
 
+.item h3, nav .right a h3, nav .field-input a h3, footer .right a h3, footer .field-input a h3, nav a h3, footer a h3 {
+  margin: 0 !important; }
+
+.ui.dropdown.selection, nav.dropdown.selection, footer.dropdown.selection, td input.dropdown.selection, form.dropdown.selection, button.dropdown.selection, .dropdown.selection.field-input {
+  min-width: 100% !important; }
+
+td .ui.label, td nav.label, td footer.label, td input.label, td form.label, td button.label, td .label.field-input, td .ui.button, td nav.button, td footer.button, td input.button, td form.button, td button, td .button.field-input, td button.field-input {
+  font-size: 0.6rem; }
+
 /* Icon */
 footer {
   position: fixed;
@@ -8715,20 +8712,39 @@ form {
   font-size: 1rem !important; }
 
 /* Core Classes */
+slick.full-screen {
+  top: 0;
+  position: absolute;
+  padding: 2%;
+  width: 100%;
+  height: 100%;
+  z-index: -100; }
+  slick.full-screen img {
+    width: 100%;
+    height: 100%; }
+
 .centered {
-  width: 50%;
+  width: 30%;
   margin: auto !important;
-  margin-top: 10% !important; }
+  margin-top: 20% !important; }
 
 .centered.within {
   margin-top: 2% !important;
   width: 80% !important; }
 
-.content {
-  padding: 0 !important; }
-
 .segment .statistic, form .statistic {
   width: 100%; }
+
+.card a {
+  padding: 2px;
+  color: rgba(0, 0, 0, 0.4) !important;
+  text-decoration: none !important; }
+  .card a i {
+    color: rgba(0, 0, 0, 0.4) !important; }
+.card a:hover {
+  color: black !important; }
+  .card a:hover i {
+    color: black !important; }
 
 .inner {
   height: 23em;
@@ -8753,10 +8769,6 @@ nav.centered {
   width: 80% !important; }
 
 /* Fields */
-input[type='search'] {
-  width: 80% !important; }
-
-/* Icons */
 .tt-query,
 .tt-hint {
   font-size: 24px;
@@ -8809,7 +8821,7 @@ p {
 p + p {
   text-indent: 0 !important; }
 
-.ui.grid, nav.grid, footer.grid, form.grid, button.grid, .grid.field-input {
+.ui.grid, nav.grid, footer.grid, td input.grid, form.grid, button.grid, .grid.field-input {
   margin: 0 !important; }
 
 /*# sourceMappingURL=styles.css.map */

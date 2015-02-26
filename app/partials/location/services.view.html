@@ -1,0 +1,31 @@
+<form action="" class='ui form segment'>
+  <h1 class="ui header">Publish Serivce</h1>
+  <div class="fields">
+    <div class="eight wide field">
+      <div class="ui input left icon">
+        <i class="icon ion-document-text"></i>
+        <input type="text" ng-model="service.name" placeholder="Service Name ...">
+      </div>
+    </div>
+    <div class="four wide field">
+      <select class="ui dropdown" ng-model="service.parish">
+        <option value="">Parish Name</option>
+      </select>
+    </div>
+    <div class="four wide field">
+      <select class="ui dropdown" ng-model="service.tags">
+        <option value="">Tags</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="sixteen wide field">
+
+    <div text-angular ng-model="service.content"></div>
+  </div>
+  <button class="ui icon green button"><i class='icon ion-plus-round'></i>Publish</button>
+</form>
+{{service}}
+<script>
+$('.ui.dropdown').dropdown();
+</script>

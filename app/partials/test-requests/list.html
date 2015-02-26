@@ -1,0 +1,36 @@
+<!-- Tests' List -->
+<table class="ui table celled compact bordered" st-safe-src="rowCollection" st-table="displayedCollection">
+    <thead>
+        <tr>
+            <th><i class="icon"></i>Test</th>
+            <th><i class="icon"></i>Status</th>
+        </tr>
+        
+    </thead>
+    <tbody>
+    <tr>
+        <td class="ui input" ><input st-search="" placeholder="Search..." type="search"/></td>
+        <td class="ui input" ><input st-search="" placeholder="Search..." type="search"/></td>
+        <td></td>
+        </tr>
+        <tr ng-repeat="row in displayedCollection"  st-select-row="row">
+            <td>{{row.name}}</td>
+            <td>
+                <div class="ui label">Unassigned <div class="detail">0</div></div>
+                <div class="ui blue label">Assigned <div class="detail">0</div></div>
+                <div class="ui green label">Done : No Repeat <div class="detail">0</div></div>
+                <div class="ui purple label">Done : Repeat <div class="detail">0</div></div>
+                <div class="ui orange label">Quarantined <div class="detail">0</div></div>
+                <div class="ui red label">Withdrawn <div class="detail">0</div></div>
+            </td>
+        </tr>
+    </tbody>
+     <tfoot>
+        	<tr>
+        		<th colspan="1">{{records}} Records</th>
+                <th colspan="2">
+                    <div st-pagination="" st-items-by-page="recordsPerPage" st-displayed-pages="pages"></div>
+                </th>
+        	</tr>
+        </tfoot>
+</table>
