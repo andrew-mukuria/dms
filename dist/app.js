@@ -216,7 +216,16 @@ app.controller(
         day = today.getDay();
         parish.created_at = year + '-' + month + '-' + day;
         parish.updated_at = year + '-' + month + '-' + day;
-        Parishes.post(parish);
+        console.log(parish);
+        parish = {
+          'name': 'St. Chris',
+          'location': 'Kabete',
+          'in_charge': 'Oscar',
+          'created_at': '2015-02-23',
+          'updated_at': '2015-02-23'
+        };
+        console.log(parish);
+        // Parishes.post(parish);
       }
 
       scope.updateParish = function updateParish() {
