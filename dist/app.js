@@ -1325,7 +1325,7 @@ angular.module("../app/partials/location/parishes.view.html", []).run(["$templat
     "          <label>Name</label>\n" +
     "          <div class=\"ui icon left input\">\n" +
     "            <i class=\"icon building\"></i>\n" +
-    "            <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"parishProfile.name\"/>\n" +
+    "            <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"parish.name\"/>\n" +
     "          </div>\n" +
     "\n" +
     "        </div>\n" +
@@ -1333,7 +1333,7 @@ angular.module("../app/partials/location/parishes.view.html", []).run(["$templat
     "          <label>Location</label>\n" +
     "          <div class=\"ui icon left input\">\n" +
     "            <i class=\"icon map\"></i>\n" +
-    "            <input name=\"lname\" id=\"lname\" type=\"text\" ng-model=\"parishProfile.location\"/>\n" +
+    "            <input name=\"lname\" id=\"lname\" type=\"text\" ng-model=\"parish.location\"/>\n" +
     "          </div>\n" +
     "\n" +
     "        </div>\n" +
@@ -1343,7 +1343,7 @@ angular.module("../app/partials/location/parishes.view.html", []).run(["$templat
     "          <label>In Charge</label>\n" +
     "          <div class=\"ui icon left input\">\n" +
     "            <i class=\"icon ion-person\"></i>\n" +
-    "            <input name=\"email\" id=\"email\" type=\"text\" ng-model=\"parishProfile.in_charge\"/>\n" +
+    "            <input name=\"email\" id=\"email\" type=\"text\" ng-model=\"parish.in_charge\"/>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -1367,6 +1367,7 @@ angular.module("../app/partials/location/parishes.view.html", []).run(["$templat
     "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +
+    "  {{parish}}\n" +
     "");
 }]);
 
