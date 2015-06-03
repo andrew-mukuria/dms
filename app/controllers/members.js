@@ -12,7 +12,7 @@ app.controller(
         }
 
         scope.getMembers = function getMembers() {
-            var AllMembers = MedsRestangular.all('members');
+            var AllMembers = DMSRestangular.all('members');
             // This will query /accounts and return a promise.
             AllMembers.customGET('').then(function(members) {
                 scope.rowCollection = members.data;
@@ -22,7 +22,7 @@ app.controller(
         }
 
         function getMemberCount() {
-            var AllMembers = MedsRestangular.all('members');
+            var AllMembers = DMSRestangular.all('members');
             // This will query /accounts and return a promise.
             AllMembers.customGET('').then(function(members) {
                 scope.records = members.data.length;

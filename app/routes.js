@@ -115,6 +115,11 @@ app.config(function($stateProvider, $urlRouterProvider) {
     controller: '',
     templateUrl: 'app/partials/location/members.index.html'
   }).
+  state('location.members.list', {
+    url: '/list',
+    controller: '',
+    templateUrl: 'app/partials/location/members.list.html'
+  }).
   state('location.services', {
     url: '/services',
     controller: 'servicesCtrl',
