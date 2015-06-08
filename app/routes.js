@@ -115,9 +115,21 @@ app.config(function($stateProvider, $urlRouterProvider) {
     controller: '',
     templateUrl: 'app/partials/location/members.index.html'
   }).
+    state('location.members.view', {
+    url: '/view',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Member View';
+      $scope.getMembers();
+      $scope.setStatus('update');
+    },
+    templateUrl: 'app/partials/location/members.index.html'
+  }).
   state('location.members.list', {
     url: '/list',
-    controller: '',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Member List';
+      $scope.getMembers();
+    },
     templateUrl: 'app/partials/location/members.list.html'
   }).
   state('location.services', {

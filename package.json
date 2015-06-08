@@ -1,0 +1,24 @@
+{
+  "name": "dms",
+  "version": "1.0.0",
+  "description": "AngularJS Web Application",
+  "main": "Gruntfile.js",
+  "dependencies": {
+    "chokidar": "^1.0.0-rc3",
+    "di": "^0.0.1",
+    "grunt": "^0.4.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "/"
+  },
+  "keywords": [
+    "/"
+  ],
+  "author": "@hp",
+  "license": "/"
+}

@@ -108,58 +108,68 @@ app.controller(
 );
 ;// I control the main demo.
 app.controller(
-    "memberCtrl", ['$scope', '$filter','$timeout', 'MedsRestangular','$state', function(scope, filter,timeout, MedsRestangular,state) {
-        getMemberCount();
-        
+  "memberCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
+    'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
+    function(scope, rootScope, filter, timeout, DMSRestangular, state,
+      localStorageService, MySessionService) {
+      var Members = DMSRestangular.all('members');
+      getMemberCount();
+      rootScope.user = MySessionService.getLoggedUser();
 
+      scope.getMember = function getMember(newMember) {
+        scope.memberProfile = newMember;
+        state.go('location.members.view');
+      }
 
-        scope.getMember = function getMember(newMember) {
-            console.log(newMember);
-            scope.member = newMember;
-            state.go('members.view');
+      scope.getMembers = function getMembers() {
+        Members.customGET('').then(function(members) {
+          scope.rowCollection = members;
+          scope.displayedCollection = [].concat(scope.rowCollection);
+        });
+      }
+
+      scope.login = function login() {
+        rootScope.user = [];
+        var user = DMSRestangular.one('user').one('username', scope.formData
+          .username).one('password', scope.formData.password).one(
+          'format', 'json');
+        // This will query /accounts and return a promise.
+        user.customGET('').then(function(userObj) {
+          localStorageService.set('meds_user', userObj);
+          state.go('users');
+
+        });
+      }
+
+      function getMemberCount() {
+        Members.customGET('').then(function(members) {
+          scope.records = members.length;
+          scope.recordsPerPage = 5;
+          scope.pages = Math.ceil(scope.records / scope.recordsPerPage);
+        });
+      }
+
+      scope.setStatus = function setStatus(status) {
+        scope.status = status;
+        if (status == 'add') {
+          scope.memberProfile = [];
         }
+      }
+      scope.newMember = function newMember() {
 
-        scope.getMembers = function getMembers() {
-            var AllMembers = MedsRestangular.all('members');
-            // This will query /accounts and return a promise.
-            AllMembers.customGET('').then(function(members) {
-                scope.rowCollection = members.data;
-                scope.displayedCollection = [].concat(scope.rowCollection);
+      }
 
-            });
-        }
+      scope.updateMember = function updateMember() {
+        member = scope.memberProfile;
+        updatedmember = DMSRestangular.one('memberes', member.id);
+        updatedmember[0] = member;
+        updatedmember.put(member);
+      }
 
-        function getMemberCount() {
-            var AllMembers = MedsRestangular.all('members');
-            // This will query /accounts and return a promise.
-            AllMembers.customGET('').then(function(members) {
-                scope.records = members.data.length;
-                scope.recordsPerPage = 5;
-                scope.pages = Math.ceil(scope.records/scope.recordsPerPage);
-
-            });
-        }
-        // scope.totalMembers = function totalMembers() {
-        //     scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-        //     scope.series = ['Series A', 'Series B'];
-        //     scope.data = [
-        //         [65, 59, 80, 81, 56, 55, 40],
-        //         [28, 48, 40, 19, 86, 27, 90]
-        //     ];
-        //     scope.onClick = function(points, evt) {
-        //         console.log(points, evt);
-        //     };
-
-        //     // Simulate async data update
-        //     timeout(function() {
-        //         scope.data = [
-        //             [28, 48, 40, 19, 86, 27, 90],
-        //             [65, 59, 80, 81, 56, 55, 40]
-        //         ];
-        //     }, 3000);
-        // }
-    }]
-);;// I control the main demo.
+    }
+  ]
+);
+;// I control the main demo.
 app.controller(
   "parishesCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
     'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
@@ -534,6 +544,32 @@ return {
     controller: function($rootScope, $scope) {
       $rootScope.title = 'Parish Add';
       $scope.getParishes();
+      $scope.setStatus('add');
+    },
+    templateUrl: 'app/partials/location/parishes.view.html'
+  }).
+  state('location.members.view', {
+    url: '/view',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Member View';
+      $scope.getMembers();
+      $scope.setStatus('update');
+    },
+    templateUrl: 'app/partials/location/members.view.html'
+  }).
+  state('location.members.list', {
+    url: '/list',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Members List';
+      $scope.getMembers();
+    },
+    templateUrl: 'app/partials/location/members.list.html'
+  }).
+  state('location.members.add', {
+    url: '/add',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Member Add';
+      $scope.getMembers();
       $scope.setStatus('add');
     },
     templateUrl: 'app/partials/location/parishes.view.html'

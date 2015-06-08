@@ -1,5 +1,5 @@
 <!-- Parishes' List -->
-<link href='http://fonts.googleapis.com/css?family=Slabo+18px' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Slabo+27px' rel='stylesheet' type='text/css'>
 <style>
   .filterable {
     margin-top: 15px;
@@ -24,8 +24,8 @@
 .filterable .filters input[disabled]:-ms-input-placeholder {
     color: #333;
 }
-.th{
-  font-family: 'Slabo 14px', serif;
+th{
+  font-family: 'Slabo 27px', serif;
 }
 </style>
 <div class="container ">
@@ -50,14 +50,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="row in displayedCollection"  st-select-row="row" style="font-family: 'Slabo 18px', serif;">
+
+              <tr ng-repeat="row in displayedCollection"  st-select-row="row" style="font-family: 'Slabo 27px', serif;">
                   <td>{{row.id}}</td>
                   <td>{{row.name}}</td>
                   <td>{{row.location}}</td>
                   <td>{{row.in_charge}}</td>
                   <td>{{row.updated_at}}</td>
                   <td>{{row.created_at}}</td>
-                  <td width="150">
+                  <td width="110">
                     <button type="button" ng-click="getParish(row)" class="ui blue tiny button icon">
                       <i class="icon ion-more">
                       </i>
@@ -73,7 +74,7 @@
                   <tfoot>
     <tr>
       <th colspan="1">{{records}} Records</th>
-      <th colspan="5">
+      <th colspan="5" style="cursor: pointer;">
         <div st-pagination="" st-items-by-page="recordsPerPage" st-displayed-pages="pages"></div>
       </th>
     </tr>
