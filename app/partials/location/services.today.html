@@ -9,7 +9,7 @@
 <div class="ui three cards">
   <div ng-repeat="row in displayedCollection | filter: searchText" class="red card">
     <div class="content">
-      <div class="header">{{row.parish_name}}
+      <div class="header">{{row.name}}
         <span class="right floated">
           <a href="">
             <i class="icon share alternate"></i>
@@ -29,7 +29,7 @@
         </div> -->
         <div class="twelve wide column">
           {{row.tags}}
-          <a href="" ng-repeat="tag in row.tags"> #{{tag}}</a>
+          <a href="" ng-repeat="tags in row.tags"> #{{tags}}</a>
           <a>#One</a><a>#Two</a>
         </div>
         <div class="two wide column">

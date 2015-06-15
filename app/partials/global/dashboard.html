@@ -6,28 +6,33 @@
         <div class="four wide column">
             <div class="inner small ui segment">
                 <div class="ui statistic">
-					<div class="value">{{records}}</div>
+					<div class="value">{{members}}</div>
                 </div>
                 <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Total Members</h6>
             </div>
         </div>
         <div class="four wide column">
             <div class="inner small ui segment">
-                <div class='graph'>
+                <div class='ui statistic'>
+                    <div class="value">{{parishes}}</div>
                 </div>
-                <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Header</h6>
+                <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Total Parishes</h6>
             </div>
         </div>
         <div class="four wide column">
             <div class="inner small ui segment">
-                <div class='graph'></div>
-                <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Header</h6>
+                <div class='ui statistic'>
+                    <div class="value">{{dioceses}}</div>
+                </div>
+                <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Total Dioceses</h6>
             </div>
         </div>
         <div class="four wide column">
             <div class="inner small ui segment">
-                <div class='graph'></div>
-                <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Header</h6>
+                <div class='ui statistic'>
+                    <div class="value">{{archdioceses}}</div>
+                </div>
+                <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Total Archdioceses</h6>
             </div>
         </div>
     </div>
@@ -35,8 +40,11 @@
         <div class="eight wide column">
             <div class="inner ui segment">
                 <div class='graph'>
-                    <canvas id="line" class="chart chart-line" data="data" labels="labels"
-                    legend="true" series="series" click="onClick"></canvas>
+                    <div >
+                          <div ng-controller="MyCtrl">
+                            <div class="hc-pie" items="limitedIdeas"></div>
+                          </div>
+                   </div>
                 </div>
                 <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Header</h6>
             </div>
@@ -53,3 +61,73 @@
     </div>
 </div>
 </div>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-more.js"></script>
+<script>
+    function MyCtrl($scope, limitToFilter) {
+  $scope.ideas = [
+    ['ideas1', 1],
+    ['ideas2', 8],
+    ['ideas3', 5]
+  ];
+  
+  $scope.limitedIdeas = limitToFilter($scope.ideas, 2);
+}
+
+angular.module('myApp', [])
+  .directive('hcPie', function () {
+  return {
+    restrict: 'C',
+    replace: true,
+    scope: {
+      items: '='
+    },
+    controller: function ($scope, $element, $attrs) {
+      console.log(2);
+
+    },
+    template: '<div id="container" style="margin: 0 auto">not working</div>',
+    link: function (scope, element, attrs) {
+      console.log(3);
+      var chart = new Highcharts.Chart({
+        chart: {
+          renderTo: 'container',
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false
+        },
+        title: {
+          text: 'Browser market shares at a specific website, 2010'
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage}%</b>',
+          percentageDecimals: 1
+        },
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+              enabled: true,
+              color: '#000000',
+              connectorColor: '#000000',
+              formatter: function () {
+                return '<b>' + this.point.name + '</b>: ' + this.percentage + ' %';
+              }
+            }
+          }
+        },
+        series: [{
+          type: 'pie',
+          name: 'Browser share',
+          data: scope.items
+        }]
+      });
+      scope.$watch("items", function (newValue) {
+        chart.series[0].setData(newValue, true);
+      }, true);
+      
+    }
+  }
+});
+</script>

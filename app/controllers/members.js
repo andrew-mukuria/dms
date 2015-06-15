@@ -1,6 +1,6 @@
 // I control the main demo.
 app.controller(
-  "memberCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
+  "membersCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
     'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
     function(scope, rootScope, filter, timeout, DMSRestangular, state,
       localStorageService, MySessionService) {
@@ -9,7 +9,7 @@ app.controller(
       rootScope.user = MySessionService.getLoggedUser();
 
       scope.getMember = function getMember(newMember) {
-        scope.memberProfile = newParish;
+        scope.memberProfile = newMember;
         state.go('location.members.view');
       }
 
@@ -48,23 +48,7 @@ app.controller(
         }
       }
       scope.newMember = function newMember() {
-        member = scope.memberProfile;
-        today = new Date();
-        year = today.getFullYear();
-        month = today.getMonth() + 1;
-        day = today.getDay();
-        member.created_at = year + '-' + month + '-' + day;
-        member.updated_at = year + '-' + month + '-' + day;
-        console.log(member);
-        member = {
-          'name': 'St. Chris',
-          'location': 'Kabete',
-          'in_charge': 'Oscar',
-          'created_at': '2015-02-23',
-          'updated_at': '2015-02-23'
-        };
-        console.log(member);
-        // memberes.post(member);
+
       }
 
       scope.updateMember = function updateMember() {

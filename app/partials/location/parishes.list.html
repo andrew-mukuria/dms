@@ -28,9 +28,8 @@ th{
   font-family: 'Slabo 27px', serif;
 }
 </style>
-<div class="container ">
+<div class="container-well">
     <div class="row">
-    <div class="col-xs-10 col-md-11 col-lg-9">
         <div class="panel panel-primary filterable">
             <div class="panel-heading">
                 <h3 class="panel-title">Parishes</h3>
@@ -58,7 +57,7 @@ th{
                   <td>{{row.in_charge}}</td>
                   <td>{{row.updated_at}}</td>
                   <td>{{row.created_at}}</td>
-                  <td width="110">
+                  <td width="150">
                     <button type="button" ng-click="getParish(row)" class="ui blue tiny button icon">
                       <i class="icon ion-more">
                       </i>
@@ -67,7 +66,6 @@ th{
                       <i class="icon ion-minus-circled">
                       </i>
                     </button>
-
                   </td>
                 </tr>
                 </tbody>
@@ -81,7 +79,6 @@ th{
   </tfoot>
             </table>
         </div>
-    </div>
 </div>
 </div>
 <script>
