@@ -1,4 +1,4 @@
-// I control the main demo.
+// I am le Diocese Controller
 app.controller(
   "diocesesCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
     'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
@@ -37,6 +37,13 @@ app.controller(
         });
       }
 
+       scope.setStatus = function setStatus(status) {
+        scope.status = status;
+        if (status == 'add') {
+          scope.parishProfile = [];
+        }
+      }
+
       function getDioceseCount() {
         var Dioceses = DMSRestangular.all('dioceses');
         // This will query /accounts and return a promise.
@@ -48,5 +55,7 @@ app.controller(
         });
       }
     }
+
+
   ]
 );

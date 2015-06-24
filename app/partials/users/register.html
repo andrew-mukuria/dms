@@ -1,0 +1,17 @@
+<form ng-submit="submitRegistration(registrationForm)" role="form" class='ui form segment centered' ng-init="registrationForm = {}">
+    <h1 class="ui header">Register</h1>
+    <div class="sixteen wide field">
+        <div class="ui input left icon">
+            <i class="icon ion-person"></i><input type="email" name="email" ng-model="registrationForm.email" required="required" class="form-control" placeholder="Enter your email..."/></div>
+    </div>
+    <div class="sixteen wide field">
+        <div class="ui input left icon">
+            <i class="icon ion-lock-combination"></i><input type="password" name="password" ng-model="registrationForm.password" required="required" class="form-control" placeholder="Enter your password..."/></div>
+    </div>
+    <div class="sixteen wide field">
+        <div class="ui input left icon">
+            <i class="icon ion-lock-combination"></i><input type="password" name="password_confirmation" ng-model="registrationForm.password_confirmation" required="required" class="form-control" placeholder="Confirm your passwiord..."/></div>
+    </div>
+    <button type="submit" class="ui icon green button"><i class='icon ion-log-in'></i>Register</button>
+</form>
+
