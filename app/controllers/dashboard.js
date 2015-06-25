@@ -17,7 +17,6 @@ app.controller(
         var baseMembers = DMSRestangular.all('members');
         baseMembers.getList().then(function(members) {
         scope.allMembers = members;
-        console.log(members);
       });
 
       scope.login = function login() {

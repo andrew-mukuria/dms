@@ -2,67 +2,75 @@ var app = angular.module("dms", ['ui.router','restangular','smart-table','textAn
 
 app.factory('DMSRestangular', function(Restangular) {
     return Restangular.withConfig(function(RestangularConfigurer) {
-        RestangularConfigurer.setBaseUrl('http://localhost:3000/api/v1');
+        RestangularConfigurer.setBaseUrl('http://localhost:3000/api/v1'); //Le Base URL for making API calls
     });
 });
 
 app.run(['$http', '$rootScope', '$state', 'toastr', function($http, $rootScope, state, toastr) {
+//**Le Global Variables 
+
     $rootScope.date = new Date();
     $rootScope.title = 'DMS';
     $rootScope.messages=[];
     $rootScope.menu=[];
 
-//Check if user has logged in
+//** ng-token-auth events with le toastr notifactions **//
+//**Check if user has logged in **//
     $rootScope.$on('auth:invalid', function(ev, reason) {
         toastr.error('Log in first dude!', 'Yo!'); 
     });
-//Check for validation errors    
+//**Check for validation errors     **//
     $rootScope.$on('auth:validation-error', function(ev, reason) {
-        toastr.error('Password must be 8 characters!', 'Oops!'); 
+        toastr.error(reason.errors[0], 'Yo!'); 
     });
-//Check for login errors 
+//**Check for login errors  **//
     $rootScope.$on('auth:login-error', function(ev, reason) {
         toastr.error(reason.errors[0], 'Yo!'); 
     });
-//Check for Successful Login 
+//**Check for Successful Login  **//
     $rootScope.$on('auth:login-success', function(ev, reason) {
         toastr.success('Login successful! Welcome Dude!');
         state.go('dashboard');
     });
-//Check for Successful Logout    
+//**Check for Successful Logout     **//
     $rootScope.$on('auth:logout-success', function(ev, reason) {
         toastr.info('You have been logged out! Adios Dude!'); 
         state.go('login');
     });
-//Check for Logout errors    
+//**Check for Logout errors     **//
     $rootScope.$on('auth:logout-error', function(ev, reason) {
         toastr.success(reason.errors[0], 'Yo'); 
     });
 }]);
 
-app.config(function (localStorageServiceProvider, RestangularProvider) {
+//**Local Storage config**//
+app.config(function (localStorageServiceProvider) {
     localStorageServiceProvider
     .setPrefix('app')
     .setStorageType('localStorage')
     .setNotify(true, true)
 
+});
+//**Restangular config setDefaultHeaders for interaction with API**//
+app.config(function (RestangularProvider){
+    
     RestangularProvider.setDefaultHeaders({'Content-Type': 'application/json'});
 
 });
-
+//** ng-token-auth config working with Ruby devise-token-auth gem **//
 app.config(function($authProvider) {
     // the following shows the default values. values passed to this method
     // will extend the defaults using angular.extend  
       $authProvider.configure({
       apiUrl:                  'http://localhost:3000', //path setup for devise token auth gem for dms_api
-      storage:                 'localStorage',
+      storage:                 'localStorage', //auth headers storage type you change and set it as 'cookies'
       proxyIf:                 function() { return false; },
       proxyUrl:                '/proxy',
       authProviderPaths: {
-        github:   '/auth/github'
+        github:   '/auth/github' //for integration with le GitHub
       },
       // user's authentication information included by the client in the access-token header of each request
-      // using devise token auth gem, header must follow this Token format (RFC 6750 Bearer)
+      // using devise-token-auth gem, header must follow this Token format (RFC 6750 Bearer)
       tokenFormat: {
         "access-token": "{{ token }}",
         "token-type":   "Bearer",
@@ -85,11 +93,11 @@ app.config(function($authProvider) {
       }
       });
     });
-
+//** Le Config for angular toastr notifications
 app.config(function(toastrConfig) {
 
       angular.extend(toastrConfig, {
-        allowHtml: false,
+        allowHtml: false, //Alow checkboxes and stuff
         autoDismiss: false,
         closeButton: false,
         closeHtml: '<button>&times;</button>',
@@ -104,12 +112,12 @@ app.config(function(toastrConfig) {
         maxOpened: 0,    
         messageClass: 'toast-message',
         newestOnTop: true,
-        onHidden: null,
-        onShown: null,
-        positionClass: 'toast-bottom-right',
+        onHidden: null, //Callback function called when a toast is hidden
+        onShown: null, //Callback function called when a toast is shown
+        positionClass: 'toast-bottom-right', //Position of toastr notification
         preventDuplicates: false,
-        preventOpenDuplicates: false,
-        progressBar: true,
+        preventOpenDuplicates: false, 
+        progressBar: true, //Animate timeout
         tapToDismiss: true,
         timeOut: 5000
 

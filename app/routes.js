@@ -1,9 +1,12 @@
+//** Le routes **//
 app.config(function($stateProvider, $urlRouterProvider) {
   //
   // For any unmatched url, redirect to /state1
   $urlRouterProvider.otherwise("/login");
   //
   // Now set up the states
+
+//** Le routes accessible by any dude **//
   $stateProvider
     .state('login', {
       url: '/login',
@@ -22,9 +25,11 @@ app.config(function($stateProvider, $urlRouterProvider) {
       $rootScope.date = new Date();
     }
   }).
+//** Le routes which dudes need authorization **//
     state('dashboard', {
     url: '/dashboard',
     controller: 'dashboardCtrl',
+    //** Check if user is logged in, if not redirect the dude to the login page**//
     resolve: {
           auth: function($auth, $state) {
             return $auth.validateUser().catch(function(){
@@ -35,6 +40,8 @@ app.config(function($stateProvider, $urlRouterProvider) {
         },
     templateUrl: 'app/partials/global/dashboard.html'
   }).
+// With the resolve in this state, only authenticated dudes will be able to see routes that are
+ // children of this 'users'state  
   state('users', {
     url: '/users',
     controller: 'usersCtrl',
@@ -64,15 +71,18 @@ app.config(function($stateProvider, $urlRouterProvider) {
     },
     templateUrl: 'app/partials/users/list.html'
   }).
+// With the resolve in this state, only authenticated dudes will be able to see routes that are
+ // children of this 'location'state  
   state('location', {
     url: '/location',
     controller: function($rootScope, $scope) {
       $rootScope.title = 'Location';
     },
+//** Check if dude is logged in, if not redirect the dude to the login page**//
     resolve: {
           auth: function($auth, $state) {
             return $auth.validateUser().catch(function(){
-              // redirect unauthorized users to the login page
+              // redirect unauthorized dudes to the login page
               $state.go('login');
             });
           }

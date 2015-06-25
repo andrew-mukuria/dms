@@ -55,6 +55,7 @@ app.controller(
         member = scope.memberProfile;
         updatedmember = DMSRestangular.one('members', member.id); 
         updatedmember[0] = member;
+        
         updatedmember.put(member);
       }
 

@@ -49,33 +49,18 @@ app.controller(
       }
       scope.newParish = function newParish() {
         parish = scope.parishProfile;
-        today = new Date();
-        year = today.getFullYear();
-        month = today.getMonth() + 1;
-        day = today.getDay();
-        parish.created_at = year + '-' + month + '-' + day;
-        parish.updated_at = year + '-' + month + '-' + day;
         console.log(parish);
+        
         parish = {
               "parish": {
-              "name":       scope.parishProfile.name,
-              "in_charge":  scope.parishProfile.in_charge,
-              "location":   scope.parishProfile.location
+                  "name":       scope.parishProfile.name,
+                  "in_charge":  scope.parishProfile.in_charge,
+                  "location":   scope.parishProfile.location
          }
         };
         console.log(parish);
         Parishes.post(parish);
 
-        scope.items = DMSRestangular.one('parishes', scope.parishProfile.name);
-        console.log(scope.items);
-
-        if (scope.items != null) {
-            // items have value
-        toastr.info('Parish saved successfully!', 'Awesome!'); 
-        } else {
-            // items is still null
-        toastr.warning('Something went wrond dude!', 'Oops!'); 
-        }
       }
         
       scope.updateParish = function updateParish() {
