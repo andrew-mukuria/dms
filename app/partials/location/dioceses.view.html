@@ -1,7 +1,7 @@
 <div class="ui grid">
   <div class="twelve wide column">
     <!-- Form -->
-    <form class="ui form ui segment" id="memberForm" action="" method="post">
+    <form class="ui form ui segment" id="memberForm">
       <div class="fields">
         <div class="field eight wide required">
           <label>Name</label>
@@ -11,32 +11,33 @@
           </div>
 
         </div>
-        <div class="field left icon eight wide required">
+      </div>
+      <div class="fields">
+        <div class="field eight wide required">
           <label>In Charge</label>
           <div class="ui icon left input">
-            <i class="icon ion-person"></i>
-            <input name="email" id="email" type="text" ng-model="dioceseProfile.in_charge"/>
+            <i class="icon building"></i>
+            <input name="fname" id="fname" type="text" ng-model="dioceseProfile.in_charge"/>
           </div>
         </div>
       </div>
-      <!--
-      <div class="fields">
-
-    </div>
-  -->
-  <div class="ui error message"></div>
-</form>
-
-</div>
-<div class="four wide column">
-  <div class="ui segment">
-    <div class="ui statistic" id="total">
-      <div class="value">
-        {{records}}
+      <div class="buttons">
+        <button class="ui button blue" ng-click="updateParish()" ng-show="status=='update'">Update Diocese</button>
+        <button class="ui button teal" ng-click="newParish()" ng-show="status=='add'">Add Diocese</button>
       </div>
-      <div class="label">
-        <i class="icon database"></i>Total Records
+      <div class="ui error message"></div>
+    </form>
+
+  </div>
+  <div class="four wide column">
+    <div class="ui segment">
+      <div class="ui statistic" id="total">
+        <div class="value">
+          {{records}}
+        </div>
+        <div class="label">
+          <i class="icon database"></i>Total Records
+        </div>
       </div>
     </div>
   </div>
-</div>

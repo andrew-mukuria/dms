@@ -1,4 +1,4 @@
-// I control the main demo.
+// I am le Services Controller
 app.controller(
   "servicesCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
     'DMSRestangular', '$state', 'localStorageService', 'MySessionService',

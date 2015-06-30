@@ -1,31 +1,44 @@
-<html ng-app="meds">
+<html ng-app="dms">
 <head>
+<!-- Le Dynamic Page Title -->
   <title>{{title}}</title>
+<!-- -->
+
+<!-- Le Stylesheets -->  
+  <link rel="stylesheet" href="libs/angular-toastr/dist/angular-toastr.css" />
   <link rel="stylesheet" href="libs/webfont-opensans/css/stylesheet.css" media="screen" title="no title" charset="utf-8">
   <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.css">
   <link rel="stylesheet" href="libs/ionicons/css/ionicons.css">
   <link rel="stylesheet" href="dist/styles.css">
   <link rel="stylesheet" href="libs/semantic-ui/dist/semantic.css">
   <link rel="stylesheet" href="libs/ionicons/css/ionicons.css" media="screen" title="no title" charset="utf-8">
+  <link rel="stylesheet" href="libs/angular-chart.js/dist/angular-chart.css">
   <link rel='stylesheet' href='libs/textAngular/src/textAngular.css'>
   <link rel='stylesheet' href='libs/slick-carousel/slick/slick.css'>
+<!-- End of Le Stylesheets -->  
 
 </head>
 <body class="menu">
+<!-- Le Side Menu -->
   <div sidemenu id="main-side-menu" class="ui teal left vertical inverted labeled icon sidebar menu wide">
 
   </div>
+<!-- End of Le Side Menu -->
   <div class="pusher">
-
+<!-- Le Main View-->
+  <div class="container-well">
     <div class="content" ui-view>
-
     </div>
+  </div>
+<!-- / Main View-->
     <footer>
-
     </footer>
   </div>
+
+  <!-- Le Libraries-->
   <script src="libs/jquery/dist/jquery.js"></script>
   <script src="libs/angular/angular.js"></script>
+  <script src="libs/angular-animate/angular-animate.js"></script>
   <script src="libs/slick-carousel/slick/slick.js"></script>
   <script src="libs/angular-ui-router/release/angular-ui-router.js"></script>
   <script src="libs/lodash/dist/lodash.js"></script>
@@ -40,7 +53,38 @@
   <script src="libs/angular-bootstrap/ui-bootstrap.js"></script>
   <script src="libs/angular-slick/dist/slick.js"></script>
   <script src="libs/semantic-ui/dist/semantic.js"></script>
-  <script type="text/javascript" src="dist/app.js"></script>
-  <script src="//localhost:35729/livereload.js"></script>
+  <script src="libs/highcharts-ng/src/highcharts-ng.js"></script>
+  <script src="http://code.highcharts.com/stock/highstock.src.js"></script>
+  <script src="libs/Chart.js/Chart.min.js"></script>
+  <script src="libs/angular-chart.js/dist/angular-chart.js"></script>
+  <script src="libs/angular-toastr/dist/angular-toastr.min.js"></script>
+  <script src="libs/angular-toastr/dist/angular-toastr.tpls.min.js"></script>
+  <script src="libs/angular-cookie/angular-cookie.js"></script>
+  <script src="libs/ng-token-auth/dist/ng-token-auth.js"></script>
+  <script src="libs/ngstorage/ngStorage.js"></script>
+  <!-- End of Le Libraries-->
+
+  <!-- Le Custom JS-->
+  <script type="text/javascript" src="app/app.js"></script>
+  <script type="text/javascript" src="app/directives.js"></script>
+  <script type="text/javascript" src="app/services/criteria.js"></script>
+  <script type="text/javascript" src="app/services/session.js"></script>
+  <script type="text/javascript" src="app/controllers/services.js"></script>
+  <script type="text/javascript" src="app/controllers/navbar.js"></script>
+  <script type="text/javascript" src="app/controllers/dashboard.js"></script>
+  <script type="text/javascript" src="app/controllers/register.js"></script>
+  <script type="text/javascript" src="app/controllers/login.js"></script>
+  <script type="text/javascript" src="app/controllers/logout.js"></script>
+  <script type="text/javascript" src="app/controllers/archdiocese.js"></script>
+  <script type="text/javascript" src="app/controllers/dioceses.js"></script>
+  <script type="text/javascript" src="app/controllers/deaneries.js"></script>
+  <script type="text/javascript" src="app/controllers/members.js"></script>
+  <script type="text/javascript" src="app/controllers/parishes.js"></script>
+  <script type="text/javascript" src="app/controllers/users.js"></script>
+  <script type="text/javascript" src="app/controllers/tests.js"></script>
+  <script type="text/javascript" src="app/controllers/clients.js"></script>
+  <script type="text/javascript" src="app/routes.js"></script>
+  <!-- End of Le Custom JS-->
+
 </body>
 </html>

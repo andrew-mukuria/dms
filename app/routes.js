@@ -1,30 +1,58 @@
+//** Le routes **//
 app.config(function($stateProvider, $urlRouterProvider) {
   //
   // For any unmatched url, redirect to /state1
   $urlRouterProvider.otherwise("/login");
   //
   // Now set up the states
+
+//** Le routes accessible by any dude **//
   $stateProvider
     .state('login', {
       url: '/login',
       templateUrl: 'app/partials/users/login.html',
-      controller: 'usersCtrl'
+      controller: 'LoginCtrl'
     }).
-  state('lock-screen', {
+    state('register', {
+      url: '/register',
+      templateUrl: 'app/partials/users/register.html',
+      controller: 'RegisterCtrl'
+    }).
+    state('lock-screen', {
     url: '/lock-screen',
     templateUrl: 'app/partials/users/lock-screen.html',
     controller: function($rootScope) {
       $rootScope.date = new Date();
     }
   }).
-  state('dashboard', {
+//** Le routes which dudes need authorization **//
+    state('dashboard', {
     url: '/dashboard',
-    controller: '',
+    controller: 'dashboardCtrl',
+    //** Check if user is logged in, if not redirect the dude to the login page**//
+    resolve: {
+          auth: function($auth, $state) {
+            return $auth.validateUser().catch(function(){
+              // redirect unauthorized users to the login page
+              $state.go('login');
+            });
+          }
+        },
     templateUrl: 'app/partials/global/dashboard.html'
   }).
+// With the resolve in this state, only authenticated dudes will be able to see routes that are
+ // children of this 'users'state  
   state('users', {
     url: '/users',
     controller: 'usersCtrl',
+    resolve: {
+          auth: function($auth, $state) {
+            return $auth.validateUser().catch(function(){
+              // redirect unauthorized users to the login page
+              $state.go('login');
+            });
+          }
+        },
     templateUrl: 'app/partials/users/index.html'
   }).
   state('users.view', {
@@ -43,15 +71,54 @@ app.config(function($stateProvider, $urlRouterProvider) {
     },
     templateUrl: 'app/partials/users/list.html'
   }).
+// With the resolve in this state, only authenticated dudes will be able to see routes that are
+ // children of this 'location'state  
   state('location', {
     url: '/location',
-    controller: '',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Location';
+    },
+//** Check if dude is logged in, if not redirect the dude to the login page**//
+    resolve: {
+          auth: function($auth, $state) {
+            return $auth.validateUser().catch(function(){
+              // redirect unauthorized dudes to the login page
+              $state.go('login');
+            });
+          }
+        },
     templateUrl: 'app/partials/location/index.html'
   }).
   state('location.archdioceses', {
     url: '/archdioceses',
-    controller: '',
+    controller: 'archdiocesesCtrl',
     templateUrl: 'app/partials/location/archdioceses.index.html'
+  }).
+  state('location.archdioceses.list', {
+    url: '/list',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Archidiocese List';
+      $scope.getArchdioceses();
+    },
+    templateUrl: 'app/partials/location/archdioceses.list.html'
+  }).
+  state('location.archdioceses.view', {
+    url: '/view',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Archidiocese View';
+      $scope.getArchdioceses();
+      $scope.setStatus('update');
+  },
+    templateUrl: 'app/partials/location/archdioceses.view.html'
+  }).
+  state('location.archdioceses.add', {
+    url: '/add',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Archdioceses Add';
+      $scope.getArchdioceses();
+      $scope.setStatus('add');
+    },
+    templateUrl: 'app/partials/location/archdioceses.view.html'
   }).
   state('location.dioceses', {
     url: '/dioceses',
@@ -71,13 +138,49 @@ app.config(function($stateProvider, $urlRouterProvider) {
     controller: function($rootScope, $scope) {
       $rootScope.title = 'Diocese View';
       $scope.getDioceses();
+      $scope.setStatus('update');
+    },
+    templateUrl: 'app/partials/location/dioceses.view.html'
+  }).
+    state('location.dioceses.add', {
+    url: '/add',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Dioceses Add';
+      $scope.getDioceses();
+      $scope.setStatus('add');
     },
     templateUrl: 'app/partials/location/dioceses.view.html'
   }).
   state('location.deaneries', {
     url: '/deanery',
-    controller: '',
+    controller: 'deaneriesCtrl',
     templateUrl: 'app/partials/location/deaneries.index.html'
+  }).
+  state('location.deaneries.list', {
+    url: '/list',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Deaneries List';
+      $scope.getDeaneries();
+    },
+    templateUrl: 'app/partials/location/deaneries.list.html'
+  }).
+  state('location.deaneries.view', {
+    url: '/view',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Deaneries View';
+      $scope.getDeaneries();
+      $scope.setStatus('update');
+    },
+    templateUrl: 'app/partials/location/deaneries.view.html'
+  }).
+  state('location.deaneries.add', {
+    url: '/add',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Deaneries Add';
+      $scope.getDeaneries();
+      $scope.setStatus('add');
+    },
+    templateUrl: 'app/partials/location/deaneries.view.html'
   }).
   state('location.parishes', {
     url: '/parishes',
@@ -112,9 +215,37 @@ app.config(function($stateProvider, $urlRouterProvider) {
   }).
   state('location.members', {
     url: '/members',
-    controller: '',
+    controller: 'membersCtrl',
     templateUrl: 'app/partials/location/members.index.html'
   }).
+  state('location.members.list', {
+    url: '/list',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Members List';
+      $scope.getMembers();
+    },
+    templateUrl: 'app/partials/location/members.list.html'
+  }).
+  state('location.members.view', {
+    url: '/view',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Member View';
+      $scope.getMembers();
+      $scope.setStatus('update');
+    },
+    templateUrl: 'app/partials/location/members.view.html'
+  }).
+
+  state('location.members.add', {
+    url: '/add',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Member Add';
+      $scope.getMembers();
+      $scope.setStatus('add');
+    },
+    templateUrl: 'app/partials/location/members.view.html'
+  }).
+
   state('location.services', {
     url: '/services',
     controller: 'servicesCtrl',
@@ -124,7 +255,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
     url: '/list',
     controller: function($rootScope, $scope) {
       $rootScope.title = 'Services List';
-      $scope.getDioceses();
+      $scope.getServices();
     },
     templateUrl: 'app/partials/location/services.list.html'
   }).
@@ -149,5 +280,4 @@ app.config(function($stateProvider, $urlRouterProvider) {
     controller: '',
     templateUrl: 'app/partials/location/services.add.html'
   })
-
 });

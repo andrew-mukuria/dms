@@ -1,0 +1,43 @@
+<div class="ui grid">
+  <div class="twelve wide column">
+    <!-- Form -->
+    <form class="ui form ui segment" id="memberForm">
+      <div class="fields">
+        <div class="field eight wide required">
+          <label>ID</label>
+          <div class="ui icon left input">
+            <i class="icon building"></i>
+            <input name="fname" id="fname" type="text" ng-model="ArchdioceseProfile.id"/>
+          </div>
+
+        </div>
+      </div>
+      <div class="fields">
+        <div class="field eight wide required">
+          <label>Created At</label>
+          <div class="ui icon left input">
+            <i class="icon building"></i>
+            <input name="fname" id="fname" type="text" ng-model="ArchdioceseProfile.created_at"/>
+          </div>
+        </div>
+      </div>
+      <div class="buttons">
+        <button class="ui button blue" ng-click="updateArchdiocese()" ng-show="status=='update'">Update Archdiocese</button>
+        <button class="ui button teal" ng-click="newArchdiocese()" ng-show="status=='add'">Add Archdiocese</button>
+      </div>
+      <div class="ui error message"></div>
+    </form>
+
+  </div>
+  <div class="four wide column">
+    <div class="ui segment">
+      <div class="ui statistic" id="total">
+        <div class="value">
+          {{records}}
+        </div>
+        <div class="label">
+          <i class="icon database"></i>Total Records
+        </div>
+      </div>
+    </div>
+  </div>

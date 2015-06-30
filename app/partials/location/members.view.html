@@ -1,0 +1,35 @@
+<div class="ui grid">
+  <div class="twelve wide column">
+    <!-- Form -->
+    <form class="ui form ui segment" id="memberForm">
+      <div class="fields">
+        <div class="field eight wide required">
+          <label>Name</label>
+          <div class="ui icon left input">
+            <i class="icon building"></i>
+            <input name="fname" id="fname" type="text" ng-model="memberProfile.name"/>
+            <input name="fname" id="fname" type="text" ng-model="memberProfile.updated_at"/>
+          </div>
+
+        </div>
+      </div>
+      <div class="buttons">
+        <button class="ui button blue" ng-click="updateMember()" ng-show="status=='update'">Update Member</button>
+        <button class="ui button teal" ng-click="newMember()" ng-show="status=='add'">Add Member</button>
+      </div>
+      <div class="ui error message"></div>
+    </form>
+
+  </div>
+  <div class="four wide column">
+    <div class="ui segment">
+      <div class="ui statistic" id="total">
+        <div class="value">
+          {{records}}
+        </div>
+        <div class="label">
+          <i class="icon database"></i>Total Records
+        </div>
+      </div>
+    </div>
+  </div>

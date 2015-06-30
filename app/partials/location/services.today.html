@@ -9,7 +9,7 @@
 <div class="ui three cards">
   <div ng-repeat="row in displayedCollection | filter: searchText" class="red card">
     <div class="content">
-      <div class="header">{{row.parish_name}}
+      <div class="header">{{row.name}}
         <span class="right floated">
           <a href="">
             <i class="icon share alternate"></i>
@@ -27,10 +27,8 @@
         <!-- <div class="two wide column">
           <i class="icon fa fa-tags"></i>
         </div> -->
-        <div class="twelve wide column">
-          {{row.tags}}
-          <a href="" ng-repeat="tag in row.tags"> #{{tag}}</a>
-          <a>#One</a><a>#Two</a>
+        <div class="twelve wide column" >
+          <a href="" >{{row.tags}}</a>
         </div>
         <div class="two wide column">
           <a href="" ng-click="getService(row)">

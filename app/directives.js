@@ -6,6 +6,7 @@
 
 app.directive("header", function () {
     return {
+        controller: 'NavbarController',
         templateUrl: "app/partials/global/header.html"
     }
 });

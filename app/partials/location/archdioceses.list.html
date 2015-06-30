@@ -1,0 +1,97 @@
+<!-- Parishes' List -->
+<link href='http://fonts.googleapis.com/css?family=Slabo+27px' rel='stylesheet' type='text/css'>
+<style>
+  .filterable {
+    margin-top: 15px;
+}
+.filterable .panel-heading .pull-right {
+    margin-top: -20px;
+}
+.filterable .filters input[disabled] {
+    background-color: transparent;
+    border: none;
+    cursor: auto;
+    box-shadow: none;
+    padding: 0;
+    height: auto;
+}
+.filterable .filters input[disabled]::-webkit-input-placeholder {
+    color: #333;
+}
+.filterable .filters input[disabled]::-moz-placeholder {
+    color: #333;
+}
+.filterable .filters input[disabled]:-ms-input-placeholder {
+    color: #333;
+}
+th{
+  font-family: 'Slabo 27px', serif;
+}
+</style>
+<div class="container ">
+    <div class="row">
+    <div class="col-xs-10 col-md-11 col-lg-9">
+        <div class="panel panel-primary filterable">
+            <div class="panel-heading">
+                <h3 class="panel-title">Archdioceses</h3>
+                <div class="pull-right">
+                    <button class="btn btn-default btn-xs btn-filter"><i class="search icon"></i> Filter</button>
+                </div>
+            </div>
+            <table class="table" st-safe-src="rowCollection" st-table="displayedCollection">
+                <thead>
+                    <tr class="filters">
+       <th><input type="text" st-search="'id'" class="form-control th" placeholder="#" disabled ></th>
+       <th><input type="text" st-search="'updated_at'" class="form-control th" placeholder="Updated At" disabled ></th>
+       <th><input type="text" st-search="'created_at'" class="form-control th" placeholder="Created At" disabled ></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+              <tr ng-repeat="row in displayedCollection"  st-select-row="row" style="font-family: 'Slabo 27px', serif;">
+                  <td>{{row.id}}</td>
+                  <td>{{row.updated_at}}</td>
+                  <td>{{row.created_at}}</td>
+                  <td width="110">
+                    <button type="button" ng-click="getArchdiocese(row)" class="ui blue tiny button icon">
+                      <i class="icon ion-more">
+                      </i>
+                    </button>
+                    <button type="button" ng-click="" class="ui red tiny button icon">
+                      <i class="icon ion-minus-circled">
+                      </i>
+                    </button>
+
+                  </td>
+                </tr>
+                </tbody>
+                  <tfoot>
+    <tr>
+      <th colspan="1">{{records}} Records</th>
+      <th colspan="5" style="cursor: pointer;">
+        <div st-pagination="" st-items-by-page="recordsPerPage" st-displayed-pages="pages"></div>
+      </th>
+    </tr>
+  </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+$(document).ready(function(){
+    $('.filterable .btn-filter').click(function(){
+        var $panel = $(this).parents('.filterable'),
+        $filters = $panel.find('.filters input'),
+        $tbody = $panel.find('.table tbody');
+        if ($filters.prop('disabled') == true) {
+            $filters.prop('disabled', false);
+            $filters.first().focus();
+        } else {
+            $filters.val('').prop('disabled', true);
+            $tbody.find('.no-result').remove();
+            $tbody.find('tr').show();
+        }
+    });
+});
+</script>

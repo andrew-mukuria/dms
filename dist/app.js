@@ -1,4 +1,4 @@
-var app = angular.module("meds", ['ui.router','restangular','smart-table','textAngular','angularMoment','LocalStorageModule','slick']);
+var app = angular.module("dms", ['ui.router','restangular','smart-table','textAngular','angularMoment','LocalStorageModule','slick', 'highcharts-ng', 'chart.js', 'ngAnimate', 'toastr', 'ng-token-auth', 'ngStorage']);
 
 app.factory('DMSRestangular', function(Restangular) {
     return Restangular.withConfig(function(RestangularConfigurer) {
@@ -6,7 +6,7 @@ app.factory('DMSRestangular', function(Restangular) {
     });
 });
 
-app.run(['$http', '$rootScope', function($http, $rootScope) {
+app.run(['$http', '$rootScope', '$state', 'toastr', function($http, $rootScope, state, toastr) {
     $rootScope.date = new Date();
     $rootScope.title = 'DMS';
     $rootScope.messages=[];
@@ -14,17 +14,19 @@ app.run(['$http', '$rootScope', function($http, $rootScope) {
 
 }]);
 
-app.config(function (localStorageServiceProvider) {
+app.config(function (localStorageServiceProvider, RestangularProvider) {
     localStorageServiceProvider
     .setPrefix('app')
     .setStorageType('localStorage')
     .setNotify(true, true)
-});
 
+    RestangularProvider.setDefaultHeaders({'Content-Type': 'application/json'});
+
+});
 
 ;// I control the main demo.
 app.controller(
-	"clientsCtrl", ['$scope', '$rootScope', '$filter', '$timeout', 'MedsRestangular', '$state', 'localStorageService', 'MySessionService', function(scope, rootScope, filter, timeout, MedsRestangular, state, localStorageService, MySessionService) {
+	"clientsCtrl", ['$scope', '$rootScope', '$filter', '$timeout', 'DMSRestangular', '$state', 'localStorageService', 'MySessionService', function(scope, rootScope, filter, timeout, DMSRestangular, state, localStorageService, MySessionService) {
 		getClientCount();
 
 		scope.getClient = function getClient(newClient) {
@@ -33,7 +35,7 @@ app.controller(
 		}
 
 		scope.getClients = function getClients() {
-			var AllClients = MedsRestangular.all('clients');
+			var AllClients = DMSRestangular.all('clients');
 			// This will query /accounts and return a promise.
 			AllClients.customGET('').then(function(clients) {
 				//console.log(clients);
@@ -43,7 +45,7 @@ app.controller(
 		}
 
 		function getClientCount() {
-			var AllClients = MedsRestangular.all('clients');
+			var AllClients = DMSRestangular.all('clients');
 			// This will query /accounts and return a promise.
 			AllClients.customGET('').then(function(clients) {
 				// console.log(clients);
@@ -93,6 +95,13 @@ app.controller(
         });
       }
 
+       scope.setStatus = function setStatus(status) {
+        scope.status = status;
+        if (status == 'add') {
+          scope.parishProfile = [];
+        }
+      }
+
       function getDioceseCount() {
         var Dioceses = DMSRestangular.all('dioceses');
         // This will query /accounts and return a promise.
@@ -104,67 +113,201 @@ app.controller(
         });
       }
     }
+
+
   ]
 );
 ;// I control the main demo.
 app.controller(
-    "memberCtrl", ['$scope', '$filter','$timeout', 'MedsRestangular','$state', function(scope, filter,timeout, MedsRestangular,state) {
-        getMemberCount();
-        
-
-
-        scope.getMember = function getMember(newMember) {
-            console.log(newMember);
-            scope.member = newMember;
-            state.go('members.view');
-        }
-
-        scope.getMembers = function getMembers() {
-            var AllMembers = MedsRestangular.all('members');
-            // This will query /accounts and return a promise.
-            AllMembers.customGET('').then(function(members) {
-                scope.rowCollection = members.data;
-                scope.displayedCollection = [].concat(scope.rowCollection);
-
-            });
-        }
-
-        function getMemberCount() {
-            var AllMembers = MedsRestangular.all('members');
-            // This will query /accounts and return a promise.
-            AllMembers.customGET('').then(function(members) {
-                scope.records = members.data.length;
-                scope.recordsPerPage = 5;
-                scope.pages = Math.ceil(scope.records/scope.recordsPerPage);
-
-            });
-        }
-        // scope.totalMembers = function totalMembers() {
-        //     scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-        //     scope.series = ['Series A', 'Series B'];
-        //     scope.data = [
-        //         [65, 59, 80, 81, 56, 55, 40],
-        //         [28, 48, 40, 19, 86, 27, 90]
-        //     ];
-        //     scope.onClick = function(points, evt) {
-        //         console.log(points, evt);
-        //     };
-
-        //     // Simulate async data update
-        //     timeout(function() {
-        //         scope.data = [
-        //             [28, 48, 40, 19, 86, 27, 90],
-        //             [65, 59, 80, 81, 56, 55, 40]
-        //         ];
-        //     }, 3000);
-        // }
-    }]
-);;// I control the main demo.
-app.controller(
-  "parishesCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
+  "archdiocesesCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
     'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
     function(scope, rootScope, filter, timeout, DMSRestangular, state,
       localStorageService, MySessionService) {
+
+      getArchdioceseCount();
+      rootScope.user = MySessionService.getLoggedUser();
+
+      scope.getArchdiocese = function getArchdiocese(newArchdiocese) {
+        console.log(newArchdiocese);
+        scope.ArchdioceseProfile = newArchdiocese;
+        state.go('location.archdioceses.view');
+      }
+
+      scope.getArchdioceses = function getArchdioceses() {
+        var Archdioceses = DMSRestangular.all('archdioceses');
+        // This will query /accounts and return a promise.
+        Archdioceses.customGET('').then(function(archdioceses) {
+          //console.log(users);
+          scope.rowCollection = archdioceses;
+          scope.displayedCollection = [].concat(scope.rowCollection);
+        });
+      }
+
+      scope.login = function login() {
+        rootScope.user = [];
+        var user = DMSRestangular.one('user').one('username', scope.formData
+          .username).one('password', scope.formData.password).one(
+          'format', 'json');
+        // This will query /accounts and return a promise.
+        user.customGET('').then(function(userObj) {
+          localStorageService.set('meds_user', userObj);
+          state.go('users');
+
+        });
+      }
+
+	  scope.setStatus = function setStatus(status) {
+        scope.status = status;
+        if (status == 'add') {
+          scope.parishProfile = [];
+        }
+      }
+
+      function getArchdioceseCount() {
+        var Archdioceses = DMSRestangular.all('archdioceses');
+        // This will query /accounts and return a promise.
+        Archdioceses.customGET('').then(function(archdioceses) {
+          // console.log(users);
+          scope.records = archdioceses.length;
+          scope.recordsPerPage = 5;
+          scope.pages = Math.ceil(scope.records / scope.recordsPerPage);
+        });
+      }
+    }
+
+    
+  ]
+);
+;
+app.controller(
+  "deaneriesCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
+    'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
+    function(scope, rootScope, filter, timeout, DMSRestangular, state,
+      localStorageService, MySessionService) {
+
+      getDeaneryCount();
+      rootScope.user = MySessionService.getLoggedUser();
+
+      scope.getDeanery = function getDeanery(newDeanery) {
+        console.log(newDeanery);
+        scope.DeaneryProfile = newDeanery;
+        state.go('location.deaneries.view');
+      }
+
+      scope.getDeaneries = function getDeaneries() {
+        var Deaneries = DMSRestangular.all('deaneries');
+        // This will query /accounts and return a promise.
+        Deaneries.customGET('').then(function(deaneries) {
+          //console.log(users);
+          scope.rowCollection = deaneries;
+          scope.displayedCollection = [].concat(scope.rowCollection);
+        });
+      }
+
+      scope.login = function login() {
+        rootScope.user = [];
+        var user = DMSRestangular.one('user').one('username', scope.formData
+          .username).one('password', scope.formData.password).one(
+          'format', 'json');
+        // This will query /accounts and return a promise.
+        user.customGET('').then(function(userObj) {
+          localStorageService.set('meds_user', userObj);
+          state.go('users');
+
+        });
+      }
+
+    scope.setStatus = function setStatus(status) {
+        scope.status = status;
+        if (status == 'add') {
+          scope.parishProfile = [];
+        }
+      }
+
+      function getDeaneryCount() {
+        var Deaneries = DMSRestangular.all('deaneries');
+        // This will query /accounts and return a promise.
+        Deaneries.customGET('').then(function(deaneries) {
+          // console.log(users);
+          scope.records = deaneries.length;
+          scope.recordsPerPage = 5;
+          scope.pages = Math.ceil(scope.records / scope.recordsPerPage);
+        });
+      }
+    }
+
+    
+  ]
+);
+;
+app.controller(
+  "membersCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
+    'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
+    function(scope, rootScope, filter, timeout, DMSRestangular, state,
+      localStorageService, MySessionService) {
+      var Members = DMSRestangular.all('members');
+      getMemberCount();
+      rootScope.user = MySessionService.getLoggedUser();
+
+      scope.getMember = function getMember(newMember) {
+        scope.memberProfile = newMember;
+        state.go('location.members.view');
+      }
+
+      scope.getMembers = function getMembers() {
+        Members.customGET('').then(function(members) {
+          scope.rowCollection = members;
+          scope.displayedCollection = [].concat(scope.rowCollection);
+        });
+      }
+
+      scope.login = function login() {
+        rootScope.user = [];
+        var user = DMSRestangular.one('user').one('username', scope.formData
+          .username).one('password', scope.formData.password).one(
+          'format', 'json');
+        // This will query /accounts and return a promise.
+        user.customGET('').then(function(userObj) {
+          localStorageService.set('dms_user', userObj);
+          state.go('dashboard');
+
+        });
+      }
+
+      function getMemberCount() {
+        Members.customGET('').then(function(members) {
+          scope.records = members.length;
+          scope.recordsPerPage = 5;
+          scope.pages = Math.ceil(scope.records / scope.recordsPerPage);
+        });
+      }
+
+      scope.setStatus = function setStatus(status) {
+        scope.status = status;
+        if (status == 'add') {
+          scope.memberProfile = [];
+        }
+      }
+      scope.newMember = function newMember() {
+
+      }
+
+      scope.updateMember = function updateMember() {
+        member = scope.memberProfile;
+        updatedmember = DMSRestangular.one('members', member.id); 
+        updatedmember[0] = member;
+        updatedmember.put(member);
+      }
+
+    }
+  ]
+);
+;// I control the main demo.
+app.controller(
+  "parishesCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
+    'DMSRestangular', '$state', 'localStorageService', 'MySessionService', 'toastr',
+    function(scope, rootScope, filter, timeout, DMSRestangular, state,
+      localStorageService, MySessionService, toastr) {
       var Parishes = DMSRestangular.all('parishes');
       getParishCount();
       rootScope.user = MySessionService.getLoggedUser();
@@ -218,20 +361,40 @@ app.controller(
         parish.updated_at = year + '-' + month + '-' + day;
         console.log(parish);
         parish = {
-          'name': 'St. Chris',
-          'location': 'Kabete',
-          'in_charge': 'Oscar',
-          'created_at': '2015-02-23',
-          'updated_at': '2015-02-23'
+              "parish": {
+              "name":       scope.parishProfile.name,
+              "in_charge":  scope.parishProfile.in_charge,
+              "location":   scope.parishProfile.location
+         }
         };
         console.log(parish);
-        // Parishes.post(parish);
-      }
+        Parishes.post(parish);
 
+        scope.items = DMSRestangular.one('parishes', scope.parishProfile.name);
+        console.log(scope.items);
+
+        if (scope.items != null) {
+            // items have value
+        toastr.info('Parish saved successfully!', 'Awesome!'); 
+        } else {
+            // items is still null
+        toastr.warning('Something went wrond dude!', 'Oops!'); 
+        }
+      }
+        
       scope.updateParish = function updateParish() {
         parish = scope.parishProfile;
         updatedParish = DMSRestangular.one('parishes', parish.id);
-        updatedParish[0] = parish;
+        parish = {
+              "utf8":"✓",
+              "parish": {
+              "id":         parish.id,
+              "name":       scope.parishProfile.name,
+              "in_charge":  scope.parishProfile.in_charge,
+              "location":   scope.parishProfile.location
+         }
+        };
+        console.log(parish);
         updatedParish.put(parish);
       }
 
@@ -300,9 +463,89 @@ app.controller(
     }
   ]
 );
-;// I control the main demo.
+;
+// I control the main demo.
 app.controller(
-    "testsCtrl", ['$scope', '$rootScope', '$filter', '$timeout', 'MedsRestangular', '$state','localStorageService','MySessionService', function(scope, rootScope, filter, timeout, MedsRestangular, state, localStorageService, MySessionService) {
+  "dashboardCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
+    'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
+    function(scope, rootScope, filter, timeout, DMSRestangular, state,
+      localStorageService, MySessionService) {
+
+
+      rootScope.title = 'Dashboard';
+
+      getMemberCount();
+      getParishCount();
+      getDioceseCount();
+      getArchdioceseCount();
+      rootScope.user = MySessionService.getLoggedUser();
+
+        var baseMembers = DMSRestangular.all('members');
+        baseMembers.getList().then(function(members) {
+        scope.allMembers = members;
+        console.log(members);
+      });
+
+      scope.login = function login() {
+        rootScope.user = [];
+        var user = DMSRestangular.one('user').one('username', scope.formData
+          .username).one('password', scope.formData.password).one(
+          'format', 'json');
+        // This will query /accounts and return a promise.
+        user.customGET('').then(function(userObj) {
+          localStorageService.set('meds_user', userObj);
+          state.go('users');
+
+        });
+      }
+
+      function getMemberCount() {
+      var Members   = DMSRestangular.all('members');
+        Members.customGET('').then(function(members) {
+          scope.members = members.length;
+        });
+      }
+
+       function getParishCount() {
+      var Parishes  = DMSRestangular.all('parishes');
+        Parishes.customGET('').then(function(parishes) {
+          scope.parishes = parishes.length;
+        });
+      } 
+
+        function getDioceseCount() {
+      var Dioceses = DMSRestangular.all('dioceses');
+        Dioceses.customGET('').then(function(dioceses) {
+          scope.dioceses = dioceses.length;
+        });
+      }
+
+       function getArchdioceseCount() {
+      var Archidioceses = DMSRestangular.all('archdioceses');
+        Archidioceses.customGET('').then(function(archdioceses) {
+          scope.archdioceses = archdioceses.length;
+        });
+      }
+
+        // Dashboard charts
+        scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
+        scope.series = ['Series A', 'Series B'];
+        scope.data = [
+          [65, 59, 80, 81, 56, 55, 40],
+          [28, 48, 40, 19, 86, 27, 90]
+        ];
+
+       function onClick(points, evt) {
+          console.log(points, evt);
+        };
+      
+
+    }
+    
+  ]
+);;// I control the main demo.
+app.controller(
+    "testsCtrl", ['$scope', '$rootScope', '$filter', '$timeout', 'DMSRestangular', '$state','localStorageService','MySessionService', function(scope, rootScope, filter, timeout, DMSRestangular, state, localStorageService, MySessionService) {
         getTestCount();
 
 		scope.getTest = function getTest(newTest) {
@@ -311,7 +554,7 @@ app.controller(
 		}
 
 		scope.getTests = function getTests() {
-			var AllTests = MedsRestangular.all('tests');
+			var AllTests = DMSRestangular.all('tests');
 			// This will query /accounts and return a promise.
 			AllTests.customGET('').then(function(tests) {
 				//console.log(tests);
@@ -321,7 +564,7 @@ app.controller(
 		}
 
 		function getTestCount() {
-			var AllTests = MedsRestangular.all('tests');
+			var AllTests = DMSRestangular.all('tests');
 			// This will query /accounts and return a promise.
 			AllTests.customGET('').then(function(tests) {
 				// console.log(tests);
@@ -384,7 +627,74 @@ app.controller(
     }
   ]
 );
-;// app.directive("head", function () {
+;
+// I control regisrtaand handle the Login Form
+app.controller(
+  "RegisterCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
+    'DMSRestangular', '$state', 'localStorageService', 'MySessionService', '$auth', 'toastr',
+    function(scope, rootScope, filter, timeout, DMSRestangular, state,
+      localStorageService, MySessionService, auth, toastr) {
+
+      scope.handleRegBtnClick = function() {
+      auth.submitRegistration(scope.registrationForm)
+        .then(function(resp) { 
+          // handle success response
+        })
+        .catch(function(resp) { 
+          // handle error response
+        console.log(resp.errors);
+        });
+    };
+
+    }
+  ]
+);;
+// I control the login and handle the Login Form
+app.controller(
+  "LoginCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
+    'DMSRestangular', '$state', 'localStorageService', 'MySessionService', '$auth', 'toastr', 
+    function(scope, rootScope, filter, timeout, DMSRestangular, state,
+      localStorageService, MySessionService, auth, toastr) {
+
+     scope.handleLoginBtnClick = function() {
+          auth.submitLogin(scope.loginForm)
+            .then(function(resp) { 
+              // handle success response
+              state.go('dashboard');
+            })
+            .catch(function(resp) { 
+              // handle error response
+            console.log(resp.errors);
+            });
+        };
+    
+    }
+  ]
+);;
+// I control the logout 
+app.controller(
+  "NavbarController", ['$scope', '$rootScope', '$filter', '$timeout',
+    'DMSRestangular', '$state', 'localStorageService', 'MySessionService', '$auth', 'toastr', '$localStorage',
+    function(scope, rootScope, filter, timeout, DMSRestangular, state,
+      localStorageService, MySessionService, auth, toastr, localStorage) {
+
+
+     scope.handleSignOutBtnClick = function() {
+        auth.signOut()
+          .then(function(resp) { 
+            // handle success response
+          })
+          .catch(function(resp) { 
+            // handle error response
+           console.log(resp.errors);
+          });
+      };
+      
+      scope.user = localStorage.auth_headers;
+
+    }
+  ]
+);;// app.directive("head", function () {
 //     return {
 //         templateUrl: "app/partials/global/head.html"
 //     }
@@ -392,6 +702,7 @@ app.controller(
 
 app.directive("header", function () {
     return {
+        controller: 'NavbarController',
         templateUrl: "app/partials/global/header.html"
     }
 });
@@ -436,18 +747,23 @@ return {
     .state('login', {
       url: '/login',
       templateUrl: 'app/partials/users/login.html',
-      controller: 'usersCtrl'
+      controller: 'LoginCtrl'
     }).
-  state('lock-screen', {
+    state('register', {
+      url: '/register',
+      templateUrl: 'app/partials/users/register.html',
+      controller: 'RegisterCtrl'
+    }).
+    state('lock-screen', {
     url: '/lock-screen',
     templateUrl: 'app/partials/users/lock-screen.html',
     controller: function($rootScope) {
       $rootScope.date = new Date();
     }
   }).
-  state('dashboard', {
+    state('dashboard', {
     url: '/dashboard',
-    controller: '',
+    controller: 'dashboardCtrl',
     templateUrl: 'app/partials/global/dashboard.html'
   }).
   state('users', {
@@ -473,13 +789,41 @@ return {
   }).
   state('location', {
     url: '/location',
-    controller: '',
-    templateUrl: 'app/partials/location/index.html'
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Location';
+    },
+        templateUrl: 'app/partials/location/index.html'
   }).
   state('location.archdioceses', {
     url: '/archdioceses',
-    controller: '',
+    controller: 'archdiocesesCtrl',
     templateUrl: 'app/partials/location/archdioceses.index.html'
+  }).
+  state('location.archdioceses.list', {
+    url: '/list',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Archidiocese List';
+      $scope.getArchdioceses();
+    },
+    templateUrl: 'app/partials/location/archdioceses.list.html'
+  }).
+  state('location.archdioceses.view', {
+    url: '/view',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Archidiocese View';
+      $scope.getArchdioceses();
+      $scope.setStatus('update');
+  },
+    templateUrl: 'app/partials/location/archdioceses.view.html'
+  }).
+  state('location.archdioceses.add', {
+    url: '/add',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Archdioceses Add';
+      $scope.getArchdioceses();
+      $scope.setStatus('add');
+    },
+    templateUrl: 'app/partials/location/archdioceses.view.html'
   }).
   state('location.dioceses', {
     url: '/dioceses',
@@ -499,13 +843,49 @@ return {
     controller: function($rootScope, $scope) {
       $rootScope.title = 'Diocese View';
       $scope.getDioceses();
+      $scope.setStatus('update');
+    },
+    templateUrl: 'app/partials/location/dioceses.view.html'
+  }).
+    state('location.dioceses.add', {
+    url: '/add',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Dioceses Add';
+      $scope.getDioceses();
+      $scope.setStatus('add');
     },
     templateUrl: 'app/partials/location/dioceses.view.html'
   }).
   state('location.deaneries', {
     url: '/deanery',
-    controller: '',
+    controller: 'deaneriesCtrl',
     templateUrl: 'app/partials/location/deaneries.index.html'
+  }).
+  state('location.deaneries.list', {
+    url: '/list',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Deaneries List';
+      $scope.getDeaneries();
+    },
+    templateUrl: 'app/partials/location/deaneries.list.html'
+  }).
+  state('location.deaneries.view', {
+    url: '/view',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Deaneries View';
+      $scope.getDeaneries();
+      $scope.setStatus('update');
+    },
+    templateUrl: 'app/partials/location/deaneries.view.html'
+  }).
+  state('location.deaneries.add', {
+    url: '/add',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Deaneries Add';
+      $scope.getDeaneries();
+      $scope.setStatus('add');
+    },
+    templateUrl: 'app/partials/location/deaneries.view.html'
   }).
   state('location.parishes', {
     url: '/parishes',
@@ -540,9 +920,37 @@ return {
   }).
   state('location.members', {
     url: '/members',
-    controller: '',
+    controller: 'membersCtrl',
     templateUrl: 'app/partials/location/members.index.html'
   }).
+  state('location.members.list', {
+    url: '/list',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Members List';
+      $scope.getMembers();
+    },
+    templateUrl: 'app/partials/location/members.list.html'
+  }).
+  state('location.members.view', {
+    url: '/view',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Member View';
+      $scope.getMembers();
+      $scope.setStatus('update');
+    },
+    templateUrl: 'app/partials/location/members.view.html'
+  }).
+
+  state('location.members.add', {
+    url: '/add',
+    controller: function($rootScope, $scope) {
+      $rootScope.title = 'Member Add';
+      $scope.getMembers();
+      $scope.setStatus('add');
+    },
+    templateUrl: 'app/partials/location/members.view.html'
+  }).
+
   state('location.services', {
     url: '/services',
     controller: 'servicesCtrl',
@@ -552,7 +960,7 @@ return {
     url: '/list',
     controller: function($rootScope, $scope) {
       $rootScope.title = 'Services List';
-      $scope.getDioceses();
+      $scope.getServices();
     },
     templateUrl: 'app/partials/location/services.list.html'
   }).
@@ -577,7 +985,6 @@ return {
     controller: '',
     templateUrl: 'app/partials/location/services.add.html'
   })
-
 });
 ;
 // I act a repository for the remote header collection.
@@ -1325,7 +1732,7 @@ angular.module("../app/partials/location/parishes.view.html", []).run(["$templat
     "          <label>Name</label>\n" +
     "          <div class=\"ui icon left input\">\n" +
     "            <i class=\"icon building\"></i>\n" +
-    "            <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"parishProfile.name\"/>\n" +
+    "            <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"parish.name\"/>\n" +
     "          </div>\n" +
     "\n" +
     "        </div>\n" +
@@ -1333,7 +1740,7 @@ angular.module("../app/partials/location/parishes.view.html", []).run(["$templat
     "          <label>Location</label>\n" +
     "          <div class=\"ui icon left input\">\n" +
     "            <i class=\"icon map\"></i>\n" +
-    "            <input name=\"lname\" id=\"lname\" type=\"text\" ng-model=\"parishProfile.location\"/>\n" +
+    "            <input name=\"lname\" id=\"lname\" type=\"text\" ng-model=\"parish.location\"/>\n" +
     "          </div>\n" +
     "\n" +
     "        </div>\n" +
@@ -1343,7 +1750,7 @@ angular.module("../app/partials/location/parishes.view.html", []).run(["$templat
     "          <label>In Charge</label>\n" +
     "          <div class=\"ui icon left input\">\n" +
     "            <i class=\"icon ion-person\"></i>\n" +
-    "            <input name=\"email\" id=\"email\" type=\"text\" ng-model=\"parishProfile.in_charge\"/>\n" +
+    "            <input name=\"email\" id=\"email\" type=\"text\" ng-model=\"parish.in_charge\"/>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -1367,6 +1774,7 @@ angular.module("../app/partials/location/parishes.view.html", []).run(["$templat
     "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +
+    "  {{parish}}\n" +
     "");
 }]);
 

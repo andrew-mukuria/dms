@@ -1,13 +1,14 @@
-
-<form  class='ui form segment centered' ng-submit="login()">
+<form ng-submit="submitLogin(loginForm)" role="form" class='ui form segment centered' ng-init="loginForm = {}">
     <h1 class="ui header">Login</h1>
     <div class="sixteen wide field">
         <div class="ui input left icon">
-            <i class="icon ion-person"></i><input type="text" name="username" ng-model="formData.username" placeholder="Enter Username..."></div>
+            <i class="icon ion-person"></i><input type="text" name="email" ng-model="loginForm.email" required="required" placeholder="Enter Username..."></div>
     </div>
     <div class="sixteen wide field">
         <div class="ui input left icon">
-            <i class="icon ion-lock-combination"></i><input type="password" ng-model="formData.password" name="password" placeholder="Enter Password Here..."></div>
+            <i class="icon ion-lock-combination"></i><input type="password"  name="password" ng-model="loginForm.password" required="required" placeholder="Enter Password Here..."></div>
     </div>
-    <button type="submit" class="ui icon green button"><i class='icon ion-log-in'></i>Login</button>
+    <button type="submit" class="ui icon green button"><i class='icon ion-log-in'></i> Login</button>
 </form>
+
+

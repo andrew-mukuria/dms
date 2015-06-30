@@ -1,9 +1,9 @@
-// I control the main demo.
+// I am ze Parishes Controller
 app.controller(
   "parishesCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
-    'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
+    'DMSRestangular', '$state', 'localStorageService', 'MySessionService', 'toastr',
     function(scope, rootScope, filter, timeout, DMSRestangular, state,
-      localStorageService, MySessionService) {
+      localStorageService, MySessionService, toastr) {
       var Parishes = DMSRestangular.all('parishes');
       getParishCount();
       rootScope.user = MySessionService.getLoggedUser();
@@ -49,28 +49,33 @@ app.controller(
       }
       scope.newParish = function newParish() {
         parish = scope.parishProfile;
-        today = new Date();
-        year = today.getFullYear();
-        month = today.getMonth() + 1;
-        day = today.getDay();
-        parish.created_at = year + '-' + month + '-' + day;
-        parish.updated_at = year + '-' + month + '-' + day;
         console.log(parish);
+        
         parish = {
-          'name': 'St. Chris',
-          'location': 'Kabete',
-          'in_charge': 'Oscar',
-          'created_at': '2015-02-23',
-          'updated_at': '2015-02-23'
+              "parish": {
+                  "name":       scope.parishProfile.name,
+                  "in_charge":  scope.parishProfile.in_charge,
+                  "location":   scope.parishProfile.location
+         }
         };
         console.log(parish);
-        // Parishes.post(parish);
-      }
+        Parishes.post(parish);
 
+      }
+        
       scope.updateParish = function updateParish() {
         parish = scope.parishProfile;
         updatedParish = DMSRestangular.one('parishes', parish.id);
-        updatedParish[0] = parish;
+        parish = {
+              "utf8":"✓",
+              "parish": {
+              "id":         parish.id,
+              "name":       scope.parishProfile.name,
+              "in_charge":  scope.parishProfile.in_charge,
+              "location":   scope.parishProfile.location
+         }
+        };
+        console.log(parish);
         updatedParish.put(parish);
       }
 
