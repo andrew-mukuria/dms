@@ -6,6 +6,7 @@ app.controller(
       localStorageService, MySessionService, auth, toastr, localStorage) {
 
 
+// I hangle the logout
      scope.handleSignOutBtnClick = function() {
         auth.signOut()
           .then(function(resp) { 
@@ -17,7 +18,6 @@ app.controller(
           });
       };
       
-      scope.user = localStorage.auth_headers;
 
     }
   ]

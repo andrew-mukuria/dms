@@ -2,7 +2,7 @@
 app.config(function($stateProvider, $urlRouterProvider) {
   //
   // For any unmatched url, redirect to /state1
-  $urlRouterProvider.otherwise("/login");
+  $urlRouterProvider.otherwise("/");
   //
   // Now set up the states
 
@@ -13,6 +13,11 @@ app.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: 'app/partials/users/login.html',
       controller: 'LoginCtrl'
     }).
+    state('home', {
+      url: '/',
+      templateUrl: 'app/partials/front-end/index.html',
+         controller: 'HomeCtrl'
+       }).
     state('register', {
       url: '/register',
       templateUrl: 'app/partials/users/register.html',
@@ -279,5 +284,5 @@ app.config(function($stateProvider, $urlRouterProvider) {
     url: '/add',
     controller: '',
     templateUrl: 'app/partials/location/services.add.html'
-  })
+  });
 });

@@ -1,60 +1,58 @@
 <header></header>
 
 <div ui-view class="centered within">
-	<div class="ui stackable grid">
-    <div class="row">
-        <div class="four wide column">
-            <div class="inner small ui segment">
+	
+<div class="ui equal width grid">
+        <div class="column">
+            <div class="ui segment">
                 <div class="ui statistic">
-					<div class="value">{{members}}</div>
+                    <div class="value">{{members}}</div>
                 </div>
                 <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Total Members</h6>
             </div>
         </div>
-        <div class="four wide column">
-            <div class="inner small ui segment">
+        <div class="column">
+            <div class="ui segment">
                 <div class='ui statistic'>
                     <div class="value">{{parishes}}</div>
                 </div>
                 <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Total Parishes</h6>
             </div>
         </div>
-        <div class="four wide column">
-            <div class="inner small ui segment">
+        <div class="column">
+            <div class="ui segment">
                 <div class='ui statistic'>
                     <div class="value">{{dioceses}}</div>
                 </div>
                 <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Total Dioceses</h6>
             </div>
         </div>
-        <div class="four wide column">
-            <div class="inner small ui segment">
+        <div class="column">
+            <div class="ui segment">
                 <div class='ui statistic'>
                     <div class="value">{{archdioceses}}</div>
                 </div>
                 <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Total Archdioceses</h6>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="eight wide column">
-            <div class="inner ui segment">
+</div>
+<div class="ui equal width grid">
+              <div class="column">
+            <div class=" ui segment">
                   <canvas id="line" class="chart chart-line" data="data"
-                    labels="labels" legend="true" series="series"
+                    labels="labels"  series="series"
                     ng-click="onClick()">
                   </canvas> 
                 <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Chart 1</h6>
             </div>
         </div>
-        <div class="eight wide column">
-            <div class="inner ui segment">
+        <div class="column">
+            <div class=" ui segment">
                   <canvas id="bar" class="chart chart-bar" data="data"
-                    labels="labels" legend="true" series="series"
+                    labels="labels"  series="series"
                     ng-click="onClick()">
                   </canvas> 
                 <h6 class='ui header'><i class="icon fa fa-bar-chart-o"></i>Chart 2</h6>
             </div>
         </div>
-    </div>
-</div>
 </div>

@@ -5,15 +5,16 @@ app.controller(
     function(scope, rootScope, filter, timeout, DMSRestangular, state,
       localStorageService, MySessionService, auth, toastr) {
 
+    rootScope.title = 'DMS CPanel';
+      
      scope.handleLoginBtnClick = function() {
           auth.submitLogin(scope.loginForm)
-            .then(function(resp) { 
-              // handle success response
-              state.go('dashboard');
+            .then(function(response) { 
+              toastr.info(response.status, 'Wow');
             })
-            .catch(function(resp) { 
-              // handle error response
-            console.log(resp.errors);
+            .catch(function(response) { 
+              toastr.info(response.status, 'Wow');
+            console.log(response.errors); //log any errors 
             });
         };
     

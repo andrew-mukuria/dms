@@ -1,4 +1,4 @@
-// I am le Services Controller
+// le Services Controller
 app.controller(
   "servicesCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
     'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
@@ -12,7 +12,7 @@ app.controller(
         console.log(newService);
         scope.service = newService;
         state.go('location.services.view');
-      }
+      };
 
       scope.getServices = function getServices() {
 
@@ -22,7 +22,7 @@ app.controller(
           scope.rowCollection = services;
           scope.displayedCollection = [].concat(scope.rowCollection);
         });
-      }
+      };
 
       scope.login = function login() {
         rootScope.user = [];
@@ -35,7 +35,7 @@ app.controller(
           state.go('users');
 
         });
-      }
+      };
 
       function getServiceCount() {
         // This will query /accounts and return a promise.
@@ -54,9 +54,9 @@ app.controller(
           "location": "Outer Ring Road",
           "updated_at": "2015-01-01 00:00:00 UTC",
           "created_at": "2015-01-01 00:00:00 UTC"
-        }
+        };
         Services.post(parish);
-      }
+      };
     }
   ]
 );

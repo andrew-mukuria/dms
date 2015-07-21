@@ -1,123 +1,138 @@
-var app = angular.module("dms", ['ui.router','restangular','smart-table','textAngular','angularMoment','LocalStorageModule','slick', 'highcharts-ng', 'chart.js', 'ngAnimate', 'toastr', 'ng-token-auth', 'ngStorage']);
+var app = angular.module("dms", ['ui.router','restangular','smart-table','textAngular','angularMoment','LocalStorageModule','slick', 'highcharts-ng', 'chart.js', 'ngAnimate', 'toastr', 'ng-token-auth', 'ngStorage', 'ngMaterial', 'leaflet-directive', 'angular-loading-bar']);
 
 app.factory('DMSRestangular', function(Restangular) {
     return Restangular.withConfig(function(RestangularConfigurer) {
-        RestangularConfigurer.setBaseUrl('http://localhost:3000/api/v1');
+        RestangularConfigurer.setBaseUrl('http://localhost:3000/api/v1'); //Le Base URL for making API calls
+        
     });
 });
 
 app.run(['$http', '$rootScope', '$state', 'toastr', function($http, $rootScope, state, toastr) {
+//**Le Global Variables 
+
     $rootScope.date = new Date();
     $rootScope.title = 'DMS';
     $rootScope.messages=[];
     $rootScope.menu=[];
+ 
+//** ng-token-auth events with le toastr notifactions **//
+//**Check if user has logged in **//
+    $rootScope.$on('auth:invalid', function(ev, reason) {
+        toastr.error('Log in first dude!', 'Yo!'); 
+    });
+//**Check for validation errors     **//
+    $rootScope.$on('auth:validation-error', function(ev, reason) {
+        toastr.error(reason.errors[0], 'Yo!'); 
+    });
+//**Check for login errors  **//
+    $rootScope.$on('auth:login-error', function(ev, reason) {
+        toastr.error(reason.errors[0], 'Yo!'); 
+    });
+//**Check for Successful Login  **//
+    $rootScope.$on('auth:login-success', function(ev, reason) {
+        toastr.success('Login successful! Welcome Dude!');
+        state.go('dashboard'); //take the user to the dashboard state after successful login
+    });
+//**Check for Successful Logout     **//
+    $rootScope.$on('auth:logout-success', function(ev, reason) {
+        toastr.info('You have been logged out! Adios Dude!'); 
+        state.go('login'); //take the user to the login state after successful logout
+    });
+//**Check for Logout errors     **//
+    $rootScope.$on('auth:logout-error', function(ev, reason) {
+        toastr.success(reason.errors[0], 'Yo'); 
+    });
 
+    $rootScope.$on('auth:registration-email-success', function(ev, message) {
+    toastr.info("A registration email was sent to " + message.email);
+    });
+
+    $rootScope.$on('auth:email-confirmation-success', function(ev, user) {
+    toastr.info("Welcome, "+user.email+". Your account has been verified! You can log in.");
+        state.go('login');
+    });
 }]);
 
-app.config(function (localStorageServiceProvider, RestangularProvider) {
+//**Local Storage config**//
+app.config(function (localStorageServiceProvider) {
     localStorageServiceProvider
     .setPrefix('app')
     .setStorageType('localStorage')
-    .setNotify(true, true)
+    .setNotify(true, true);
 
+});
+//**Restangular config setDefaultHeaders for interaction with API**//
+app.config(function (RestangularProvider){
     RestangularProvider.setDefaultHeaders({'Content-Type': 'application/json'});
 
 });
-
-;// I control the main demo.
-app.controller(
-	"clientsCtrl", ['$scope', '$rootScope', '$filter', '$timeout', 'DMSRestangular', '$state', 'localStorageService', 'MySessionService', function(scope, rootScope, filter, timeout, DMSRestangular, state, localStorageService, MySessionService) {
-		getClientCount();
-
-		scope.getClient = function getClient(newClient) {
-			scope.clientProfile = newClient;
-			state.go('clients.view');
-		}
-
-		scope.getClients = function getClients() {
-			var AllClients = DMSRestangular.all('clients');
-			// This will query /accounts and return a promise.
-			AllClients.customGET('').then(function(clients) {
-				//console.log(clients);
-				scope.rowCollection = clients;
-				scope.displayedCollection = [].concat(scope.rowCollection);
-			});
-		}
-
-		function getClientCount() {
-			var AllClients = DMSRestangular.all('clients');
-			// This will query /accounts and return a promise.
-			AllClients.customGET('').then(function(clients) {
-				// console.log(clients);
-				scope.records = clients.length;
-				scope.recordsPerPage = 5;
-				scope.pages = Math.ceil(scope.records / scope.recordsPerPage);
-			});
-		}
-
-	}]
-);;// I control the main demo.
-app.controller(
-  "diocesesCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
-    'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
-    function(scope, rootScope, filter, timeout, DMSRestangular, state,
-      localStorageService, MySessionService) {
-
-      getDioceseCount();
-      rootScope.user = MySessionService.getLoggedUser();
-
-      scope.getDiocese = function getDiocese(newDiocese) {
-        console.log(newDiocese);
-        scope.dioceseProfile = newDiocese;
-        state.go('location.dioceses.view');
+//** ng-token-auth config working with Ruby devise-token-auth gem **//
+app.config(function($authProvider) {
+    // the following shows the default values. values passed to this method
+    // will extend the defaults using angular.extend  
+      $authProvider.configure({
+      apiUrl:                  'http://localhost:3000', //path setup for devise token auth gem for dms_api
+      storage:                 'localStorage', //auth headers storage type you change and set it as 'cookies'
+      proxyIf:                 function() { return false; },
+      proxyUrl:                '/proxy',
+      authProviderPaths: {
+        github:   '/auth/github' //for integration with le GitHub
+      },
+      // user's authentication information included by the client in the access-token header of each request
+      // using devise-token-auth gem, header must follow this Token format (RFC 6750 Bearer)
+      tokenFormat: {
+        "access-token": "{{ token }}",
+        "token-type":   "Bearer",
+        "client":       "{{ clientId }}",
+        "expiry":       "{{ expiry }}",
+        "uid":          "{{ uid }}"
+      },
+      parseExpiry: function(headers) {
+        // convert from UTC ruby (seconds) to UTC js (milliseconds)
+        return (parseInt(headers.expiry) * 1000) || null;
+      },
+      handleLoginResponse: function(response) {
+        return response.data;
+      },
+      handleAccountResponse: function(response) {
+        return response.data;
+      },
+      handleTokenValidationResponse: function(response) {
+        return response.data;
       }
+      });
+    });
+//** Le Config for angular toastr notifications
+app.config(function(toastrConfig) {
 
-      scope.getDioceses = function getDioceses() {
-        var Dioceses = DMSRestangular.all('dioceses');
-        // This will query /accounts and return a promise.
-        Dioceses.customGET('').then(function(dioceses) {
-          //console.log(users);
-          scope.rowCollection = dioceses;
-          scope.displayedCollection = [].concat(scope.rowCollection);
-        });
-      }
+      angular.extend(toastrConfig, {
+        allowHtml: false, //Alow checkboxes and stuff
+        autoDismiss: false,
+        closeButton: false,
+        closeHtml: '<button>&times;</button>',
+        containerId: 'toast-container',
+        extendedTimeOut: 1000,
+        iconClasses: {
+          error: 'toast-error',
+          info: 'toast-info',
+          success: 'toast-success',
+          warning: 'toast-warning'
+        },
+        maxOpened: 0,    
+        messageClass: 'toast-message',
+        newestOnTop: true,
+        onHidden: null, //Callback function called when a toast is hidden
+        onShown: null, //Callback function called when a toast is shown
+        positionClass: 'toast-bottom-right', //Position of toastr notification
+        preventDuplicates: false,
+        preventOpenDuplicates: false, 
+        progressBar: true, //Animate timeout
+        tapToDismiss: true,
+        timeOut: 5000,
+        showCloseButton: true
 
-      scope.login = function login() {
-        rootScope.user = [];
-        var user = DMSRestangular.one('user').one('username', scope.formData
-          .username).one('password', scope.formData.password).one(
-          'format', 'json');
-        // This will query /accounts and return a promise.
-        user.customGET('').then(function(userObj) {
-          localStorageService.set('meds_user', userObj);
-          state.go('users');
-
-        });
-      }
-
-       scope.setStatus = function setStatus(status) {
-        scope.status = status;
-        if (status == 'add') {
-          scope.parishProfile = [];
-        }
-      }
-
-      function getDioceseCount() {
-        var Dioceses = DMSRestangular.all('dioceses');
-        // This will query /accounts and return a promise.
-        Dioceses.customGET('').then(function(dioceses) {
-          // console.log(users);
-          scope.records = dioceses.length;
-          scope.recordsPerPage = 5;
-          scope.pages = Math.ceil(scope.records / scope.recordsPerPage);
-        });
-      }
-    }
-
-
-  ]
-);
-;// I control the main demo.
+      });
+});;// I am le Archdiocese Controller
 app.controller(
   "archdiocesesCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
     'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
@@ -131,7 +146,7 @@ app.controller(
         console.log(newArchdiocese);
         scope.ArchdioceseProfile = newArchdiocese;
         state.go('location.archdioceses.view');
-      }
+      };
 
       scope.getArchdioceses = function getArchdioceses() {
         var Archdioceses = DMSRestangular.all('archdioceses');
@@ -141,7 +156,7 @@ app.controller(
           scope.rowCollection = archdioceses;
           scope.displayedCollection = [].concat(scope.rowCollection);
         });
-      }
+      };
 
       scope.login = function login() {
         rootScope.user = [];
@@ -154,14 +169,14 @@ app.controller(
           state.go('users');
 
         });
-      }
+      };
 
 	  scope.setStatus = function setStatus(status) {
         scope.status = status;
         if (status == 'add') {
           scope.parishProfile = [];
         }
-      }
+      };
 
       function getArchdioceseCount() {
         var Archdioceses = DMSRestangular.all('archdioceses');
@@ -177,8 +192,118 @@ app.controller(
 
     
   ]
+);;// I control the main demo.
+app.controller(
+	"clientsCtrl", ['$scope', '$rootScope', '$filter', '$timeout', 'MedsRestangular', '$state', 'localStorageService', 'MySessionService', function(scope, rootScope, filter, timeout, MedsRestangular, state, localStorageService, MySessionService) {
+		getClientCount();
+
+		scope.getClient = function getClient(newClient) {
+			scope.clientProfile = newClient;
+			state.go('clients.view');
+		};
+
+		scope.getClients = function getClients() {
+			var AllClients = MedsRestangular.all('clients');
+			// This will query /accounts and return a promise.
+			AllClients.customGET('').then(function(clients) {
+				//console.log(clients);
+				scope.rowCollection = clients;
+				scope.displayedCollection = [].concat(scope.rowCollection);
+			});
+		};
+
+		function getClientCount() {
+			var AllClients = MedsRestangular.all('clients');
+			// This will query /accounts and return a promise.
+			AllClients.customGET('').then(function(clients) {
+				// console.log(clients);
+				scope.records = clients.length;
+				scope.recordsPerPage = 5;
+				scope.pages = Math.ceil(scope.records / scope.recordsPerPage);
+			});
+		}
+
+	}]
+);;//le Dashboard Controller
+app.controller(
+  "dashboardCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
+    'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
+    function(scope, rootScope, filter, timeout, DMSRestangular, state,
+      localStorageService, MySessionService) {
+
+      var Members         = DMSRestangular.all('members');
+      var Parishes        = DMSRestangular.all('parishes');
+      var Dioceses        = DMSRestangular.all('dioceses');
+      var Archidioceses   = DMSRestangular.all('archdioceses');
+
+      // Title for the route
+      rootScope.title = 'Dashboard';
+
+      // Get the .lenght for all the tables
+      getLength();
+
+      rootScope.user = MySessionService.getLoggedUser();
+
+      function getLength() {
+        Members.customGET('').then(function(members) {
+          scope.members = members.length;
+        });
+        Parishes.customGET('').then(function(parishes) {
+          scope.parishes = parishes.length;
+        });
+        Dioceses.customGET('').then(function(dioceses) {
+          scope.dioceses = dioceses.length;
+        });
+        Archidioceses.customGET('').then(function(archdioceses) {
+          scope.archdioceses = archdioceses.length;
+        });
+      }
+
+      // Restangular returns promises
+      /*DMSRestangular.all('members');.getList()  // GET: /members
+      .then(function(members) {
+        // returns a list of members
+        scope.memList = members; // first Restangular obj in list: { id: 123 }
+        console.log(scope.memList);
+      })
+
+       Parishes.getList()  // GET: /parishes
+      .then(function(parishes) {
+        // returns a list of parishes
+        scope.parishList = parishes; // first Restangular obj in list: { id: 123 }
+        console.log(scope.memList);
+      })*/
+
+        // Dashboard charts
+        scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
+        scope.series = ['Series A', 'Series B'];
+        scope.data = [
+          [20, 30, 40, 50 ,60, 80, 90],
+          [20, 30, 40, 50 ,60, 80, 90]
+        ];
+
+       function onClick(points, evt) {
+          console.log(points, evt);
+        }
+            
+            /*scope.login = function login() {
+        rootScope.user = [];
+        var user = DMSRestangular.one('user').one('username', scope.formData
+          .username).one('password', scope.formData.password).one(
+          'format', 'json');
+        // This will query /accounts and return a promise.
+        user.customGET('').then(function(userObj) {
+          localStorageService.set('meds_user', userObj);
+          state.go('users');
+
+        });
+      };*/
+
+    }
+    
+  ]
 );
-;
+;// I am le Deaneries Controller
 app.controller(
   "deaneriesCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
     'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
@@ -192,7 +317,7 @@ app.controller(
         console.log(newDeanery);
         scope.DeaneryProfile = newDeanery;
         state.go('location.deaneries.view');
-      }
+      };
 
       scope.getDeaneries = function getDeaneries() {
         var Deaneries = DMSRestangular.all('deaneries');
@@ -202,7 +327,7 @@ app.controller(
           scope.rowCollection = deaneries;
           scope.displayedCollection = [].concat(scope.rowCollection);
         });
-      }
+      };
 
       scope.login = function login() {
         rootScope.user = [];
@@ -215,14 +340,14 @@ app.controller(
           state.go('users');
 
         });
-      }
+      };
 
     scope.setStatus = function setStatus(status) {
         scope.status = status;
         if (status == 'add') {
           scope.parishProfile = [];
         }
-      }
+      };
 
       function getDeaneryCount() {
         var Deaneries = DMSRestangular.all('deaneries');
@@ -238,8 +363,116 @@ app.controller(
 
     
   ]
-);
-;
+);;// I am le Diocese Controller
+app.controller(
+  "diocesesCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
+    'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
+    function(scope, rootScope, filter, timeout, DMSRestangular, state,
+      localStorageService, MySessionService) {
+
+      getDioceseCount();
+      rootScope.user = MySessionService.getLoggedUser();
+
+      scope.getDiocese = function getDiocese(newDiocese) {
+        console.log(newDiocese);
+        scope.dioceseProfile = newDiocese;
+        state.go('location.dioceses.view');
+      };
+
+      scope.getDioceses = function getDioceses() {
+        var Dioceses = DMSRestangular.all('dioceses');
+        // This will query /accounts and return a promise.
+        Dioceses.customGET('').then(function(dioceses) {
+          //console.log(users);
+          scope.rowCollection = dioceses;
+          scope.displayedCollection = [].concat(scope.rowCollection);
+        });
+      };
+
+      scope.login = function login() {
+        rootScope.user = [];
+        var user = DMSRestangular.one('user').one('username', scope.formData
+          .username).one('password', scope.formData.password).one(
+          'format', 'json');
+        // This will query /accounts and return a promise.
+        user.customGET('').then(function(userObj) {
+          localStorageService.set('meds_user', userObj);
+          state.go('users');
+
+        });
+      };
+
+       scope.setStatus = function setStatus(status) {
+        scope.status = status;
+        if (status == 'add') {
+          scope.parishProfile = [];
+        }
+      };
+
+      function getDioceseCount() {
+        var Dioceses = DMSRestangular.all('dioceses');
+        // This will query /accounts and return a promise.
+        Dioceses.customGET('').then(function(dioceses) {
+          // console.log(users);
+          scope.records = dioceses.length;
+          scope.recordsPerPage = 5;
+          scope.pages = Math.ceil(scope.records / scope.recordsPerPage);
+        });
+      }
+    }
+
+
+  ]
+);;app.controller("HomeCtrl", [ '$rootScope', '$scope' , function(rootScope, scope) {
+
+      rootScope.title = 'DMS | Home';
+
+    angular.extend(scope, {
+      nairobi: {
+        lat: -1.2833,
+        lng: 36.8167,
+        zoom: 12
+      },
+      layers: {
+        baselayers: {
+           mapbox_dark: {
+             name: 'Mapbox Dark',
+             url: 'http:api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
+             type: 'xyz',
+             layerOptions: {
+               apikey: 'pk.eyJ1IjoicnVmdXNtYnVndWEiLCJhIjoibnlSalk2WSJ9._hvU3-KdDhkYcPQ1nGTEfQ',
+               mapid: 'bufanuvols.lia22g09'
+             }
+          }
+        }
+      }
+    });
+}]);
+
+
+;// I am le Login Controller
+app.controller(
+  "LoginCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
+    'DMSRestangular', '$state', 'localStorageService', 'MySessionService', '$auth', 'toastr', 
+    function(scope, rootScope, filter, timeout, DMSRestangular, state,
+      localStorageService, MySessionService, auth, toastr) {
+
+    rootScope.title = 'DMS CPanel';
+      
+     scope.handleLoginBtnClick = function() {
+          auth.submitLogin(scope.loginForm)
+            .then(function(response) { 
+              toastr.info(response.status, 'Wow');
+            })
+            .catch(function(response) { 
+              toastr.info(response.status, 'Wow');
+            console.log(response.errors); //log any errors 
+            });
+        };
+    
+    }
+  ]
+);;// I am le Members Controller
 app.controller(
   "membersCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
     'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
@@ -252,14 +485,14 @@ app.controller(
       scope.getMember = function getMember(newMember) {
         scope.memberProfile = newMember;
         state.go('location.members.view');
-      }
+      };
 
       scope.getMembers = function getMembers() {
         Members.customGET('').then(function(members) {
           scope.rowCollection = members;
           scope.displayedCollection = [].concat(scope.rowCollection);
         });
-      }
+      };
 
       scope.login = function login() {
         rootScope.user = [];
@@ -272,7 +505,7 @@ app.controller(
           state.go('dashboard');
 
         });
-      }
+      };
 
       function getMemberCount() {
         Members.customGET('').then(function(members) {
@@ -287,22 +520,44 @@ app.controller(
         if (status == 'add') {
           scope.memberProfile = [];
         }
-      }
+      };
       scope.newMember = function newMember() {
 
-      }
+      };
 
       scope.updateMember = function updateMember() {
         member = scope.memberProfile;
         updatedmember = DMSRestangular.one('members', member.id); 
         updatedmember[0] = member;
+        
         updatedmember.put(member);
-      }
+      };
 
     }
   ]
-);
-;// I control the main demo.
+);;// I am le Navbar Controller
+app.controller(
+  "NavbarController", ['$scope', '$rootScope', '$filter', '$timeout',
+    'DMSRestangular', '$state', 'localStorageService', 'MySessionService', '$auth', 'toastr', '$localStorage',
+    function(scope, rootScope, filter, timeout, DMSRestangular, state,
+      localStorageService, MySessionService, auth, toastr, localStorage) {
+
+// I hangle the logout
+     scope.handleSignOutBtnClick = function() {
+        auth.signOut()
+          .then(function(resp) { 
+            // handle success response
+          })
+          .catch(function(resp) { 
+            // handle error response
+           console.log(resp.errors);
+          });
+      };
+      
+
+    }
+  ]
+);;// I am ze Parishes Controller
 app.controller(
   "parishesCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
     'DMSRestangular', '$state', 'localStorageService', 'MySessionService', 'toastr',
@@ -315,14 +570,14 @@ app.controller(
       scope.getParish = function getParish(newParish) {
         scope.parishProfile = newParish;
         state.go('location.parishes.view');
-      }
+      };
 
       scope.getParishes = function getParishes() {
         Parishes.customGET('').then(function(parishes) {
           scope.rowCollection = parishes;
           scope.displayedCollection = [].concat(scope.rowCollection);
         });
-      }
+      };
 
       scope.login = function login() {
         rootScope.user = [];
@@ -335,7 +590,7 @@ app.controller(
           state.go('users');
 
         });
-      }
+      };
 
       function getParishCount() {
         Parishes.customGET('').then(function(parishes) {
@@ -350,58 +605,72 @@ app.controller(
         if (status == 'add') {
           scope.parishProfile = [];
         }
-      }
+      };
       scope.newParish = function newParish() {
-        parish = scope.parishProfile;
-        today = new Date();
-        year = today.getFullYear();
-        month = today.getMonth() + 1;
-        day = today.getDay();
-        parish.created_at = year + '-' + month + '-' + day;
-        parish.updated_at = year + '-' + month + '-' + day;
-        console.log(parish);
         parish = {
               "parish": {
-              "name":       scope.parishProfile.name,
-              "in_charge":  scope.parishProfile.in_charge,
-              "location":   scope.parishProfile.location
+                  "name":       scope.parishProfile.name,
+                  "in_charge":  scope.parishProfile.in_charge,
+                  "location":   scope.parishProfile.location
          }
         };
         console.log(parish);
         Parishes.post(parish);
 
-        scope.items = DMSRestangular.one('parishes', scope.parishProfile.name);
-        console.log(scope.items);
-
-        if (scope.items != null) {
-            // items have value
-        toastr.info('Parish saved successfully!', 'Awesome!'); 
-        } else {
-            // items is still null
-        toastr.warning('Something went wrond dude!', 'Oops!'); 
-        }
-      }
+      };
         
-      scope.updateParish = function updateParish() {
-        parish = scope.parishProfile;
-        updatedParish = DMSRestangular.one('parishes', parish.id);
+        scope.updateParish = function updateParish() {
+        updatedParish = DMSRestangular.one('parishes', scope.parishProfile.id);
+
+        today = new Date();
+        year = today.getFullYear();
+        month = today.getMonth() + 1;
+        day = today.getDay();
+        // this.updated_at = year + '-' + month + '-' + day;
+        var now = year + '-' + month + '-' + day;
+        
         parish = {
-              "utf8":"✓",
               "parish": {
-              "id":         parish.id,
+              "id":         scope.parishProfile.id,
               "name":       scope.parishProfile.name,
               "in_charge":  scope.parishProfile.in_charge,
               "location":   scope.parishProfile.location
-         }
+              }
         };
-        console.log(parish);
-        updatedParish.put(parish);
-      }
+        updatedParish.customPUT(parish).then(function(){
+        toastr.info('Update Successful', 'Awesome!'); 
+        }, function(response) {
+        toastr.danger('Update was not successfyl', 'Wow!'); 
+        });
+        console.log(scope.parishProfile.id);
+      };
 
     }
   ]
-);
-;// I control the main demo.
+);;// I am le Register Controller
+app.controller(
+  "RegisterCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
+    'DMSRestangular', '$state', 'localStorageService', 'MySessionService', '$auth', 'toastr',
+    function(scope, rootScope, filter, timeout, DMSRestangular, state,
+      localStorageService, MySessionService, auth, toastr) {
+
+      scope.handleRegBtnClick = function() {
+      auth.submitRegistration(scope.registrationForm)
+        .then(function(resp) { 
+          // handle success response
+        })
+        .catch(function(resp) { 
+          // handle error response
+        console.log(resp.errors);
+        });
+    };
+
+    scope.$on('auth:registration-email-error', function(ev, reason) {
+    toastr.info("Registration failed: " + reason.errors[0]);
+    });
+    }
+  ]
+);;// le Services Controller
 app.controller(
   "servicesCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
     'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
@@ -415,7 +684,7 @@ app.controller(
         console.log(newService);
         scope.service = newService;
         state.go('location.services.view');
-      }
+      };
 
       scope.getServices = function getServices() {
 
@@ -425,7 +694,7 @@ app.controller(
           scope.rowCollection = services;
           scope.displayedCollection = [].concat(scope.rowCollection);
         });
-      }
+      };
 
       scope.login = function login() {
         rootScope.user = [];
@@ -438,7 +707,7 @@ app.controller(
           state.go('users');
 
         });
-      }
+      };
 
       function getServiceCount() {
         // This will query /accounts and return a promise.
@@ -457,114 +726,33 @@ app.controller(
           "location": "Outer Ring Road",
           "updated_at": "2015-01-01 00:00:00 UTC",
           "created_at": "2015-01-01 00:00:00 UTC"
-        }
-        Services.post(parish);
-      }
-    }
-  ]
-);
-;
-// I control the main demo.
-app.controller(
-  "dashboardCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
-    'DMSRestangular', '$state', 'localStorageService', 'MySessionService',
-    function(scope, rootScope, filter, timeout, DMSRestangular, state,
-      localStorageService, MySessionService) {
-
-
-      rootScope.title = 'Dashboard';
-
-      getMemberCount();
-      getParishCount();
-      getDioceseCount();
-      getArchdioceseCount();
-      rootScope.user = MySessionService.getLoggedUser();
-
-        var baseMembers = DMSRestangular.all('members');
-        baseMembers.getList().then(function(members) {
-        scope.allMembers = members;
-        console.log(members);
-      });
-
-      scope.login = function login() {
-        rootScope.user = [];
-        var user = DMSRestangular.one('user').one('username', scope.formData
-          .username).one('password', scope.formData.password).one(
-          'format', 'json');
-        // This will query /accounts and return a promise.
-        user.customGET('').then(function(userObj) {
-          localStorageService.set('meds_user', userObj);
-          state.go('users');
-
-        });
-      }
-
-      function getMemberCount() {
-      var Members   = DMSRestangular.all('members');
-        Members.customGET('').then(function(members) {
-          scope.members = members.length;
-        });
-      }
-
-       function getParishCount() {
-      var Parishes  = DMSRestangular.all('parishes');
-        Parishes.customGET('').then(function(parishes) {
-          scope.parishes = parishes.length;
-        });
-      } 
-
-        function getDioceseCount() {
-      var Dioceses = DMSRestangular.all('dioceses');
-        Dioceses.customGET('').then(function(dioceses) {
-          scope.dioceses = dioceses.length;
-        });
-      }
-
-       function getArchdioceseCount() {
-      var Archidioceses = DMSRestangular.all('archdioceses');
-        Archidioceses.customGET('').then(function(archdioceses) {
-          scope.archdioceses = archdioceses.length;
-        });
-      }
-
-        // Dashboard charts
-        scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-        scope.series = ['Series A', 'Series B'];
-        scope.data = [
-          [65, 59, 80, 81, 56, 55, 40],
-          [28, 48, 40, 19, 86, 27, 90]
-        ];
-
-       function onClick(points, evt) {
-          console.log(points, evt);
         };
-      
-
+        Services.post(parish);
+      };
     }
-    
   ]
 );;// I control the main demo.
 app.controller(
-    "testsCtrl", ['$scope', '$rootScope', '$filter', '$timeout', 'DMSRestangular', '$state','localStorageService','MySessionService', function(scope, rootScope, filter, timeout, DMSRestangular, state, localStorageService, MySessionService) {
+    "testsCtrl", ['$scope', '$rootScope', '$filter', '$timeout', 'MedsRestangular', '$state','localStorageService','MySessionService', function(scope, rootScope, filter, timeout, MedsRestangular, state, localStorageService, MySessionService) {
         getTestCount();
 
 		scope.getTest = function getTest(newTest) {
 			scope.testProfile = newTest;
 			state.go('tests.view');
-		}
+		};
 
 		scope.getTests = function getTests() {
-			var AllTests = DMSRestangular.all('tests');
+			var AllTests = MedsRestangular.all('tests');
 			// This will query /accounts and return a promise.
 			AllTests.customGET('').then(function(tests) {
 				//console.log(tests);
 				scope.rowCollection = tests;
 				scope.displayedCollection = [].concat(scope.rowCollection);
 			});
-		}
+		};
 
 		function getTestCount() {
-			var AllTests = DMSRestangular.all('tests');
+			var AllTests = MedsRestangular.all('tests');
 			// This will query /accounts and return a promise.
 			AllTests.customGET('').then(function(tests) {
 				// console.log(tests);
@@ -589,7 +777,7 @@ app.controller(
         console.log(newUser);
         scope.userProfile = newUser;
         state.go('users.view');
-      }
+      };
 
       scope.getUsers = function getUsers() {
         var AllUsers = DMSRestangular.all('users');
@@ -599,7 +787,7 @@ app.controller(
           scope.rowCollection = users;
           scope.displayedCollection = [].concat(scope.rowCollection);
         });
-      }
+      };
 
       scope.login = function login() {
         rootScope.user = [];
@@ -612,7 +800,7 @@ app.controller(
           state.go('users');
 
         });
-      }
+      };
 
       function getUserCount() {
         var AllUsers = DMSRestangular.all('users');
@@ -627,74 +815,7 @@ app.controller(
     }
   ]
 );
-;
-// I control regisrtaand handle the Login Form
-app.controller(
-  "RegisterCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
-    'DMSRestangular', '$state', 'localStorageService', 'MySessionService', '$auth', 'toastr',
-    function(scope, rootScope, filter, timeout, DMSRestangular, state,
-      localStorageService, MySessionService, auth, toastr) {
-
-      scope.handleRegBtnClick = function() {
-      auth.submitRegistration(scope.registrationForm)
-        .then(function(resp) { 
-          // handle success response
-        })
-        .catch(function(resp) { 
-          // handle error response
-        console.log(resp.errors);
-        });
-    };
-
-    }
-  ]
-);;
-// I control the login and handle the Login Form
-app.controller(
-  "LoginCtrl", ['$scope', '$rootScope', '$filter', '$timeout',
-    'DMSRestangular', '$state', 'localStorageService', 'MySessionService', '$auth', 'toastr', 
-    function(scope, rootScope, filter, timeout, DMSRestangular, state,
-      localStorageService, MySessionService, auth, toastr) {
-
-     scope.handleLoginBtnClick = function() {
-          auth.submitLogin(scope.loginForm)
-            .then(function(resp) { 
-              // handle success response
-              state.go('dashboard');
-            })
-            .catch(function(resp) { 
-              // handle error response
-            console.log(resp.errors);
-            });
-        };
-    
-    }
-  ]
-);;
-// I control the logout 
-app.controller(
-  "NavbarController", ['$scope', '$rootScope', '$filter', '$timeout',
-    'DMSRestangular', '$state', 'localStorageService', 'MySessionService', '$auth', 'toastr', '$localStorage',
-    function(scope, rootScope, filter, timeout, DMSRestangular, state,
-      localStorageService, MySessionService, auth, toastr, localStorage) {
-
-
-     scope.handleSignOutBtnClick = function() {
-        auth.signOut()
-          .then(function(resp) { 
-            // handle success response
-          })
-          .catch(function(resp) { 
-            // handle error response
-           console.log(resp.errors);
-          });
-      };
-      
-      scope.user = localStorage.auth_headers;
-
-    }
-  ]
-);;// app.directive("head", function () {
+;// app.directive("head", function () {
 //     return {
 //         templateUrl: "app/partials/global/head.html"
 //     }
@@ -704,22 +825,22 @@ app.directive("header", function () {
     return {
         controller: 'NavbarController',
         templateUrl: "app/partials/global/header.html"
-    }
+    };
 });
 app.directive("sidemenu", function () {
     return {
         templateUrl: "app/partials/global/side-menu.html"
-    }
+    };
 });
 app.directive("rails", function () {
     return {
         templateUrl: "app/partials/global/rails.html"
-    }
+    };
 });
 app.directive("formSideMenu", function () {
     return {
         templateUrl: "app/partials/global/forms/side-menu.html"
-    }
+    };
 });
 
 app.directive('isActiveNav', [ '$location', function($location) {
@@ -737,18 +858,36 @@ return {
  }
  };
 }]);
-;app.config(function($stateProvider, $urlRouterProvider) {
+
+app.directive('toggleClass', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            element.bind('click', function() {
+                element.toggleClass(attrs.toggleClass);
+            });
+        }
+    };
+});;//** Le routes **//
+app.config(function($stateProvider, $urlRouterProvider) {
   //
   // For any unmatched url, redirect to /state1
-  $urlRouterProvider.otherwise("/login");
+  $urlRouterProvider.otherwise("/");
   //
   // Now set up the states
+
+//** Le routes accessible by any dude **//
   $stateProvider
     .state('login', {
       url: '/login',
       templateUrl: 'app/partials/users/login.html',
       controller: 'LoginCtrl'
     }).
+    state('home', {
+      url: '/',
+      templateUrl: 'app/partials/front-end/index.html',
+         controller: 'HomeCtrl'
+       }).
     state('register', {
       url: '/register',
       templateUrl: 'app/partials/users/register.html',
@@ -761,14 +900,34 @@ return {
       $rootScope.date = new Date();
     }
   }).
+//** Le routes which dudes need authorization **//
     state('dashboard', {
     url: '/dashboard',
     controller: 'dashboardCtrl',
+    //** Check if user is logged in, if not redirect the dude to the login page**//
+    resolve: {
+          auth: function($auth, $state) {
+            return $auth.validateUser().catch(function(){
+              // redirect unauthorized users to the login page
+              $state.go('login');
+            });
+          }
+        },
     templateUrl: 'app/partials/global/dashboard.html'
   }).
+// With the resolve in this state, only authenticated dudes will be able to see routes that are
+ // children of this 'users'state  
   state('users', {
     url: '/users',
     controller: 'usersCtrl',
+    resolve: {
+          auth: function($auth, $state) {
+            return $auth.validateUser().catch(function(){
+              // redirect unauthorized users to the login page
+              $state.go('login');
+            });
+          }
+        },
     templateUrl: 'app/partials/users/index.html'
   }).
   state('users.view', {
@@ -787,12 +946,23 @@ return {
     },
     templateUrl: 'app/partials/users/list.html'
   }).
+// With the resolve in this state, only authenticated dudes will be able to see routes that are
+ // children of this 'location'state  
   state('location', {
     url: '/location',
     controller: function($rootScope, $scope) {
       $rootScope.title = 'Location';
     },
-        templateUrl: 'app/partials/location/index.html'
+//** Check if dude is logged in, if not redirect the dude to the login page**//
+    resolve: {
+          auth: function($auth, $state) {
+            return $auth.validateUser().catch(function(){
+              // redirect unauthorized dudes to the login page
+              $state.go('login');
+            });
+          }
+        },
+    templateUrl: 'app/partials/location/index.html'
   }).
   state('location.archdioceses', {
     url: '/archdioceses',
@@ -984,9 +1154,8 @@ return {
     url: '/add',
     controller: '',
     templateUrl: 'app/partials/location/services.add.html'
-  })
-});
-;
+  });
+});;
 // I act a repository for the remote header collection.
 app.service("criteriaService",
             function( $http, $q ) {
@@ -1049,15 +1218,15 @@ app.service("MySessionService",
 
 
     function getLoggedUser(){
-        console.log(localStorageService.get('meds_user'));
-        return localStorageService.get('meds_user');
+        console.log(JSON.parse(localStorage.getItem('auth_headers')));
+        return JSON.parse(localStorage.getItem('auth_headers'));
     }
 
 
 
 }
            );
-;angular.module('templates-dist', ['../app/partials/clients/form.html', '../app/partials/clients/index.html', '../app/partials/clients/list.html', '../app/partials/dashboard.html', '../app/partials/global/dashboard.html', '../app/partials/global/forms/side-menu.html', '../app/partials/global/head.html', '../app/partials/global/header.html', '../app/partials/global/headerCrud.html', '../app/partials/global/rails.html', '../app/partials/global/side-menu.html', '../app/partials/knowledge-base/form.html', '../app/partials/knowledge-base/index.html', '../app/partials/knowledge-base/list.html', '../app/partials/location/archdioceses.index.html', '../app/partials/location/deaneries.index.html', '../app/partials/location/dioceses.index.html', '../app/partials/location/dioceses.list.html', '../app/partials/location/dioceses.view.html', '../app/partials/location/index.html', '../app/partials/location/members.index.html', '../app/partials/location/parishes.index.html', '../app/partials/location/parishes.list.html', '../app/partials/location/parishes.view.html', '../app/partials/location/services.add.html', '../app/partials/location/services.index.html', '../app/partials/location/services.today.html', '../app/partials/location/services.view.html', '../app/partials/test-requests/index.html', '../app/partials/test-requests/list.html', '../app/partials/tests/dissolution/form.html', '../app/partials/tests/dissolution/hplc.html', '../app/partials/tests/dissolution/index.html', '../app/partials/tests/index.html', '../app/partials/tests/list.html', '../app/partials/users/form.html', '../app/partials/users/index.html', '../app/partials/users/list.html', '../app/partials/users/lock-screen.html', '../app/partials/users/login.html', '../app/partials/users/statistics.html']);
+;angular.module('templates-dist', ['../app/partials/clients/form.html', '../app/partials/clients/index.html', '../app/partials/clients/list.html', '../app/partials/dashboard.html', '../app/partials/front-end/index.html', '../app/partials/front-end/login.html', '../app/partials/front-end/register.html', '../app/partials/global/dashboard.html', '../app/partials/global/forms/side-menu.html', '../app/partials/global/head.html', '../app/partials/global/header.html', '../app/partials/global/headerCrud.html', '../app/partials/global/rails.html', '../app/partials/global/side-menu.html', '../app/partials/knowledge-base/form.html', '../app/partials/knowledge-base/index.html', '../app/partials/knowledge-base/list.html', '../app/partials/location/archdioceses.index.html', '../app/partials/location/archdioceses.list.html', '../app/partials/location/archdioceses.view.html', '../app/partials/location/deaneries.index.html', '../app/partials/location/deaneries.list.html', '../app/partials/location/deaneries.view.html', '../app/partials/location/dioceses.index.html', '../app/partials/location/dioceses.list.html', '../app/partials/location/dioceses.view.html', '../app/partials/location/index.html', '../app/partials/location/members.index.html', '../app/partials/location/members.list.html', '../app/partials/location/members.view.html', '../app/partials/location/parishes.index.html', '../app/partials/location/parishes.list.html', '../app/partials/location/parishes.view.html', '../app/partials/location/services.add.html', '../app/partials/location/services.index.html', '../app/partials/location/services.list.html', '../app/partials/location/services.today.html', '../app/partials/location/services.view.html', '../app/partials/test-requests/index.html', '../app/partials/test-requests/list.html', '../app/partials/tests/dissolution/form.html', '../app/partials/tests/dissolution/hplc.html', '../app/partials/tests/dissolution/index.html', '../app/partials/tests/index.html', '../app/partials/tests/list.html', '../app/partials/users/form.html', '../app/partials/users/index.html', '../app/partials/users/list.html', '../app/partials/users/lock-screen.html', '../app/partials/users/login.html', '../app/partials/users/register.html', '../app/partials/users/statistics.html']);
 
 angular.module("../app/partials/clients/form.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../app/partials/clients/form.html",
@@ -1206,64 +1375,180 @@ angular.module("../app/partials/dashboard.html", []).run(["$templateCache", func
     "");
 }]);
 
+angular.module("../app/partials/front-end/index.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../app/partials/front-end/index.html",
+    "<link rel=\"stylesheet\" type=\"text/css\" href=\"libs/semantic-ui/dist/components/reset.css\">\n" +
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\"libs/semantic-ui/dist/components/site.css\">\n" +
+    "\n" +
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\"libs/semantic-ui/dist/components/container.css\">\n" +
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\"libs/semantic-ui/dist/components/grid.css\">\n" +
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\"libs/semantic-ui/dist/components/header.css\">\n" +
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\"libs/semantic-ui/dist/components/image.css\">\n" +
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\"libs/semantic-ui/dist/components/menu.css\">\n" +
+    "\n" +
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\"libs/semantic-ui/dist/components/divider.css\">\n" +
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\"libs/semantic-ui/dist/components/dropdown.css\">\n" +
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\"libs/semantic-ui/dist/components/segment.css\">\n" +
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\"libs/semantic-ui/dist/components/button.css\">\n" +
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\"libs/semantic-ui/dist/components/list.css\">\n" +
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\"libs/semantic-ui/dist/components/icon.css\">\n" +
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\"libs/semantic-ui/dist/components/sidebar.css\">\n" +
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\"libs/semantic-ui/dist/components/transition.css\">\n" +
+    "\n" +
+    "  <style type=\"text/css\">\n" +
+    "  body {\n" +
+    "    background-color: #FFFFFF;\n" +
+    "  }\n" +
+    "  .ui.menu .item img.logo {\n" +
+    "    margin-right: 1.5em;\n" +
+    "  }\n" +
+    "  #main {\n" +
+    "    margin-top: 40px;\n" +
+    "  }\n" +
+    "  .wireframe {\n" +
+    "    margin-top: 2em;\n" +
+    "  }\n" +
+    "  .ui.footer.segment {\n" +
+    "    margin: 5em 0em 0em;\n" +
+    "    padding: 5em 0em;\n" +
+    "  }\n" +
+    "  </style>\n" +
+    "\n" +
+    "</head>\n" +
+    "<body>\n" +
+    "\n" +
+    "  <div class=\"ui fixed inverted menu\">\n" +
+    "    <div class=\"ui container\">\n" +
+    "      <div href=\"#\" class=\"header item\">\n" +
+    "        <!--<img class=\"logo\" src=\"\">-->\n" +
+    "        Diocese Management System\n" +
+    "      </div>\n" +
+    "      <a ui-sref=\"/\" class=\"item\">Home</a>\n" +
+    "      <a href=\"#\" class=\"item\">Log In</a>\n" +
+    "      <a href=\"#\" class=\"item\">Sign Up</a>\n" +
+    "\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "\n" +
+    "<leaflet id=\"main\" defaults=\"defaults\" center=\"nairobi\" height=\"580px\" width=\"1353px\"></leaflet>\n" +
+    "\n" +
+    "  <div class=\"ui orange inverted vertical footer segment\" style=\"backgroud-color: #743232;\">\n" +
+    "    <div class=\"ui center aligned container\">\n" +
+    "      <div class=\"ui stackable inverted divided grid\">\n" +
+    "        <div class=\"three wide column\">\n" +
+    "          <h4 class=\"ui inverted header\">Lorem ipsum</h4>\n" +
+    "          <div class=\"ui inverted link list\">\n" +
+    "            <a href=\"#\" class=\"item\">Link One</a>\n" +
+    "            <a href=\"#\" class=\"item\">Link Two</a>\n" +
+    "            <a href=\"#\" class=\"item\">Link Three</a>\n" +
+    "            <a href=\"#\" class=\"item\">Link Four</a>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"three wide column\">\n" +
+    "          <h4 class=\"ui inverted header\">Ipsum Adipisicing </h4>\n" +
+    "          <div class=\"ui inverted link list\">\n" +
+    "            <a href=\"#\" class=\"item\">Link One</a>\n" +
+    "            <a href=\"#\" class=\"item\">Link Two</a>\n" +
+    "            <a href=\"#\" class=\"item\">Link Three</a>\n" +
+    "            <a href=\"#\" class=\"item\">Link Four</a>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"three wide column\">\n" +
+    "          <h4 class=\"ui inverted header\">Incididunt veli</h4>\n" +
+    "          <div class=\"ui inverted link list\">\n" +
+    "            <a href=\"#\" class=\"item\">Link One</a>\n" +
+    "            <a href=\"#\" class=\"item\">Link Two</a>\n" +
+    "            <a href=\"#\" class=\"item\">Link Three</a>\n" +
+    "            <a href=\"#\" class=\"item\">Link Four</a>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"seven wide column\">\n" +
+    "          <h4 class=\"ui inverted header\">Lorem ipsum Ea nostrud Ut.</h4>\n" +
+    "          <p>Lorem ipsum Esse in dolore do irure enim anim reprehenderit sed veniam occaecat occaecat est quis.</p>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"ui inverted section divider\"></div>\n" +
+    "      <div class=\"ui horizontal inverted small divided link list\">\n" +
+    "        <a class=\"item\" ui-sref=\"login\">C Panel</a>\n" +
+    "        <a class=\"item\" href=\"#\">Contact Us</a>\n" +
+    "        <a class=\"item\" href=\"#\">Terms and Conditions</a>\n" +
+    "        <a class=\"item\" href=\"#\">Privacy Policy</a>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "");
+}]);
+
+angular.module("../app/partials/front-end/login.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../app/partials/front-end/login.html",
+    "");
+}]);
+
+angular.module("../app/partials/front-end/register.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../app/partials/front-end/register.html",
+    "");
+}]);
+
 angular.module("../app/partials/global/dashboard.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../app/partials/global/dashboard.html",
     "<header></header>\n" +
     "\n" +
     "<div ui-view class=\"centered within\">\n" +
-    "	<div class=\"ui stackable grid\">\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"four wide column\">\n" +
-    "            <div class=\"inner small ui segment\">\n" +
+    "	\n" +
+    "<div class=\"ui equal width grid\">\n" +
+    "        <div class=\"column\">\n" +
+    "            <div class=\"ui segment\">\n" +
     "                <div class=\"ui statistic\">\n" +
-    "					<div class=\"value\">{{records}}</div>\n" +
+    "                    <div class=\"value\">{{members}}</div>\n" +
     "                </div>\n" +
     "                <h6 class='ui header'><i class=\"icon fa fa-bar-chart-o\"></i>Total Members</h6>\n" +
     "            </div>\n" +
     "        </div>\n" +
-    "        <div class=\"four wide column\">\n" +
-    "            <div class=\"inner small ui segment\">\n" +
-    "                <div class='graph'>\n" +
+    "        <div class=\"column\">\n" +
+    "            <div class=\"ui segment\">\n" +
+    "                <div class='ui statistic'>\n" +
+    "                    <div class=\"value\">{{parishes}}</div>\n" +
     "                </div>\n" +
-    "                <h6 class='ui header'><i class=\"icon fa fa-bar-chart-o\"></i>Header</h6>\n" +
+    "                <h6 class='ui header'><i class=\"icon fa fa-bar-chart-o\"></i>Total Parishes</h6>\n" +
     "            </div>\n" +
     "        </div>\n" +
-    "        <div class=\"four wide column\">\n" +
-    "            <div class=\"inner small ui segment\">\n" +
-    "                <div class='graph'></div>\n" +
-    "                <h6 class='ui header'><i class=\"icon fa fa-bar-chart-o\"></i>Header</h6>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "        <div class=\"four wide column\">\n" +
-    "            <div class=\"inner small ui segment\">\n" +
-    "                <div class='graph'></div>\n" +
-    "                <h6 class='ui header'><i class=\"icon fa fa-bar-chart-o\"></i>Header</h6>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"eight wide column\">\n" +
-    "            <div class=\"inner ui segment\">\n" +
-    "                <div class='graph'>\n" +
-    "                    <canvas id=\"line\" class=\"chart chart-line\" data=\"data\" labels=\"labels\"\n" +
-    "                    legend=\"true\" series=\"series\" click=\"onClick\"></canvas>\n" +
+    "        <div class=\"column\">\n" +
+    "            <div class=\"ui segment\">\n" +
+    "                <div class='ui statistic'>\n" +
+    "                    <div class=\"value\">{{dioceses}}</div>\n" +
     "                </div>\n" +
-    "                <h6 class='ui header'><i class=\"icon fa fa-bar-chart-o\"></i>Header</h6>\n" +
+    "                <h6 class='ui header'><i class=\"icon fa fa-bar-chart-o\"></i>Total Dioceses</h6>\n" +
     "            </div>\n" +
     "        </div>\n" +
-    "        <div class=\"eight wide column\">\n" +
-    "            <div class=\"inner ui segment\">\n" +
-    "                <div class='graph'>\n" +
-    "                    <canvas id=\"line\" class=\"chart chart-bar\" data=\"data\" labels=\"labels\"\n" +
-    "                    legend=\"true\" series=\"series\" click=\"onClick\"></canvas>\n" +
+    "        <div class=\"column\">\n" +
+    "            <div class=\"ui segment\">\n" +
+    "                <div class='ui statistic'>\n" +
+    "                    <div class=\"value\">{{archdioceses}}</div>\n" +
     "                </div>\n" +
-    "                <h6 class='ui header'><i class=\"icon fa fa-bar-chart-o\"></i>Header</h6>\n" +
+    "                <h6 class='ui header'><i class=\"icon fa fa-bar-chart-o\"></i>Total Archdioceses</h6>\n" +
     "            </div>\n" +
     "        </div>\n" +
-    "    </div>\n" +
     "</div>\n" +
-    "</div>\n" +
-    "");
+    "<div class=\"ui equal width grid\">\n" +
+    "              <div class=\"column\">\n" +
+    "            <div class=\" ui segment\">\n" +
+    "                  <canvas id=\"line\" class=\"chart chart-line\" data=\"data\"\n" +
+    "                    labels=\"labels\" legend=\"true\" series=\"series\"\n" +
+    "                    ng-click=\"onClick()\">\n" +
+    "                  </canvas> \n" +
+    "                <h6 class='ui header'><i class=\"icon fa fa-bar-chart-o\"></i>Chart 1</h6>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"column\">\n" +
+    "            <div class=\" ui segment\">\n" +
+    "                  <canvas id=\"bar\" class=\"chart chart-bar\" data=\"data\"\n" +
+    "                    labels=\"labels\" legend=\"true\" series=\"series\"\n" +
+    "                    ng-click=\"onClick()\">\n" +
+    "                  </canvas> \n" +
+    "                <h6 class='ui header'><i class=\"icon fa fa-bar-chart-o\"></i>Chart 2</h6>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "</div>");
 }]);
 
 angular.module("../app/partials/global/forms/side-menu.html", []).run(["$templateCache", function($templateCache) {
@@ -1294,16 +1579,16 @@ angular.module("../app/partials/global/head.html", []).run(["$templateCache", fu
 
 angular.module("../app/partials/global/header.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../app/partials/global/header.html",
-    "<div class=\"ui tiered menu\">\n" +
+    "<div class=\"top attached menu\">\n" +
     "    <nav class=\"ui menu\" id=\"main\">\n" +
-    "        <a class=\"item\" href=\"\" data-transition=\"push\" id=\"show_side_menu\"><i class=\"icon ion-navicon-round\"></i>More</a>\n" +
+    "        <a class=\"item\" role=\"button\" href=\"\" data-transition=\"scale down\" id=\"show_side_menu\"><i class=\"icon ion-navicon-round\"></i>More</a>\n" +
     "        <a href=\"\" ui-sref=\"messages\" class=\"item\"><i class=\"icon mail\"></i>Messages<div class=\"ui red round label\">{{messages.length}}</div></a>\n" +
     "        <div class=\"right menu\">\n" +
     "            <div class=\"item\">\n" +
-    "                <i class=\"icon ion-person\"></i>{{user[0].fname + ' '+ user[0].lname}}\n" +
+    "                <i class=\"icon ion-person\" ></i>{{user.uid}}\n" +
     "            </div>\n" +
     "            <div class='item'><i class=\"icon calendar\"></i>{{date | date:'d-MM-yyyy'}}</div>\n" +
-    "            <a ui-sref=\"login\" class=\"item\"><i class=\"icon ion-log-out\"></i>Logout</a>\n" +
+    "            <a ng-click=\"signOut()\" class=\"item\"><i class=\"icon ion-log-out\"></i>Logout</a>\n" +
     "        </div>\n" +
     "    </nav>\n" +
     "</div>\n" +
@@ -1361,7 +1646,7 @@ angular.module("../app/partials/global/rails.html", []).run(["$templateCache", f
 angular.module("../app/partials/global/side-menu.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../app/partials/global/side-menu.html",
     "<div class=\"item\">\n" +
-    "    <a is-active-nav href=\"\" class=\"item\" ui-sref=\"dashboard\">\n" +
+    "    <a is-active-nav class=\"item\" ui-sref=\"dashboard\">\n" +
     "        Dashboard\n" +
     "        <i class=\"icon ion-arrow-graph-up-right\"></i>\n" +
     "    </a>\n" +
@@ -1369,9 +1654,9 @@ angular.module("../app/partials/global/side-menu.html", []).run(["$templateCache
     "<div class=\"item\">\n" +
     "    Diocese Management\n" +
     "    <div class=\"menu\">\n" +
-    "        <a ui-sref=\"overview\" href=\" \" class=\"item\">Overview</a>\n" +
-    "        <a ui-sref=\"location\" href=\" \" class=\"item\">Location</a>\n" +
-    "        <a ui-sref=\"staff\" href=\" \" class=\"item\">Staff</a>\n" +
+    "        <a is-active-nav ui-sref=\"overview\" href=\" \" class=\"item\">Overview</a>\n" +
+    "        <a is-active-nav ui-sref=\"location\" href=\" \" class=\"item\">Location</a>\n" +
+    "        <a is-active-nav ui-sref=\"staff\" href=\" \" class=\"item\">Staff</a>\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"item\">\n" +
@@ -1380,7 +1665,6 @@ angular.module("../app/partials/global/side-menu.html", []).run(["$templateCache
     "        <i class=\"icon ion-person\"></i>\n" +
     "    </a>\n" +
     "</div>\n" +
-    "\n" +
     "");
 }]);
 
@@ -1470,17 +1754,151 @@ angular.module("../app/partials/location/archdioceses.index.html", []).run(["$te
   $templateCache.put("../app/partials/location/archdioceses.index.html",
     "<!-- Archidiocese Index -->\n" +
     "<nav class=\"ui inverted blue menu\">\n" +
-    "  <div href=\"\" ui-sref=\"location.archdiocese\" class=\"item\">\n" +
+    "  <div href=\"\" ui-sref=\"location.archdioceses\" class=\"item\">\n" +
     "    <b>\n" +
     "      <i class=\"icon building\"></i>\n" +
     "      Archidiocese\n" +
     "    </b>\n" +
     "  </div>\n" +
-    "  <a is-active-nav class=\"item\" ui-sref=\"location.archdiocese.statistics\"><i class=\"icon ion-arrow-graph-up-right\"></i>Statistics</a>\n" +
-    "  <a is-active-nav class=\"item\" ui-sref=\"location.archdiocese.list\"><i class=\"icon fa fa-list\"></i>List Archidiocese</a>\n" +
-    "  <a is-active-nav class=\"item\" ui-sref=\"location.archdiocese.add\"><i class=\"icon fa fa-plus\"></i>Register Archidiocese</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.archdioceses.statistics\"><i class=\"icon ion-arrow-graph-up-right\"></i>Statistics</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.archdioceses.list\"><i class=\"icon fa fa-list\"></i>List Archidiocese</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.archdioceses.add\"><i class=\"icon fa fa-plus\"></i>Register Archidiocese</a>\n" +
     "</nav>\n" +
     "<div ui-view></div>\n" +
+    "");
+}]);
+
+angular.module("../app/partials/location/archdioceses.list.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../app/partials/location/archdioceses.list.html",
+    "<!-- Archdioceses' List -->\n" +
+    "<style>\n" +
+    "  .filterable {\n" +
+    "    margin-top: 15px;\n" +
+    "}\n" +
+    ".filterable .panel-heading .pull-right {\n" +
+    "    margin-top: -20px;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled] {\n" +
+    "    background-color: transparent;\n" +
+    "    border: none;\n" +
+    "    cursor: auto;\n" +
+    "    box-shadow: none;\n" +
+    "    padding: 0;\n" +
+    "    height: auto;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]::-webkit-input-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]::-moz-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]:-ms-input-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    "#dms{\n" +
+    "  background-color: #FFFFFF;\n" +
+    "}\n" +
+    "</style>\n" +
+    "        <div class=\"panel panel-primary filterable\">\n" +
+    "<table class=\"ui inverted blue table\" st-safe-src=\"rowCollection\" st-table=\"displayedCollection\">\n" +
+    "  <thead>\n" +
+    "    <tr class=\"ui form filters\" colspan=\"3\">\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'id'\" class=\"form-control th\" placeholder=\"#\" disabled ></th>\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'updated_at'\" class=\"form-control th\" placeholder=\"Updated At\" disabled ></th>\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'created_at'\" class=\"form-control th\" placeholder=\"Created At\" disabled ></th>\n" +
+    "       <th id=\"dms\" width=\"100\">\n" +
+    "    <button class=\"ui icon button btn-filter\">\n" +
+    "  <i class=\"search icon\"></i>\n" +
+    "    </button>\n" +
+    "  </tr></thead><tbody>\n" +
+    "    <tr ng-repeat=\"row in displayedCollection\"  st-select-row=\"row\">\n" +
+    "                  <td>{{row.id}}</td>\n" +
+    "                  <td>{{row.updated_at}}</td>\n" +
+    "                  <td>{{row.created_at}}</td>\n" +
+    "                                    <td width=\"100\">\n" +
+    "       <div class=\"ui buttons\">\n" +
+    "       <div data-content=\"Edit Parish Row\">\n" +
+    "              <button class=\"ui button\" ng-click=\"getParish(row)\">Edit</button>\n" +
+    "       </div>\n" +
+    "              <div class=\"or\"></div>\n" +
+    "       <div data-content=\"Delete Parish Row\">\n" +
+    "              <button class=\"ui negative button\" ng-click=\"\">Delete</button>\n" +
+    "       </div>\n" +
+    "      </div>\n" +
+    "    </tr>\n" +
+    "    <tr>\n" +
+    "<th colspan=\"1\">{{records}} Records</th>\n" +
+    "      <th colspan=\"6\" style=\"cursor: pointer;\">\n" +
+    "        <div st-pagination=\"\" st-items-by-page=\"recordsPerPage\" st-displayed-pages=\"pages\">\n" +
+    "        </div>\n" +
+    "    </tr>\n" +
+    "  </tbody>\n" +
+    "</table>\n" +
+    "</div>\n" +
+    "<script>\n" +
+    "$(document).ready(function(){\n" +
+    "    $('.filterable .btn-filter').click(function(){\n" +
+    "        var $panel = $(this).parents('.filterable'),\n" +
+    "        $filters = $panel.find('.filters input'),\n" +
+    "        $tbody = $panel.find('.table tbody');\n" +
+    "        if ($filters.prop('disabled') == true) {\n" +
+    "            $filters.prop('disabled', false);\n" +
+    "            $filters.first().focus();\n" +
+    "        } else {\n" +
+    "            $filters.val('').prop('disabled', true);\n" +
+    "            $tbody.find('.no-result').remove();\n" +
+    "            $tbody.find('tr').show();\n" +
+    "        }\n" +
+    "    });\n" +
+    "});\n" +
+    "</script>");
+}]);
+
+angular.module("../app/partials/location/archdioceses.view.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../app/partials/location/archdioceses.view.html",
+    "<div class=\"ui grid\">\n" +
+    "  <div class=\"twelve wide column\">\n" +
+    "    <!-- Form -->\n" +
+    "    <form class=\"ui form ui segment\" id=\"memberForm\">\n" +
+    "      <div class=\"fields\">\n" +
+    "        <div class=\"field eight wide required\">\n" +
+    "          <label>ID</label>\n" +
+    "          <div class=\"ui icon left input\">\n" +
+    "            <i class=\"icon building\"></i>\n" +
+    "            <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"ArchdioceseProfile.id\"/>\n" +
+    "          </div>\n" +
+    "\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"fields\">\n" +
+    "        <div class=\"field eight wide required\">\n" +
+    "          <label>Created At</label>\n" +
+    "          <div class=\"ui icon left input\">\n" +
+    "            <i class=\"icon building\"></i>\n" +
+    "            <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"ArchdioceseProfile.created_at\"/>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"buttons\">\n" +
+    "        <button class=\"ui button blue\" ng-click=\"updateArchdiocese()\" ng-show=\"status=='update'\">Update Archdiocese</button>\n" +
+    "        <button class=\"ui button teal\" ng-click=\"newArchdiocese()\" ng-show=\"status=='add'\">Add Archdiocese</button>\n" +
+    "      </div>\n" +
+    "      <div class=\"ui error message\"></div>\n" +
+    "    </form>\n" +
+    "\n" +
+    "  </div>\n" +
+    "  <div class=\"four wide column\">\n" +
+    "    <div class=\"ui segment\">\n" +
+    "      <div class=\"ui statistic\" id=\"total\">\n" +
+    "        <div class=\"value\">\n" +
+    "          {{records}}\n" +
+    "        </div>\n" +
+    "        <div class=\"label\">\n" +
+    "          <i class=\"icon database\"></i>Total Records\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
     "");
 }]);
 
@@ -1494,11 +1912,160 @@ angular.module("../app/partials/location/deaneries.index.html", []).run(["$templ
     "      Deanery\n" +
     "    </b>\n" +
     "  </div>\n" +
-    "  <a is-active-nav class=\"item\" ui-sref=\"location.deanery.statistics\"><i class=\"icon ion-arrow-graph-up-right\"></i>Text</a>\n" +
-    "  <a is-active-nav class=\"item\" ui-sref=\"location.deanery.list\"><i class=\"icon fa fa-list\"></i>List Deanery</a>\n" +
-    "  <a is-active-nav class=\"item\" ui-sref=\"location.deanery.add\"><i class=\"icon fa fa-plus\"></i>Register Deanery</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.deaneries.statistics\"><i class=\"icon ion-arrow-graph-up-right\"></i>Text</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.deaneries.list\"><i class=\"icon fa fa-list\"></i>List Deanery</a>\n" +
+    "  <a is-active-nav class=\"item\" ui-sref=\"location.deaneries.add\"><i class=\"icon fa fa-plus\"></i>Register Deanery</a>\n" +
     "</nav>\n" +
     "<div ui-view></div>\n" +
+    "");
+}]);
+
+angular.module("../app/partials/location/deaneries.list.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../app/partials/location/deaneries.list.html",
+    "<!-- Parishes' List -->\n" +
+    "<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>\n" +
+    "<style>\n" +
+    "  .filterable {\n" +
+    "    margin-top: 15px;\n" +
+    "}\n" +
+    ".filterable .panel-heading .pull-right {\n" +
+    "    margin-top: -20px;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled] {\n" +
+    "    background-color: transparent;\n" +
+    "    border: none;\n" +
+    "    cursor: auto;\n" +
+    "    box-shadow: none;\n" +
+    "    padding: 0;\n" +
+    "    height: auto;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]::-webkit-input-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]::-moz-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]:-ms-input-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    "th{\n" +
+    "  font-family: 'Roboto', sans-serif;\n" +
+    "}\n" +
+    "</style>\n" +
+    "<div class=\"container \">\n" +
+    "    <div class=\"row\">\n" +
+    "    <div class=\"col-xs-10 col-md-11 col-lg-9\">\n" +
+    "        <div class=\"panel panel-primary filterable\">\n" +
+    "            <div class=\"panel-heading\">\n" +
+    "                <h3 class=\"panel-title\">Deaneries</h3>\n" +
+    "                <div class=\"pull-right\">\n" +
+    "                    <button class=\"btn btn-default btn-xs btn-filter\"><i class=\"search icon\"></i> Filter</button>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <table class=\"table\" st-safe-src=\"rowCollection\" st-table=\"displayedCollection\">\n" +
+    "                <thead>\n" +
+    "                    <tr class=\"filters\">\n" +
+    "       <th><input type=\"text\" st-search=\"'id'\" class=\"form-control th\" placeholder=\"#\" disabled ></th>\n" +
+    "       <th><input type=\"text\" st-search=\"'updated_at'\" class=\"form-control th\" placeholder=\"Updated At\" disabled ></th>\n" +
+    "       <th><input type=\"text\" st-search=\"'created_at'\" class=\"form-control th\" placeholder=\"Created At\" disabled ></th>\n" +
+    "                    </tr>\n" +
+    "                </thead>\n" +
+    "                <tbody>\n" +
+    "\n" +
+    "              <tr ng-repeat=\"row in displayedCollection\"  st-select-row=\"row\" style=\"font-family: 'Roboto', sans-serif;\">\n" +
+    "                  <td>{{row.id}}</td>\n" +
+    "                  <td>{{row.updated_at}}</td>\n" +
+    "                  <td>{{row.created_at}}</td>\n" +
+    "                  <td width=\"110\">\n" +
+    "                    <button type=\"button\" ng-click=\"getDeanery(row)\" class=\"ui blue tiny button icon\">\n" +
+    "                      <i class=\"icon ion-more\">\n" +
+    "                      </i>\n" +
+    "                    </button>\n" +
+    "                    <button type=\"button\" ng-click=\"\" class=\"ui red tiny button icon\">\n" +
+    "                      <i class=\"icon ion-minus-circled\">\n" +
+    "                      </i>\n" +
+    "                    </button>\n" +
+    "\n" +
+    "                  </td>\n" +
+    "                </tr>\n" +
+    "                </tbody>\n" +
+    "                  <tfoot>\n" +
+    "    <tr>\n" +
+    "      <th colspan=\"1\">{{records}} Records</th>\n" +
+    "      <th colspan=\"5\" style=\"cursor: pointer;\">\n" +
+    "        <div st-pagination=\"\" st-items-by-page=\"recordsPerPage\" st-displayed-pages=\"pages\"></div>\n" +
+    "      </th>\n" +
+    "    </tr>\n" +
+    "  </tfoot>\n" +
+    "            </table>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "</div>\n" +
+    "<script>\n" +
+    "$(document).ready(function(){\n" +
+    "    $('.filterable .btn-filter').click(function(){\n" +
+    "        var $panel = $(this).parents('.filterable'),\n" +
+    "        $filters = $panel.find('.filters input'),\n" +
+    "        $tbody = $panel.find('.table tbody');\n" +
+    "        if ($filters.prop('disabled') == true) {\n" +
+    "            $filters.prop('disabled', false);\n" +
+    "            $filters.first().focus();\n" +
+    "        } else {\n" +
+    "            $filters.val('').prop('disabled', true);\n" +
+    "            $tbody.find('.no-result').remove();\n" +
+    "            $tbody.find('tr').show();\n" +
+    "        }\n" +
+    "    });\n" +
+    "});\n" +
+    "</script>");
+}]);
+
+angular.module("../app/partials/location/deaneries.view.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../app/partials/location/deaneries.view.html",
+    "<div class=\"ui grid\">\n" +
+    "  <div class=\"twelve wide column\">\n" +
+    "    <!-- Form -->\n" +
+    "    <form class=\"ui form ui segment\" id=\"memberForm\">\n" +
+    "      <div class=\"fields\">\n" +
+    "        <div class=\"field eight wide required\">\n" +
+    "          <label>ID</label>\n" +
+    "          <div class=\"ui icon left input\">\n" +
+    "            <i class=\"icon building\"></i>\n" +
+    "            <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"DeaneryProfile.id\"/>\n" +
+    "          </div>\n" +
+    "\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"fields\">\n" +
+    "        <div class=\"field eight wide required\">\n" +
+    "          <label>Created At</label>\n" +
+    "          <div class=\"ui icon left input\">\n" +
+    "            <i class=\"icon building\"></i>\n" +
+    "            <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"DeaneryProfile.created_at\"/>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"buttons\">\n" +
+    "        <button class=\"ui button blue\" ng-click=\"updateDeanery()\" ng-show=\"status=='update'\">Update Archdiocese</button>\n" +
+    "        <button class=\"ui button teal\" ng-click=\"newDeanery()\" ng-show=\"status=='add'\">Add Archdiocese</button>\n" +
+    "      </div>\n" +
+    "      <div class=\"ui error message\"></div>\n" +
+    "    </form>\n" +
+    "\n" +
+    "  </div>\n" +
+    "  <div class=\"four wide column\">\n" +
+    "    <div class=\"ui segment\">\n" +
+    "      <div class=\"ui statistic\" id=\"total\">\n" +
+    "        <div class=\"value\">\n" +
+    "          {{records}}\n" +
+    "        </div>\n" +
+    "        <div class=\"label\">\n" +
+    "          <i class=\"icon database\"></i>Total Records\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
     "");
 }]);
 
@@ -1522,39 +2089,79 @@ angular.module("../app/partials/location/dioceses.index.html", []).run(["$templa
 
 angular.module("../app/partials/location/dioceses.list.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../app/partials/location/dioceses.list.html",
-    "<!-- Parishes' List -->\n" +
-    "<table class=\"ui table celled compact bordered\" st-safe-src=\"rowCollection\" st-table=\"displayedCollection\">\n" +
-    "  <thead>\n" +
-    "    <tr>\n" +
-    "      <th><i class=\"icon ion-person\"></i>In Charge</th>\n" +
-    "      <th><i class=\"icon fa fa-building\"></i>Name</th>\n" +
-    "    </tr>\n" +
+    "<!-- Dioceses' List -->\n" +
     "\n" +
-    "  </thead>\n" +
-    "  <tbody>\n" +
-    "    <tr>\n" +
-    "      <td class=\"ui input\" ><input st-search=\"'in_charge'\" placeholder=\"Search...\" type=\"search\"/></td>\n" +
-    "      <td class=\"ui input\" ><input st-search=\"'location'\" placeholder=\"Search...\" type=\"search\"/></td>\n" +
+    "<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>\n" +
+    "<style>\n" +
+    "  .filterable {\n" +
+    "    margin-top: 15px;\n" +
+    "}\n" +
+    ".filterable .panel-heading .pull-right {\n" +
+    "    margin-top: -20px;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled] {\n" +
+    "    background-color: transparent;\n" +
+    "    border: none;\n" +
+    "    cursor: auto;\n" +
+    "    box-shadow: none;\n" +
+    "    padding: 0;\n" +
+    "    height: auto;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]::-webkit-input-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]::-moz-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]:-ms-input-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    "th{\n" +
+    "  font-family: 'Roboto', sans-serif;\n" +
+    "}\n" +
+    "</style>\n" +
+    "<div class=\"container \">\n" +
+    "    <div class=\"row\">\n" +
+    "    <div class=\"col-xs-10 col-md-11 col-lg-9\">\n" +
+    "        <div class=\"panel panel-primary filterable\">\n" +
+    "            <div class=\"panel-heading\">\n" +
+    "                <h3 class=\"panel-title\">Dioceses</h3>\n" +
+    "                <div class=\"pull-right\">\n" +
+    "                    <button class=\"btn btn-default btn-xs btn-filter\"><i class=\"search icon\"></i> Filter</button>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <table class=\"table\" st-safe-src=\"rowCollection\" st-table=\"displayedCollection\">\n" +
+    "                <thead>\n" +
+    "                    <tr class=\"filters\">\n" +
+    "       <th><input type=\"text\" st-search=\"'id'\" class=\"form-control th\" placeholder=\"#\" disabled ></th>\n" +
+    "       <th><input type=\"text\" st-search=\"'name'\" class=\"form-control th\" placeholder=\"Name\" disabled ></th>\n" +
+    "       <th><input type=\"text\" st-search=\"'in_charge'\" class=\"form-control th\" placeholder=\"In Charge\" disabled ></th>\n" +
+    "       <th><input type=\"text\" st-search=\"'updated_at'\" class=\"form-control th\" placeholder=\"Updated At\" disabled ></th>\n" +
+    "       <th><input type=\"text\" st-search=\"'created_at'\" class=\"form-control th\" placeholder=\"Created At\" disabled ></th>\n" +
+    "                    </tr>\n" +
+    "                </thead>\n" +
+    "                <tbody>\n" +
     "\n" +
-    "      <td></td>\n" +
-    "    </tr>\n" +
-    "    <tr ng-repeat=\"row in displayedCollection\"  st-select-row=\"row\">\n" +
-    "      <td>{{row.in_charge}}</td>\n" +
-    "      <td>{{row.name}}</td>\n" +
-    "      <td width=\"150\">\n" +
-    "        <button type=\"button\" ng-click=\"getDiocese(row)\" class=\"ui blue tiny button icon\">\n" +
-    "          <i class=\"icon ion-more\">\n" +
-    "          </i>\n" +
-    "        </button>\n" +
-    "        <button type=\"button\" ng-click=\"\" class=\"ui red tiny button icon\">\n" +
-    "          <i class=\"icon ion-minus-circled\">\n" +
-    "          </i>\n" +
-    "        </button>\n" +
+    "              <tr ng-repeat=\"row in displayedCollection\"  st-select-row=\"row\" style=\"font-family: 'Roboto', sans-serif;\">\n" +
+    "                  <td>{{row.id}}</td>\n" +
+    "                  <td>{{row.name}}</td>\n" +
+    "                  <td>{{row.in_charge}}</td>\n" +
+    "                  <td>{{row.updated_at}}</td>\n" +
+    "                  <td>{{row.created_at}}</td>\n" +
+    "                  <td width=\"110\">\n" +
+    "                    <button type=\"button\" ng-click=\"getDiocese(row)\" class=\"ui blue tiny button icon\">\n" +
+    "                      <i class=\"icon ion-more\">\n" +
+    "                      </i>\n" +
+    "                    </button>\n" +
+    "                    <button type=\"button\" ng-click=\"\" class=\"ui red tiny button icon\">\n" +
+    "                      <i class=\"icon ion-minus-circled\">\n" +
+    "                      </i>\n" +
+    "                    </button>\n" +
     "\n" +
-    "      </td>\n" +
-    "    </tr>\n" +
-    "  </tbody>\n" +
-    "  <tfoot>\n" +
+    "                  </td>\n" +
+    "                </tr>\n" +
+    "                </tbody>\n" +
+    "                  <tfoot>\n" +
     "    <tr>\n" +
     "      <th colspan=\"1\">{{records}} Records</th>\n" +
     "      <th colspan=\"5\">\n" +
@@ -1562,8 +2169,28 @@ angular.module("../app/partials/location/dioceses.list.html", []).run(["$templat
     "      </th>\n" +
     "    </tr>\n" +
     "  </tfoot>\n" +
-    "</table>\n" +
-    "");
+    "            </table>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "</div>\n" +
+    "<script>\n" +
+    "$(document).ready(function(){\n" +
+    "    $('.filterable .btn-filter').click(function(){\n" +
+    "        var $panel = $(this).parents('.filterable'),\n" +
+    "        $filters = $panel.find('.filters input'),\n" +
+    "        $tbody = $panel.find('.table tbody');\n" +
+    "        if ($filters.prop('disabled') == true) {\n" +
+    "            $filters.prop('disabled', false);\n" +
+    "            $filters.first().focus();\n" +
+    "        } else {\n" +
+    "            $filters.val('').prop('disabled', true);\n" +
+    "            $tbody.find('.no-result').remove();\n" +
+    "            $tbody.find('tr').show();\n" +
+    "        }\n" +
+    "    });\n" +
+    "});\n" +
+    "</script>");
 }]);
 
 angular.module("../app/partials/location/dioceses.view.html", []).run(["$templateCache", function($templateCache) {
@@ -1571,7 +2198,7 @@ angular.module("../app/partials/location/dioceses.view.html", []).run(["$templat
     "<div class=\"ui grid\">\n" +
     "  <div class=\"twelve wide column\">\n" +
     "    <!-- Form -->\n" +
-    "    <form class=\"ui form ui segment\" id=\"memberForm\" action=\"\" method=\"post\">\n" +
+    "    <form class=\"ui form ui segment\" id=\"memberForm\">\n" +
     "      <div class=\"fields\">\n" +
     "        <div class=\"field eight wide required\">\n" +
     "          <label>Name</label>\n" +
@@ -1581,35 +2208,36 @@ angular.module("../app/partials/location/dioceses.view.html", []).run(["$templat
     "          </div>\n" +
     "\n" +
     "        </div>\n" +
-    "        <div class=\"field left icon eight wide required\">\n" +
+    "      </div>\n" +
+    "      <div class=\"fields\">\n" +
+    "        <div class=\"field eight wide required\">\n" +
     "          <label>In Charge</label>\n" +
     "          <div class=\"ui icon left input\">\n" +
-    "            <i class=\"icon ion-person\"></i>\n" +
-    "            <input name=\"email\" id=\"email\" type=\"text\" ng-model=\"dioceseProfile.in_charge\"/>\n" +
+    "            <i class=\"icon building\"></i>\n" +
+    "            <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"dioceseProfile.in_charge\"/>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
-    "      <!--\n" +
-    "      <div class=\"fields\">\n" +
-    "\n" +
-    "    </div>\n" +
-    "  -->\n" +
-    "  <div class=\"ui error message\"></div>\n" +
-    "</form>\n" +
-    "\n" +
-    "</div>\n" +
-    "<div class=\"four wide column\">\n" +
-    "  <div class=\"ui segment\">\n" +
-    "    <div class=\"ui statistic\" id=\"total\">\n" +
-    "      <div class=\"value\">\n" +
-    "        {{records}}\n" +
+    "      <div class=\"buttons\">\n" +
+    "        <button class=\"ui button blue\" ng-click=\"updateParish()\" ng-show=\"status=='update'\">Update Diocese</button>\n" +
+    "        <button class=\"ui button teal\" ng-click=\"newParish()\" ng-show=\"status=='add'\">Add Diocese</button>\n" +
     "      </div>\n" +
-    "      <div class=\"label\">\n" +
-    "        <i class=\"icon database\"></i>Total Records\n" +
+    "      <div class=\"ui error message\"></div>\n" +
+    "    </form>\n" +
+    "\n" +
+    "  </div>\n" +
+    "  <div class=\"four wide column\">\n" +
+    "    <div class=\"ui segment\">\n" +
+    "      <div class=\"ui statistic\" id=\"total\">\n" +
+    "        <div class=\"value\">\n" +
+    "          {{records}}\n" +
+    "        </div>\n" +
+    "        <div class=\"label\">\n" +
+    "          <i class=\"icon database\"></i>Total Records\n" +
+    "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +
-    "</div>\n" +
     "");
 }]);
 
@@ -1619,9 +2247,10 @@ angular.module("../app/partials/location/index.html", []).run(["$templateCache",
     "\n" +
     "</header>\n" +
     "<!--  -->\n" +
-    "<div class=\"centered within\">\n" +
+    "\n" +
+    "<div class=\"ui left\">\n" +
     "  <div class=\"ui grid\">\n" +
-    "    <div class=\"column four wide\">\n" +
+    "    <div class=\"column three wide\">\n" +
     "      <div class=\"ui inverted blue vertical menu\">\n" +
     "        <a is-active-nav ui-sref=\"location.archdioceses\" class=\"item\">Archdiocese<i class='icon chevron right'></i></a>\n" +
     "        <a is-active-nav ui-sref=\"location.dioceses\" class=\"item\">Dioceses<i class='icon chevron right'></i></a>\n" +
@@ -1631,11 +2260,12 @@ angular.module("../app/partials/location/index.html", []).run(["$templateCache",
     "        <a is-active-nav ui-sref=\"location.services\" class=\"item\">Services<i class='icon chevron right'></i></a>\n" +
     "      </div>\n" +
     "    </div>\n" +
-    "    <div class=\"column twelve wide\">\n" +
-    "      <div ui-view></div>\n" +
-    "    </div>\n" +
+    "    \n" +
+    "<div ui-view class=\"centered within\"></div>\n" +
+    "\n" +
     "  </div>\n" +
     "</div>\n" +
+    "\n" +
     "");
 }]);
 
@@ -1654,6 +2284,149 @@ angular.module("../app/partials/location/members.index.html", []).run(["$templat
     "  <a is-active-nav class=\"item\" ui-sref=\"location.members.add\"><i class=\"icon fa fa-plus\"></i>Register Members</a>\n" +
     "</nav>\n" +
     "<div ui-view></div>\n" +
+    "");
+}]);
+
+angular.module("../app/partials/location/members.list.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../app/partials/location/members.list.html",
+    "<!-- Parishes' List -->\n" +
+    "<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>\n" +
+    "<style>\n" +
+    "  .filterable {\n" +
+    "    margin-top: 15px;\n" +
+    "}\n" +
+    ".filterable .panel-heading .pull-right {\n" +
+    "    margin-top: -20px;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled] {\n" +
+    "    background-color: transparent;\n" +
+    "    border: none;\n" +
+    "    cursor: auto;\n" +
+    "    box-shadow: none;\n" +
+    "    padding: 0;\n" +
+    "    height: auto;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]::-webkit-input-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]::-moz-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]:-ms-input-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    "th{\n" +
+    "  font-family: 'Roboto', sans-serif;\n" +
+    "}\n" +
+    "</style>\n" +
+    "<div class=\"container \">\n" +
+    "    <div class=\"row\">\n" +
+    "    <div class=\"col-xs-10 col-md-11 col-lg-9\">\n" +
+    "        <div class=\"panel panel-primary filterable\">\n" +
+    "            <div class=\"panel-heading\">\n" +
+    "                <h3 class=\"panel-title\">Members</h3>\n" +
+    "                <div class=\"pull-right\">\n" +
+    "                    <button class=\"btn btn-default btn-xs btn-filter\"><i class=\"search icon\"></i> Filter</button>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <table class=\"table\" st-safe-src=\"rowCollection\" st-table=\"displayedCollection\">\n" +
+    "                <thead>\n" +
+    "                    <tr class=\"filters\">\n" +
+    "       <th><input type=\"text\" st-search=\"'id'\" class=\"form-control th\" placeholder=\"#\" disabled ></th>\n" +
+    "       <th><input type=\"text\" st-search=\"'name'\" class=\"form-control th\" placeholder=\"Name\" disabled ></th>\n" +
+    "       <th><input type=\"text\" st-search=\"'updated_at'\" class=\"form-control th\" placeholder=\"Updated At\" disabled ></th>\n" +
+    "       <th><input type=\"text\" st-search=\"'created_at'\" class=\"form-control th\" placeholder=\"Created At\" disabled ></th>\n" +
+    "                    </tr>\n" +
+    "                </thead>\n" +
+    "                <tbody>\n" +
+    "\n" +
+    "              <tr ng-repeat=\"row in displayedCollection\"  st-select-row=\"row\" style=\"font-family: 'Roboto', sans-serif;\">\n" +
+    "                  <td>{{row.id}}</td>\n" +
+    "                  <td>{{row.name}}</td>\n" +
+    "                  <td>{{row.updated_at}}</td>\n" +
+    "                  <td>{{row.created_at}}</td>\n" +
+    "                  <td width=\"110\">\n" +
+    "                    <button type=\"button\" ng-click=\"getMember(row)\" class=\"ui blue tiny button icon\">\n" +
+    "                      <i class=\"icon ion-more\">\n" +
+    "                      </i>\n" +
+    "                    </button>\n" +
+    "                    <button type=\"button\" ng-click=\"\" class=\"ui red tiny button icon\">\n" +
+    "                      <i class=\"icon ion-minus-circled\">\n" +
+    "                      </i>\n" +
+    "                    </button>\n" +
+    "\n" +
+    "                  </td>\n" +
+    "                </tr>\n" +
+    "                </tbody>\n" +
+    "                  <tfoot>\n" +
+    "    <tr>\n" +
+    "      <th colspan=\"1\">{{records}} Records</th>\n" +
+    "      <th colspan=\"5\" style=\"cursor: pointer;\">\n" +
+    "        <div st-pagination=\"\" st-items-by-page=\"recordsPerPage\" st-displayed-pages=\"pages\"></div>\n" +
+    "      </th>\n" +
+    "    </tr>\n" +
+    "  </tfoot>\n" +
+    "            </table>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "</div>\n" +
+    "<script>\n" +
+    "$(document).ready(function(){\n" +
+    "    $('.filterable .btn-filter').click(function(){\n" +
+    "        var $panel = $(this).parents('.filterable'),\n" +
+    "        $filters = $panel.find('.filters input'),\n" +
+    "        $tbody = $panel.find('.table tbody');\n" +
+    "        if ($filters.prop('disabled') == true) {\n" +
+    "            $filters.prop('disabled', false);\n" +
+    "            $filters.first().focus();\n" +
+    "        } else {\n" +
+    "            $filters.val('').prop('disabled', true);\n" +
+    "            $tbody.find('.no-result').remove();\n" +
+    "            $tbody.find('tr').show();\n" +
+    "        }\n" +
+    "    });\n" +
+    "});\n" +
+    "</script>");
+}]);
+
+angular.module("../app/partials/location/members.view.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../app/partials/location/members.view.html",
+    "<div class=\"ui grid\">\n" +
+    "  <div class=\"twelve wide column\">\n" +
+    "    <!-- Form -->\n" +
+    "    <form class=\"ui form ui segment\" id=\"memberForm\">\n" +
+    "      <div class=\"fields\">\n" +
+    "        <div class=\"field eight wide required\">\n" +
+    "          <label>Name</label>\n" +
+    "          <div class=\"ui icon left input\">\n" +
+    "            <i class=\"icon building\"></i>\n" +
+    "            <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"memberProfile.name\"/>\n" +
+    "            <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"memberProfile.updated_at\"/>\n" +
+    "          </div>\n" +
+    "\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"buttons\">\n" +
+    "        <button class=\"ui button blue\" ng-click=\"updateMember()\" ng-show=\"status=='update'\">Update Member</button>\n" +
+    "        <button class=\"ui button teal\" ng-click=\"newMember()\" ng-show=\"status=='add'\">Add Member</button>\n" +
+    "      </div>\n" +
+    "      <div class=\"ui error message\"></div>\n" +
+    "    </form>\n" +
+    "\n" +
+    "  </div>\n" +
+    "  <div class=\"four wide column\">\n" +
+    "    <div class=\"ui segment\">\n" +
+    "      <div class=\"ui statistic\" id=\"total\">\n" +
+    "        <div class=\"value\">\n" +
+    "          {{records}}\n" +
+    "        </div>\n" +
+    "        <div class=\"label\">\n" +
+    "          <i class=\"icon database\"></i>Total Records\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
     "");
 }]);
 
@@ -1678,47 +2451,93 @@ angular.module("../app/partials/location/parishes.index.html", []).run(["$templa
 angular.module("../app/partials/location/parishes.list.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../app/partials/location/parishes.list.html",
     "<!-- Parishes' List -->\n" +
-    "<table class=\"ui table celled compact bordered\" st-safe-src=\"rowCollection\" st-table=\"displayedCollection\">\n" +
+    "<style>\n" +
+    "  .filterable {\n" +
+    "    margin-top: 15px;\n" +
+    "}\n" +
+    ".filterable .panel-heading .pull-right {\n" +
+    "    margin-top: -20px;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled] {\n" +
+    "    background-color: transparent;\n" +
+    "    border: none;\n" +
+    "    cursor: auto;\n" +
+    "    box-shadow: none;\n" +
+    "    padding: 0;\n" +
+    "    height: auto;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]::-webkit-input-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]::-moz-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]:-ms-input-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    "#dms{\n" +
+    "  background-color: #FFFFFF;\n" +
+    "}\n" +
+    "</style>\n" +
+    "        <div class=\"panel panel-primary filterable\">\n" +
+    "<table class=\"ui inverted blue table\" st-safe-src=\"rowCollection\" st-table=\"displayedCollection\">\n" +
     "  <thead>\n" +
-    "    <tr>\n" +
-    "      <th><i class=\"icon ion-person\"></i>In Charge</th>\n" +
-    "      <th><i class=\"icon ion-person\"></i>Location</th>\n" +
-    "    </tr>\n" +
-    "\n" +
-    "  </thead>\n" +
-    "  <tbody>\n" +
-    "    <tr>\n" +
-    "      <td class=\"ui input\" ><input st-search=\"'in_charge'\" placeholder=\"Search...\" type=\"search\"/></td>\n" +
-    "      <td class=\"ui input\" ><input st-search=\"'location'\" placeholder=\"Search...\" type=\"search\"/></td>\n" +
-    "\n" +
-    "      <td></td>\n" +
-    "    </tr>\n" +
+    "    <tr class=\"ui form filters\" colspan=\"6\">\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'id'\" placeholder=\"#\"  disabled=\"\"></th>\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'name'\" placeholder=\"Name\"  disabled=\"\"></th>\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'location'\" placeholder=\"Location\"  disabled=\"\"></th>\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'in_charge'\" placeholder=\"In Charge\"  disabled=\"\"></th>\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'updated_at'\" placeholder=\"Updated At\"  disabled=\"\"></th>\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'created_at'\" placeholder=\"Created At\"  disabled=\"\"></th>\n" +
+    "       <th id=\"dms\" width=\"100\">\n" +
+    "    <button class=\"ui icon button btn-filter\">\n" +
+    "  <i class=\"search icon\"></i>\n" +
+    "    </button>\n" +
+    "  </tr></thead><tbody>\n" +
     "    <tr ng-repeat=\"row in displayedCollection\"  st-select-row=\"row\">\n" +
-    "      <td>{{row.in_charge}}</td>\n" +
-    "      <td>{{row.location}}</td>\n" +
-    "      <td width=\"150\">\n" +
-    "        <button type=\"button\" ng-click=\"getParish(row)\" class=\"ui blue tiny button icon\">\n" +
-    "          <i class=\"icon ion-more\">\n" +
-    "          </i>\n" +
-    "        </button>\n" +
-    "        <button type=\"button\" ng-click=\"\" class=\"ui red tiny button icon\">\n" +
-    "          <i class=\"icon ion-minus-circled\">\n" +
-    "          </i>\n" +
-    "        </button>\n" +
-    "\n" +
-    "      </td>\n" +
+    "                  <td>{{row.id}}</td>\n" +
+    "                  <td>{{row.name}}</td>\n" +
+    "                  <td>{{row.location}}</td>\n" +
+    "                  <td>{{row.in_charge}}</td>\n" +
+    "                  <td>{{row.updated_at}}</td>\n" +
+    "                  <td>{{row.created_at}}</td>\n" +
+    "                                    <td width=\"100\">\n" +
+    "       <div class=\"ui buttons\">\n" +
+    "       <div data-content=\"Edit Parish Row\">\n" +
+    "              <button class=\"ui button\" ng-click=\"getParish(row)\">Edit</button>\n" +
+    "       </div>\n" +
+    "              <div class=\"or\"></div>\n" +
+    "       <div data-content=\"Delete Parish Row\">\n" +
+    "              <button class=\"ui negative button\" ng-click=\"\">Delete</button>\n" +
+    "       </div>\n" +
+    "      </div>\n" +
+    "    </tr>\n" +
+    "    <tr>\n" +
+    "<th colspan=\"1\">{{records}} Records</th>\n" +
+    "      <th colspan=\"6\" style=\"cursor: pointer;\">\n" +
+    "        <div st-pagination=\"\" st-items-by-page=\"recordsPerPage\" st-displayed-pages=\"pages\">\n" +
+    "        </div>\n" +
     "    </tr>\n" +
     "  </tbody>\n" +
-    "  <tfoot>\n" +
-    "    <tr>\n" +
-    "      <th colspan=\"1\">{{records}} Records</th>\n" +
-    "      <th colspan=\"5\">\n" +
-    "        <div st-pagination=\"\" st-items-by-page=\"recordsPerPage\" st-displayed-pages=\"pages\"></div>\n" +
-    "      </th>\n" +
-    "    </tr>\n" +
-    "  </tfoot>\n" +
     "</table>\n" +
-    "");
+    "</div>\n" +
+    "<script>\n" +
+    "$(document).ready(function(){\n" +
+    "    $('.filterable .btn-filter').click(function(){\n" +
+    "        var $panel = $(this).parents('.filterable'),\n" +
+    "        $filters = $panel.find('.filters input'),\n" +
+    "        $tbody = $panel.find('.table tbody');\n" +
+    "        if ($filters.prop('disabled') == true) {\n" +
+    "            $filters.prop('disabled', false);\n" +
+    "            $filters.first().focus();\n" +
+    "        } else {\n" +
+    "            $filters.val('').prop('disabled', true);\n" +
+    "            $tbody.find('.no-result').remove();\n" +
+    "            $tbody.find('tr').show();\n" +
+    "        }\n" +
+    "    });\n" +
+    "});\n" +
+    "</script>");
 }]);
 
 angular.module("../app/partials/location/parishes.view.html", []).run(["$templateCache", function($templateCache) {
@@ -1732,7 +2551,7 @@ angular.module("../app/partials/location/parishes.view.html", []).run(["$templat
     "          <label>Name</label>\n" +
     "          <div class=\"ui icon left input\">\n" +
     "            <i class=\"icon building\"></i>\n" +
-    "            <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"parish.name\"/>\n" +
+    "            <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"parishProfile.name\"/>\n" +
     "          </div>\n" +
     "\n" +
     "        </div>\n" +
@@ -1740,7 +2559,7 @@ angular.module("../app/partials/location/parishes.view.html", []).run(["$templat
     "          <label>Location</label>\n" +
     "          <div class=\"ui icon left input\">\n" +
     "            <i class=\"icon map\"></i>\n" +
-    "            <input name=\"lname\" id=\"lname\" type=\"text\" ng-model=\"parish.location\"/>\n" +
+    "            <input name=\"lname\" id=\"lname\" type=\"text\" ng-model=\"parishProfile.location\"/>\n" +
     "          </div>\n" +
     "\n" +
     "        </div>\n" +
@@ -1749,8 +2568,8 @@ angular.module("../app/partials/location/parishes.view.html", []).run(["$templat
     "        <div class=\"field eight wide required\">\n" +
     "          <label>In Charge</label>\n" +
     "          <div class=\"ui icon left input\">\n" +
-    "            <i class=\"icon ion-person\"></i>\n" +
-    "            <input name=\"email\" id=\"email\" type=\"text\" ng-model=\"parish.in_charge\"/>\n" +
+    "            <i class=\"icon building\"></i>\n" +
+    "            <input name=\"fname\" id=\"fname\" type=\"text\" ng-model=\"parishProfile.in_charge\"/>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -1774,7 +2593,6 @@ angular.module("../app/partials/location/parishes.view.html", []).run(["$templat
     "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +
-    "  {{parish}}\n" +
     "");
 }]);
 
@@ -1805,13 +2623,13 @@ angular.module("../app/partials/location/services.add.html", []).run(["$template
     "		<div class=\"field eight wide\">\n" +
     "			<div class=\"ui right icon field\">\n" +
     "				<i class=\"icon\"></i>\n" +
-    "				<input placeholder=\"Text...\" type=\"text\"/>\n" +
+    "				<input placeholder=\"Tags...\" type=\"text\"/>\n" +
     "			</div>\n" +
     "		</div>\n" +
     "		<div class=\"field eight wide\">\n" +
     "			<div class=\"ui right icon field\">\n" +
     "				<i class=\"icon\"></i>\n" +
-    "				<input placeholder=\"Text...\" type=\"text\"/>\n" +
+    "				<input placeholder=\"Date...\" type=\"text\"/>\n" +
     "			</div>\n" +
     "		</div>\n" +
     "	</div>\n" +
@@ -1855,6 +2673,102 @@ angular.module("../app/partials/location/services.index.html", []).run(["$templa
     "");
 }]);
 
+angular.module("../app/partials/location/services.list.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../app/partials/location/services.list.html",
+    "<!-- Services' List -->\n" +
+    "<style>\n" +
+    "  .filterable {\n" +
+    "    margin-top: 15px;\n" +
+    "}\n" +
+    ".filterable .panel-heading .pull-right {\n" +
+    "    margin-top: -20px;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled] {\n" +
+    "    background-color: transparent;\n" +
+    "    border: none;\n" +
+    "    cursor: auto;\n" +
+    "    box-shadow: none;\n" +
+    "    padding: 0;\n" +
+    "    height: auto;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]::-webkit-input-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]::-moz-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]:-ms-input-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    "#dms{\n" +
+    "  background-color: #FFFFFF;\n" +
+    "}\n" +
+    "</style>\n" +
+    "        <div class=\"panel panel-primary filterable\">\n" +
+    "<table class=\"ui inverted blue table\" st-safe-src=\"rowCollection\" st-table=\"displayedCollection\">\n" +
+    "  <thead>\n" +
+    "    <tr class=\"ui form filters\" colspan=\"9\" width=\"100\">\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'id'\" class=\"form-control th\" placeholder=\"#\" disabled ></th>\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'name'\" class=\"form-control th\" placeholder=\"Name\" disabled ></th>\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'content'\" class=\"form-control th\" placeholder=\"Content\" disabled ></th>\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'tags'\" class=\"form-control th\" placeholder=\"Tags\" disabled ></th>\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'date'\" class=\"form-control th\" placeholder=\"Date\" disabled ></th>\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'created_at'\" class=\"form-control th\" placeholder=\"Created At\" disabled ></th>\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'updated_at'\" class=\"form-control th\" placeholder=\"Updated At\" disabled ></th>\n" +
+    "       <th id=\"dms\"><input type=\"text\" st-search=\"'parish_id'\" class=\"form-control th\" placeholder=\"#\" disabled ></th>\n" +
+    "       <th id=\"dms\"width=\"30\">\n" +
+    "    <button class=\"ui icon button btn-filter\">\n" +
+    "  <i class=\"search icon\"></i>\n" +
+    "    </button>\n" +
+    "  </tr></thead><tbody>\n" +
+    "    <tr ng-repeat=\"row in displayedCollection\"  st-select-row=\"row\">\n" +
+    "                  <td>{{row.id}}</td>\n" +
+    "                  <td>{{row.name}}</td>\n" +
+    "                  <td>{{row.content}}</td>\n" +
+    "                  <td>{{row.tags}}</td>\n" +
+    "                  <td>{{row.date}}</td>\n" +
+    "                  <td>{{row.created_at}}</td>\n" +
+    "                  <td>{{row.updated_at}}</td>\n" +
+    "                  <td>{{row.parish_id}}</td>\n" +
+    "                                    <td width=\"100\">\n" +
+    "       <div class=\"ui buttons\">\n" +
+    "       <div data-content=\"Edit Parish Row\">\n" +
+    "              <button class=\"ui button\" ng-click=\"getParish(row)\">Edit</button>\n" +
+    "       </div>\n" +
+    "              <div class=\"or\"></div>\n" +
+    "       <div data-content=\"Delete Parish Row\">\n" +
+    "              <button class=\"ui negative button\" ng-click=\"\">Delete</button>\n" +
+    "       </div>\n" +
+    "      </div>\n" +
+    "    </tr>\n" +
+    "    <tr>\n" +
+    "<th colspan=\"1\">{{records}} Records</th>\n" +
+    "      <th colspan=\"6\" style=\"cursor: pointer;\">\n" +
+    "        <div st-pagination=\"\" st-items-by-page=\"recordsPerPage\" st-displayed-pages=\"pages\">\n" +
+    "        </div>\n" +
+    "    </tr>\n" +
+    "  </tbody>\n" +
+    "</table>\n" +
+    "</div>\n" +
+    "<script>\n" +
+    "$(document).ready(function(){\n" +
+    "    $('.filterable .btn-filter').click(function(){\n" +
+    "        var $panel = $(this).parents('.filterable'),\n" +
+    "        $filters = $panel.find('.filters input'),\n" +
+    "        $tbody = $panel.find('.table tbody');\n" +
+    "        if ($filters.prop('disabled') == true) {\n" +
+    "            $filters.prop('disabled', false);\n" +
+    "            $filters.first().focus();\n" +
+    "        } else {\n" +
+    "            $filters.val('').prop('disabled', true);\n" +
+    "            $tbody.find('.no-result').remove();\n" +
+    "            $tbody.find('tr').show();\n" +
+    "        }\n" +
+    "    });\n" +
+    "});\n" +
+    "</script>");
+}]);
+
 angular.module("../app/partials/location/services.today.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../app/partials/location/services.today.html",
     "<div class=\"ui grid\">\n" +
@@ -1868,7 +2782,7 @@ angular.module("../app/partials/location/services.today.html", []).run(["$templa
     "<div class=\"ui three cards\">\n" +
     "  <div ng-repeat=\"row in displayedCollection | filter: searchText\" class=\"red card\">\n" +
     "    <div class=\"content\">\n" +
-    "      <div class=\"header\">{{row.parish_name}}\n" +
+    "      <div class=\"header\">{{row.name}}\n" +
     "        <span class=\"right floated\">\n" +
     "          <a href=\"\">\n" +
     "            <i class=\"icon share alternate\"></i>\n" +
@@ -1886,10 +2800,8 @@ angular.module("../app/partials/location/services.today.html", []).run(["$templa
     "        <!-- <div class=\"two wide column\">\n" +
     "          <i class=\"icon fa fa-tags\"></i>\n" +
     "        </div> -->\n" +
-    "        <div class=\"twelve wide column\">\n" +
-    "          {{row.tags}}\n" +
-    "          <a href=\"\" ng-repeat=\"tag in row.tags\"> #{{tag}}</a>\n" +
-    "          <a>#One</a><a>#Two</a>\n" +
+    "        <div class=\"twelve wide column\" >\n" +
+    "          <a href=\"\" >{{row.tags}}</a>\n" +
     "        </div>\n" +
     "        <div class=\"two wide column\">\n" +
     "          <a href=\"\" ng-click=\"getService(row)\">\n" +
@@ -2854,55 +3766,105 @@ angular.module("../app/partials/users/index.html", []).run(["$templateCache", fu
 angular.module("../app/partials/users/list.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../app/partials/users/list.html",
     "<!-- Members' List -->\n" +
-    "<table class=\"ui table celled compact bordered\" st-safe-src=\"rowCollection\" st-table=\"displayedCollection\">\n" +
-    "    <thead>\n" +
-    "        <tr>\n" +
-    "            <th><i class=\"icon ion-person\"></i>First Name</th>\n" +
-    "            <th><i class=\"icon ion-person\"></i>Last Name</th>\n" +
-    "            <th><i class=\"icon ion-email\"></i>Email Address</th>\n" +
-    "            <th><i class=\"icon ion-ios-telephone\"></i>Telephone</th>\n" +
-    "            <th><i class=\"icon fa fa-list\"></i>Role</th>\n" +
-    "        </tr>\n" +
-    "        \n" +
-    "    </thead>\n" +
-    "    <tbody>\n" +
-    "    <tr>\n" +
-    "        <td class=\"ui input\" ><input st-search=\"'fname'\" placeholder=\"Search...\" type=\"search\"/></td>\n" +
-    "        <td class=\"ui input\" ><input st-search=\"'lname'\" placeholder=\"Search...\" type=\"search\"/></td>\n" +
-    "        <td class=\"ui input\" ><input st-search=\"'email'\" placeholder=\"Search...\" type=\"search\"/></td>\n" +
-    "        <td class=\"ui input\" ><input st-search=\"'telephone'\" placeholder=\"Search...\" type=\"search\"/></td>\n" +
-    "        <td class=\"ui input\" ><input st-search=\"'role'\" placeholder=\"Search...\" type=\"search\"/></td>\n" +
-    "        \n" +
-    "        <td></td>\n" +
-    "        </tr>\n" +
-    "        <tr ng-repeat=\"row in displayedCollection\"  st-select-row=\"row\">\n" +
-    "            <td>{{row.fname}}</td>\n" +
-    "            <td>{{row.lname}}</td>\n" +
-    "            <td>{{row.email}}</td>\n" +
-    "            <td>{{row.telephone}}</td>\n" +
-    "            <td>{{row.role}}</td>\n" +
-    "            <td width=\"150\">\n" +
-    "            <button type=\"button\" ng-click=\"getUser(row)\" class=\"ui blue tiny button icon\">\n" +
-    "				<i class=\"icon ion-more\">\n" +
-    "				</i>\n" +
-    "			</button>\n" +
-    "            <button type=\"button\" ng-click=\"\" class=\"ui red tiny button icon\">\n" +
-    "				<i class=\"icon ion-minus-circled\">\n" +
-    "				</i>\n" +
-    "			</button>\n" +
+    "<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>\n" +
+    "<style>\n" +
+    "  .filterable {\n" +
+    "    margin-top: 15px;\n" +
+    "}\n" +
+    ".filterable .panel-heading .pull-right {\n" +
+    "    margin-top: -20px;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled] {\n" +
+    "    background-color: transparent;\n" +
+    "    border: none;\n" +
+    "    cursor: auto;\n" +
+    "    box-shadow: none;\n" +
+    "    padding: 0;\n" +
+    "    height: auto;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]::-webkit-input-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]::-moz-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    ".filterable .filters input[disabled]:-ms-input-placeholder {\n" +
+    "    color: #333;\n" +
+    "}\n" +
+    "th{\n" +
+    "  font-family: 'Roboto', sans-serif;\n" +
+    "}\n" +
+    "</style>\n" +
+    "<div class=\"container-well\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"panel panel-primary filterable\">\n" +
+    "            <div class=\"panel-heading\" style=\"background-color:#4B1C7B\">\n" +
+    "                <h3 class=\"panel-title\" >Parishes</h3>\n" +
+    "                <div class=\"pull-right\">\n" +
+    "                    <button class=\"btn btn-default btn-xs btn-filter\"><i class=\"search icon\"></i> Filter</button>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <table class=\"table\" st-safe-src=\"rowCollection\" st-table=\"displayedCollection\">\n" +
+    "                <thead>\n" +
+    "                    <tr class=\"filters\">\n" +
+    "        <td class=\"ui input\" ><input st-search=\"'id'\" placeholder=\"Id\" type=\"search\"/ disabled></td>\n" +
+    "        <td class=\"ui input\" ><input st-search=\"'uid'\" placeholder=\"User Id\" type=\"search\"/ disabled></td>\n" +
+    "        <td class=\"ui input\" ><input st-search=\"'provider'\" placeholder=\"Provider\" type=\"search\"/ disabled></td>\n" +
+    "        <td class=\"ui input\" ><input st-search=\"'email'\" placeholder=\"Email\" type=\"search\"/ disabled></td>\n" +
+    "        <td class=\"ui input\" ><input st-search=\"'created_at'\" placeholder=\"Created At\" type=\"search\"/ disabled></td>\n" +
+    "        <td class=\"ui input\" ><input st-search=\"'updated_at'\" placeholder=\"Updated At\" type=\"search\"/ disabled></td>\n" +
+    "                    </tr>\n" +
+    "                </thead>\n" +
+    "                <tbody>\n" +
     "\n" +
-    "			</td>\n" +
-    "        </tr>\n" +
-    "    </tbody>\n" +
-    "     <tfoot>\n" +
-    "        	<tr>\n" +
-    "        		<th colspan=\"1\">{{records}} Records</th>\n" +
-    "                <th colspan=\"5\">\n" +
-    "                    <div st-pagination=\"\" st-items-by-page=\"recordsPerPage\" st-displayed-pages=\"pages\"></div>\n" +
-    "                </th>\n" +
-    "        	</tr>\n" +
-    "        </tfoot>\n" +
-    "</table>");
+    "              <tr ng-repeat=\"row in displayedCollection\"  st-select-row=\"row\" style=\"font-family: 'Roboto', sans-serif;\">\n" +
+    "            <td>{{row.id}}</td>\n" +
+    "            <td>{{row.uid}}</td>\n" +
+    "            <td>{{row.provider}}</td>\n" +
+    "            <td>{{row.email}}</td>\n" +
+    "            <td>{{row.created_at}}</td>\n" +
+    "            <td>{{row.updated_at}}</td>\n" +
+    "                  <td width=\"150\">\n" +
+    "                    <button type=\"button\" ng-click=\"getParish(row)\" class=\"ui blue tiny button icon\">\n" +
+    "                      <i class=\"icon ion-more\">\n" +
+    "                      </i>\n" +
+    "                    </button>\n" +
+    "                    <button type=\"button\" ng-click=\"\" class=\"ui red tiny button icon\">\n" +
+    "                      <i class=\"icon ion-minus-circled\">\n" +
+    "                      </i>\n" +
+    "                    </button>\n" +
+    "                  </td>\n" +
+    "                </tr>\n" +
+    "                </tbody>\n" +
+    "                  <tfoot>\n" +
+    "    <tr>\n" +
+    "      <th colspan=\"1\">{{records}} Records</th>\n" +
+    "      <th colspan=\"5\" style=\"cursor: pointer;\">\n" +
+    "        <div st-pagination=\"\" st-items-by-page=\"recordsPerPage\" st-displayed-pages=\"pages\"></div>\n" +
+    "      </th>\n" +
+    "    </tr>\n" +
+    "  </tfoot>\n" +
+    "            </table>\n" +
+    "        </div>\n" +
+    "</div>\n" +
+    "</div>\n" +
+    "<script>\n" +
+    "$(document).ready(function(){\n" +
+    "    $('.filterable .btn-filter').click(function(){\n" +
+    "        var $panel = $(this).parents('.filterable'),\n" +
+    "        $filters = $panel.find('.filters input'),\n" +
+    "        $tbody = $panel.find('.table tbody');\n" +
+    "        if ($filters.prop('disabled') == true) {\n" +
+    "            $filters.prop('disabled', false);\n" +
+    "            $filters.first().focus();\n" +
+    "        } else {\n" +
+    "            $filters.val('').prop('disabled', true);\n" +
+    "            $tbody.find('.no-result').remove();\n" +
+    "            $tbody.find('tr').show();\n" +
+    "        }\n" +
+    "    });\n" +
+    "});\n" +
+    "</script>");
 }]);
 
 angular.module("../app/partials/users/lock-screen.html", []).run(["$templateCache", function($templateCache) {
@@ -2910,7 +3872,7 @@ angular.module("../app/partials/users/lock-screen.html", []).run(["$templateCach
     "<div class=\"\" style=\"position:absolute;top:0;width:100%;height:100%;background:#3b83c0\">\n" +
     "    <form action=\"\" class=\"ui form inverted centered\">\n" +
     "        <div class=\"sixteen wide field\">\n" +
-    "            <img style=\"background:white;margin:auto\" class=\"ui medium bordered  circular image\" src=\"assets/bower_components/ionicons/png/512/ios7-person.png\">\n" +
+    "            <img style=\"background:white;margin:auto\" class=\"ui medium bordered  circular image\" src=\"\">\n" +
     "        </div>\n" +
     "\n" +
     "        <div class=\"sixteen wide field\">\n" +
@@ -2932,18 +3894,42 @@ angular.module("../app/partials/users/lock-screen.html", []).run(["$templateCach
 
 angular.module("../app/partials/users/login.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../app/partials/users/login.html",
-    "<form  class='ui form segment centered' ng-submit=\"login()\">\n" +
+    "<form ng-submit=\"submitLogin(loginForm)\" role=\"form\" class='ui form segment centered' ng-init=\"loginForm = {}\">\n" +
     "    <h1 class=\"ui header\">Login</h1>\n" +
     "    <div class=\"sixteen wide field\">\n" +
     "        <div class=\"ui input left icon\">\n" +
-    "            <i class=\"icon ion-person\"></i><input type=\"text\" name=\"username\" ng-model=\"formData.username\" placeholder=\"Enter Username...\"></div>\n" +
+    "            <i class=\"icon ion-person\"></i><input type=\"text\" name=\"email\" ng-model=\"loginForm.email\" required=\"required\" placeholder=\"Enter Username...\"></div>\n" +
     "    </div>\n" +
     "    <div class=\"sixteen wide field\">\n" +
     "        <div class=\"ui input left icon\">\n" +
-    "            <i class=\"icon ion-lock-combination\"></i><input type=\"password\" ng-model=\"formData.password\" name=\"password\" placeholder=\"Enter Password Here...\"></div>\n" +
+    "            <i class=\"icon ion-lock-combination\"></i><input type=\"password\"  name=\"password\" ng-model=\"loginForm.password\" required=\"required\" placeholder=\"Enter Password Here...\"></div>\n" +
     "    </div>\n" +
-    "    <button type=\"submit\" class=\"ui icon green button\"><i class='icon ion-log-in'></i>Login</button>\n" +
+    "    <button type=\"submit\" class=\"ui icon green button\"><i class='icon ion-log-in'></i> Login</button>\n" +
     "</form>\n" +
+    "\n" +
+    "\n" +
+    "");
+}]);
+
+angular.module("../app/partials/users/register.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../app/partials/users/register.html",
+    "<form ng-submit=\"submitRegistration(registrationForm)\" role=\"form\" class='ui form segment centered' ng-init=\"registrationForm = {}\">\n" +
+    "    <h1 class=\"ui header\">Register</h1>\n" +
+    "    <div class=\"sixteen wide field\">\n" +
+    "        <div class=\"ui input left icon\">\n" +
+    "            <i class=\"icon ion-person\"></i><input type=\"email\" name=\"email\" ng-model=\"registrationForm.email\" required=\"required\" class=\"form-control\" placeholder=\"Enter your email...\"/></div>\n" +
+    "    </div>\n" +
+    "    <div class=\"sixteen wide field\">\n" +
+    "        <div class=\"ui input left icon\">\n" +
+    "            <i class=\"icon ion-lock-combination\"></i><input type=\"password\" name=\"password\" ng-model=\"registrationForm.password\" required=\"required\" class=\"form-control\" placeholder=\"Enter your password...\"/></div>\n" +
+    "    </div>\n" +
+    "    <div class=\"sixteen wide field\">\n" +
+    "        <div class=\"ui input left icon\">\n" +
+    "            <i class=\"icon ion-lock-combination\"></i><input type=\"password\" name=\"password_confirmation\" ng-model=\"registrationForm.password_confirmation\" required=\"required\" class=\"form-control\" placeholder=\"Confirm your passwiord...\"/></div>\n" +
+    "    </div>\n" +
+    "    <button type=\"submit\" class=\"ui icon green button\"><i class='icon ion-log-in'></i>Register</button>\n" +
+    "</form>\n" +
+    "\n" +
     "");
 }]);
 

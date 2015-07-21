@@ -6,7 +6,7 @@ app.controller(
 		scope.getTest = function getTest(newTest) {
 			scope.testProfile = newTest;
 			state.go('tests.view');
-		}
+		};
 
 		scope.getTests = function getTests() {
 			var AllTests = MedsRestangular.all('tests');
@@ -16,7 +16,7 @@ app.controller(
 				scope.rowCollection = tests;
 				scope.displayedCollection = [].concat(scope.rowCollection);
 			});
-		}
+		};
 
 		function getTestCount() {
 			var AllTests = MedsRestangular.all('tests');

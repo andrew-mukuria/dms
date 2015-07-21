@@ -10,7 +10,7 @@
   "homepage": "index.html",
   "private": true,
   "ignore": [
-    "bower_components",
+    "bower_compponents",
     "test",
     "tests"
   ],
@@ -36,5 +36,11 @@
   },
   "resolutions": {
     "angular": "1.3.11"
+  },
+  "devDependencies": {
+    "semantic-ui": "2.0.2",
+    "angular-material": "~0.10.0",
+    "angular-leaflet-directive": "~0.8.5",
+    "angular-loading-bar": "~0.8.0"
   }
 }

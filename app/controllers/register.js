@@ -16,6 +16,9 @@ app.controller(
         });
     };
 
+    scope.$on('auth:registration-email-error', function(ev, reason) {
+    toastr.info("Registration failed: " + reason.errors[0]);
+    });
     }
   ]
 );

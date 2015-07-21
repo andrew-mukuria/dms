@@ -11,14 +11,14 @@ app.controller(
       scope.getParish = function getParish(newParish) {
         scope.parishProfile = newParish;
         state.go('location.parishes.view');
-      }
+      };
 
       scope.getParishes = function getParishes() {
         Parishes.customGET('').then(function(parishes) {
           scope.rowCollection = parishes;
           scope.displayedCollection = [].concat(scope.rowCollection);
         });
-      }
+      };
 
       scope.login = function login() {
         rootScope.user = [];
@@ -31,7 +31,7 @@ app.controller(
           state.go('users');
 
         });
-      }
+      };
 
       function getParishCount() {
         Parishes.customGET('').then(function(parishes) {
@@ -46,11 +46,8 @@ app.controller(
         if (status == 'add') {
           scope.parishProfile = [];
         }
-      }
+      };
       scope.newParish = function newParish() {
-        parish = scope.parishProfile;
-        console.log(parish);
-        
         parish = {
               "parish": {
                   "name":       scope.parishProfile.name,
@@ -59,25 +56,35 @@ app.controller(
          }
         };
         console.log(parish);
-        Parishes.post(parish);
+        Parishes.customPOST(parish);
 
-      }
+      };
         
-      scope.updateParish = function updateParish() {
-        parish = scope.parishProfile;
-        updatedParish = DMSRestangular.one('parishes', parish.id);
+        scope.updateParish = function updateParish() {
+        updatedParish = DMSRestangular.one('parishes', scope.parishProfile.id);
+
+        today = new Date();
+        year = today.getFullYear();
+        month = today.getMonth() + 1;
+        day = today.getDay();
+        // this.updated_at = year + '-' + month + '-' + day;
+        var now = year + '-' + month + '-' + day;
+        
         parish = {
-              "utf8":"✓",
               "parish": {
-              "id":         parish.id,
+              "id":         scope.parishProfile.id,
               "name":       scope.parishProfile.name,
               "in_charge":  scope.parishProfile.in_charge,
               "location":   scope.parishProfile.location
-         }
+              }
         };
-        console.log(parish);
-        updatedParish.put(parish);
-      }
+        updatedParish.customPUT(parish).then(function(response){
+        toastr.info('Update Successful', 'Awesome!'); 
+        }, function(response) {
+        toastr.danger('Update was not successfyl', 'Wow!'); 
+        });
+        console.log(scope.parishProfile.id);
+      };
 
     }
   ]

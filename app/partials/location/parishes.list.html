@@ -1,5 +1,4 @@
 <!-- Parishes' List -->
-<link href='http://fonts.googleapis.com/css?family=Slabo+27px' rel='stylesheet' type='text/css'>
 <style>
   .filterable {
     margin-top: 15px;
@@ -24,62 +23,51 @@
 .filterable .filters input[disabled]:-ms-input-placeholder {
     color: #333;
 }
-th{
-  font-family: 'Slabo 27px', serif;
+#dms{
+  background-color: #FFFFFF;
 }
 </style>
-<div class="container-well">
-    <div class="row">
         <div class="panel panel-primary filterable">
-            <div class="panel-heading">
-                <h3 class="panel-title">Parishes</h3>
-                <div class="pull-right">
-                    <button class="btn btn-default btn-xs btn-filter"><i class="search icon"></i> Filter</button>
-                </div>
-            </div>
-            <table class="table" st-safe-src="rowCollection" st-table="displayedCollection">
-                <thead>
-                    <tr class="filters">
-       <th><input type="text" st-search="'id'" class="form-control th" placeholder="#" disabled ></th>
-       <th><input type="text" st-search="'name'" class="form-control th" placeholder="Name" disabled ></th>
-       <th><input type="text" st-search="'location'" class="form-control th" placeholder="Location" disabled ></th>
-       <th><input type="text" st-search="'in_charge'" class="form-control th" placeholder="In Charge" disabled ></th>
-       <th><input type="text" st-search="'updated_at'" class="form-control th" placeholder="Updated At" disabled ></th>
-       <th><input type="text" st-search="'created_at'" class="form-control th" placeholder="Created At" disabled ></th>
-                    </tr>
-                </thead>
-                <tbody>
-
-              <tr ng-repeat="row in displayedCollection"  st-select-row="row" style="font-family: 'Slabo 27px', serif;">
+<table class="ui inverted blue table" st-safe-src="rowCollection" st-table="displayedCollection">
+  <thead>
+    <tr class="ui form filters" colspan="6">
+       <th id="dms"><input type="text" st-search="'id'" placeholder="#"  disabled=""></th>
+       <th id="dms"><input type="text" st-search="'name'" placeholder="Name"  disabled=""></th>
+       <th id="dms"><input type="text" st-search="'location'" placeholder="Location"  disabled=""></th>
+       <th id="dms"><input type="text" st-search="'in_charge'" placeholder="In Charge"  disabled=""></th>
+       <th id="dms"><input type="text" st-search="'updated_at'" placeholder="Updated At"  disabled=""></th>
+       <th id="dms"><input type="text" st-search="'created_at'" placeholder="Created At"  disabled=""></th>
+       <th id="dms" width="100">
+    <button class="ui icon button btn-filter">
+  <i class="search icon"></i>
+    </button>
+  </tr></thead><tbody>
+    <tr ng-repeat="row in displayedCollection"  st-select-row="row">
                   <td>{{row.id}}</td>
                   <td>{{row.name}}</td>
                   <td>{{row.location}}</td>
                   <td>{{row.in_charge}}</td>
                   <td>{{row.updated_at}}</td>
                   <td>{{row.created_at}}</td>
-                  <td width="150">
-                    <button type="button" ng-click="getParish(row)" class="ui blue tiny button icon">
-                      <i class="icon ion-more">
-                      </i>
-                    </button>
-                    <button type="button" ng-click="" class="ui red tiny button icon">
-                      <i class="icon ion-minus-circled">
-                      </i>
-                    </button>
-                  </td>
-                </tr>
-                </tbody>
-                  <tfoot>
-    <tr>
-      <th colspan="1">{{records}} Records</th>
-      <th colspan="5" style="cursor: pointer;">
-        <div st-pagination="" st-items-by-page="recordsPerPage" st-displayed-pages="pages"></div>
-      </th>
+                                    <td width="100">
+       <div class="ui buttons">
+       <div data-content="Edit Parish Row">
+              <button class="ui button" ng-click="getParish(row)">Edit</button>
+       </div>
+              <div class="or"></div>
+       <div data-content="Delete Parish Row">
+              <button class="ui negative button" ng-click="">Delete</button>
+       </div>
+      </div>
     </tr>
-  </tfoot>
-            </table>
+    <tr>
+<th colspan="1">{{records}} Records</th>
+      <th colspan="6" style="cursor: pointer;">
+        <div st-pagination="" st-items-by-page="recordsPerPage" st-displayed-pages="pages">
         </div>
-</div>
+    </tr>
+  </tbody>
+</table>
 </div>
 <script>
 $(document).ready(function(){

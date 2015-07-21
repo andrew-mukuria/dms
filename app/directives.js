@@ -8,22 +8,22 @@ app.directive("header", function () {
     return {
         controller: 'NavbarController',
         templateUrl: "app/partials/global/header.html"
-    }
+    };
 });
 app.directive("sidemenu", function () {
     return {
         templateUrl: "app/partials/global/side-menu.html"
-    }
+    };
 });
 app.directive("rails", function () {
     return {
         templateUrl: "app/partials/global/rails.html"
-    }
+    };
 });
 app.directive("formSideMenu", function () {
     return {
         templateUrl: "app/partials/global/forms/side-menu.html"
-    }
+    };
 });
 
 app.directive('isActiveNav', [ '$location', function($location) {
@@ -41,3 +41,14 @@ return {
  }
  };
 }]);
+
+app.directive('toggleClass', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            element.bind('click', function() {
+                element.toggleClass(attrs.toggleClass);
+            });
+        }
+    };
+});

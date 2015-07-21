@@ -1,50 +1,100 @@
 <!-- Members' List -->
-<table class="ui table celled compact bordered" st-safe-src="rowCollection" st-table="displayedCollection">
-    <thead>
-        <tr>
-            <th><i class="icon ion-person"></i>First Name</th>
-            <th><i class="icon ion-person"></i>Last Name</th>
-            <th><i class="icon ion-email"></i>Email Address</th>
-            <th><i class="icon ion-ios-telephone"></i>Telephone</th>
-            <th><i class="icon fa fa-list"></i>Role</th>
-        </tr>
-        
-    </thead>
-    <tbody>
-    <tr>
-        <td class="ui input" ><input st-search="'fname'" placeholder="Search..." type="search"/></td>
-        <td class="ui input" ><input st-search="'lname'" placeholder="Search..." type="search"/></td>
-        <td class="ui input" ><input st-search="'email'" placeholder="Search..." type="search"/></td>
-        <td class="ui input" ><input st-search="'telephone'" placeholder="Search..." type="search"/></td>
-        <td class="ui input" ><input st-search="'role'" placeholder="Search..." type="search"/></td>
-        
-        <td></td>
-        </tr>
-        <tr ng-repeat="row in displayedCollection"  st-select-row="row">
-            <td>{{row.fname}}</td>
-            <td>{{row.lname}}</td>
-            <td>{{row.email}}</td>
-            <td>{{row.telephone}}</td>
-            <td>{{row.role}}</td>
-            <td width="150">
-            <button type="button" ng-click="getUser(row)" class="ui blue tiny button icon">
-				<i class="icon ion-more">
-				</i>
-			</button>
-            <button type="button" ng-click="" class="ui red tiny button icon">
-				<i class="icon ion-minus-circled">
-				</i>
-			</button>
+<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+<style>
+  .filterable {
+    margin-top: 15px;
+}
+.filterable .panel-heading .pull-right {
+    margin-top: -20px;
+}
+.filterable .filters input[disabled] {
+    background-color: transparent;
+    border: none;
+    cursor: auto;
+    box-shadow: none;
+    padding: 0;
+    height: auto;
+}
+.filterable .filters input[disabled]::-webkit-input-placeholder {
+    color: #333;
+}
+.filterable .filters input[disabled]::-moz-placeholder {
+    color: #333;
+}
+.filterable .filters input[disabled]:-ms-input-placeholder {
+    color: #333;
+}
+th{
+  font-family: 'Roboto', sans-serif;
+}
+</style>
+<div class="container-well">
+    <div class="row">
+        <div class="panel panel-primary filterable">
+            <div class="panel-heading" style="background-color:#4B1C7B">
+                <h3 class="panel-title" >Parishes</h3>
+                <div class="pull-right">
+                    <button class="btn btn-default btn-xs btn-filter"><i class="search icon"></i> Filter</button>
+                </div>
+            </div>
+            <table class="table" st-safe-src="rowCollection" st-table="displayedCollection">
+                <thead>
+                    <tr class="filters">
+        <td class="ui input" ><input st-search="'id'" placeholder="Id" type="search"/ disabled></td>
+        <td class="ui input" ><input st-search="'uid'" placeholder="User Id" type="search"/ disabled></td>
+        <td class="ui input" ><input st-search="'provider'" placeholder="Provider" type="search"/ disabled></td>
+        <td class="ui input" ><input st-search="'email'" placeholder="Email" type="search"/ disabled></td>
+        <td class="ui input" ><input st-search="'created_at'" placeholder="Created At" type="search"/ disabled></td>
+        <td class="ui input" ><input st-search="'updated_at'" placeholder="Updated At" type="search"/ disabled></td>
+                    </tr>
+                </thead>
+                <tbody>
 
-			</td>
-        </tr>
-    </tbody>
-     <tfoot>
-        	<tr>
-        		<th colspan="1">{{records}} Records</th>
-                <th colspan="5">
-                    <div st-pagination="" st-items-by-page="recordsPerPage" st-displayed-pages="pages"></div>
-                </th>
-        	</tr>
-        </tfoot>
-</table>
+              <tr ng-repeat="row in displayedCollection"  st-select-row="row" style="font-family: 'Roboto', sans-serif;">
+            <td>{{row.id}}</td>
+            <td>{{row.uid}}</td>
+            <td>{{row.provider}}</td>
+            <td>{{row.email}}</td>
+            <td>{{row.created_at}}</td>
+            <td>{{row.updated_at}}</td>
+                  <td width="150">
+                    <button type="button" ng-click="getParish(row)" class="ui blue tiny button icon">
+                      <i class="icon ion-more">
+                      </i>
+                    </button>
+                    <button type="button" ng-click="" class="ui red tiny button icon">
+                      <i class="icon ion-minus-circled">
+                      </i>
+                    </button>
+                  </td>
+                </tr>
+                </tbody>
+                  <tfoot>
+    <tr>
+      <th colspan="1">{{records}} Records</th>
+      <th colspan="5" style="cursor: pointer;">
+        <div st-pagination="" st-items-by-page="recordsPerPage" st-displayed-pages="pages"></div>
+      </th>
+    </tr>
+  </tfoot>
+            </table>
+        </div>
+</div>
+</div>
+<script>
+$(document).ready(function(){
+    $('.filterable .btn-filter').click(function(){
+        var $panel = $(this).parents('.filterable'),
+        $filters = $panel.find('.filters input'),
+        $tbody = $panel.find('.table tbody');
+        if ($filters.prop('disabled') == true) {
+            $filters.prop('disabled', false);
+            $filters.first().focus();
+        } else {
+            $filters.val('').prop('disabled', true);
+            $tbody.find('.no-result').remove();
+            $tbody.find('tr').show();
+        }
+    });
+});
+</script>

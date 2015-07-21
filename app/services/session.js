@@ -8,8 +8,8 @@ app.service("MySessionService",
 
 
     function getLoggedUser(){
-        console.log(localStorageService.get('meds_user'));
-        return localStorageService.get('meds_user');
+        console.log(JSON.parse(localStorage.getItem('auth_headers')));
+        return JSON.parse(localStorage.getItem('auth_headers'));
     }
 
 

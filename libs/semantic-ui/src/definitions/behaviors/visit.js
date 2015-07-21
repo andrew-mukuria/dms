@@ -1,15 +1,17 @@
-/*
- * # Semantic - Visit
+/*!
+ * # Semantic UI - Visit
  * http://github.com/semantic-org/semantic-ui/
  *
  *
- * Copyright 2014 Contributor
+ * Copyright 2015 Contributors
  * Released under the MIT license
  * http://opensource.org/licenses/MIT
  *
  */
 
 ;(function ($, window, document, undefined) {
+
+"use strict";
 
 $.visit = $.fn.visit = function(parameters) {
   var
@@ -29,7 +31,9 @@ $.visit = $.fn.visit = function(parameters) {
   $allModules
     .each(function() {
       var
-        settings        = $.extend(true, {}, $.fn.visit.settings, parameters),
+        settings          = ( $.isPlainObject(parameters) )
+          ? $.extend(true, {}, $.fn.visit.settings, parameters)
+          : $.extend({}, $.fn.visit.settings),
 
         error           = settings.error,
         namespace       = settings.namespace,
@@ -363,7 +367,7 @@ $.visit = $.fn.visit = function(parameters) {
               });
             }
             clearTimeout(module.performance.timer);
-            module.performance.timer = setTimeout(module.performance.display, 100);
+            module.performance.timer = setTimeout(module.performance.display, 500);
           },
           display: function() {
             var
@@ -459,7 +463,7 @@ $.visit = $.fn.visit = function(parameters) {
       }
       else {
         if(instance !== undefined) {
-          module.destroy();
+          instance.invoke('destroy');
         }
         module.initialize();
       }
@@ -477,7 +481,7 @@ $.fn.visit.settings = {
   name          : 'Visit',
 
   debug         : false,
-  verbose       : true,
+  verbose       : false,
   performance   : true,
 
   namespace     : 'visit',

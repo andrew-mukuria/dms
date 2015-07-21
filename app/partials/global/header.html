@@ -1,10 +1,10 @@
-<div class="ui tiered menu">
+<div class="top attached menu">
     <nav class="ui menu" id="main">
-        <a class="item" href="" data-transition="push" id="show_side_menu"><i class="icon ion-navicon-round"></i>More</a>
+        <a class="item" role="button" href="" data-transition="scale down" id="show_side_menu"><i class="icon ion-navicon-round"></i>More</a>
         <a href="" ui-sref="messages" class="item"><i class="icon mail"></i>Messages<div class="ui red round label">{{messages.length}}</div></a>
         <div class="right menu">
             <div class="item">
-                <i class="icon ion-person"></i>
+                <i class="icon ion-person" ></i>{{user.uid}}
             </div>
             <div class='item'><i class="icon calendar"></i>{{date | date:'d-MM-yyyy'}}</div>
             <a ng-click="signOut()" class="item"><i class="icon ion-log-out"></i>Logout</a>

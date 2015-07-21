@@ -12,7 +12,7 @@ app.controller(
         console.log(newDeanery);
         scope.DeaneryProfile = newDeanery;
         state.go('location.deaneries.view');
-      }
+      };
 
       scope.getDeaneries = function getDeaneries() {
         var Deaneries = DMSRestangular.all('deaneries');
@@ -22,7 +22,7 @@ app.controller(
           scope.rowCollection = deaneries;
           scope.displayedCollection = [].concat(scope.rowCollection);
         });
-      }
+      };
 
       scope.login = function login() {
         rootScope.user = [];
@@ -35,14 +35,14 @@ app.controller(
           state.go('users');
 
         });
-      }
+      };
 
     scope.setStatus = function setStatus(status) {
         scope.status = status;
         if (status == 'add') {
           scope.parishProfile = [];
         }
-      }
+      };
 
       function getDeaneryCount() {
         var Deaneries = DMSRestangular.all('deaneries');

@@ -6,7 +6,7 @@ app.controller(
 		scope.getClient = function getClient(newClient) {
 			scope.clientProfile = newClient;
 			state.go('clients.view');
-		}
+		};
 
 		scope.getClients = function getClients() {
 			var AllClients = MedsRestangular.all('clients');
@@ -16,7 +16,7 @@ app.controller(
 				scope.rowCollection = clients;
 				scope.displayedCollection = [].concat(scope.rowCollection);
 			});
-		}
+		};
 
 		function getClientCount() {
 			var AllClients = MedsRestangular.all('clients');

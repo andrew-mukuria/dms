@@ -12,7 +12,7 @@ app.controller(
         console.log(newArchdiocese);
         scope.ArchdioceseProfile = newArchdiocese;
         state.go('location.archdioceses.view');
-      }
+      };
 
       scope.getArchdioceses = function getArchdioceses() {
         var Archdioceses = DMSRestangular.all('archdioceses');
@@ -22,7 +22,7 @@ app.controller(
           scope.rowCollection = archdioceses;
           scope.displayedCollection = [].concat(scope.rowCollection);
         });
-      }
+      };
 
       scope.login = function login() {
         rootScope.user = [];
@@ -35,14 +35,14 @@ app.controller(
           state.go('users');
 
         });
-      }
+      };
 
 	  scope.setStatus = function setStatus(status) {
         scope.status = status;
         if (status == 'add') {
           scope.parishProfile = [];
         }
-      }
+      };
 
       function getArchdioceseCount() {
         var Archdioceses = DMSRestangular.all('archdioceses');

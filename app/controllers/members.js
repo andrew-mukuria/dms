@@ -11,14 +11,14 @@ app.controller(
       scope.getMember = function getMember(newMember) {
         scope.memberProfile = newMember;
         state.go('location.members.view');
-      }
+      };
 
       scope.getMembers = function getMembers() {
         Members.customGET('').then(function(members) {
           scope.rowCollection = members;
           scope.displayedCollection = [].concat(scope.rowCollection);
         });
-      }
+      };
 
       scope.login = function login() {
         rootScope.user = [];
@@ -31,7 +31,7 @@ app.controller(
           state.go('dashboard');
 
         });
-      }
+      };
 
       function getMemberCount() {
         Members.customGET('').then(function(members) {
@@ -46,10 +46,10 @@ app.controller(
         if (status == 'add') {
           scope.memberProfile = [];
         }
-      }
+      };
       scope.newMember = function newMember() {
 
-      }
+      };
 
       scope.updateMember = function updateMember() {
         member = scope.memberProfile;
@@ -57,7 +57,7 @@ app.controller(
         updatedmember[0] = member;
         
         updatedmember.put(member);
-      }
+      };
 
     }
   ]

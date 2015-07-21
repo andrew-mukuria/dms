@@ -21,10 +21,10 @@ module.exports = function(grunt) {
     uglify: {
       dist: {
         files: {
-          'dist/app.js': ['dist/app.js']
+          'dist/app-dist.js': ['dist/app.js']
         },
         options: {
-          mangle: false
+          mangle: false,
         }
       }
     },
@@ -59,16 +59,17 @@ module.exports = function(grunt) {
     connect: {
       server: {
         options: {
+          livereload: true,
           hostname: 'localhost',
-          port: 8090
+          port: 9000
         }
       }
     },
 
     watch: {
       dev: {
-        files: ['Gruntfile.js', 'app/**/*.js', '**/*.html', '**/*.scss'],
-        tasks: ['html2js:dist', 'sass', 'concat:dist', 'clean:temp'],
+        files: ['Gruntfile.js', 'app/**/*.js'],
+        tasks: ['html2js:dist', 'concat:dist'],
         options: {
           atBegin: true,
           livereload: true
@@ -76,7 +77,7 @@ module.exports = function(grunt) {
       },
       min: {
         files: ['Gruntfile.js', 'app/*.js', '**/*.html'],
-        tasks: ['jshint', 'karma:unit', 'html2js:dist', 'concat:dist',
+        tasks: ['jshint', 'html2js:dist', 'concat:dist',
           'clean:temp', 'uglify:dist'
         ],
         options: {
@@ -95,13 +96,13 @@ module.exports = function(grunt) {
           dest: '/'
         }, {
           src: ['dist/**'],
-          dest: 'dist/'
+          dest: '/'
         }, {
           src: ['assets/**'],
-          dest: 'assets/'
+          dest: '/'
         }, {
           src: ['libs/**'],
-          dest: 'libs/'
+          dest: '/'
         }]
       }
     },
@@ -148,12 +149,18 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-reload');
-
+  grunt.loadNpmTasks('grunt-serve');
+  
   grunt.registerTask('dev', ['connect:server', 'watch:dev']);
   grunt.registerTask('test', ['bower', 'jshint', 'karma:continuous']);
   grunt.registerTask('minified', ['bower', 'connect:server', 'watch:min']);
   grunt.registerTask('package', ['bower', 'html2js:dist', 'concat:dist',
     'uglify:dist',
     'clean:temp', 'compress:dist'
+  ]);
+  grunt.registerTask('serve', [
+  'concat:dist',
+  'connect:server',
+  'watch'
   ]);
 };
